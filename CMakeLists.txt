@@ -3,11 +3,12 @@ cmake_minimum_required(VERSION 3.12)
 # Change your executable name to something creative!
 set(NAME pico-thermostat) # <-- Name your project/executable here!
 
-option(ON_TARGET "Build for a Pico target" ON)
+option(ON_TARGET "Build for a Pico target" OFF)
 
-
-include(pico_sdk_import.cmake)
-include(pimoroni_pico_import.cmake)
+if(ON_TARGET)
+    include(pico_sdk_import.cmake)
+    include(pimoroni_pico_import.cmake)
+endif()
  
 # Gooey boilerplate
 project(${NAME} C CXX ASM)
@@ -31,7 +32,9 @@ if (ON_TARGET)
     )
 
     target_include_directories(${NAME} PRIVATE 
+        src/common
         src/thermostat
+        src/temperature_controller
         src/environment_sensor
         src/i2c_bus
     )

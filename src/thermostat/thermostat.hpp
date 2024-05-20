@@ -1,19 +1,9 @@
+#ifndef THERMOSTAT_HPP
+#define THERMOSTAT_HPP
+
 #include "environment_sensor.hpp"
+#include "thermostat_common.hpp"
 
-typedef enum ThermostatError {
-    THERMOSTAT_ERROR,
-    THERMOSTAT_INVALID_INPUT,
-    THERMOSTAT_OK
-} ThermostatError;
-
-typedef enum TemperatureUnits {
-    FAHRENHEIT,
-    CELSIUS
-} TemperatureUnits;
-
-
-double convertFahrenheitToCelsius(double fahrenheit);
-double convertCelsiusToFahrenheit(double celsius);
 
 class Thermostat {
     public:
@@ -23,21 +13,18 @@ class Thermostat {
         ThermostatError initialize();
         bool isInitialized();
 
-        ThermostatError setTargetTemperature(double targetTemperature);
-        double getTargetTemperature();
 
         ThermostatError setTemperatureUnits(TemperatureUnits temperatureUnits);
         TemperatureUnits getTemperatureUnits();
 
-        ThermostatError setEnvironmentSensor(EnvironmentSensor *environmentSensor);
     
     private:
         double targetTemperature;
         TemperatureUnits temperatureUnits;
-        ThermostatError validateTargetTemperature(double targetTemperatureCelcius);
         double getTemperatureInStandardUnits(double temperature);
         double getTemperatureInCurrentUnits(double temperatureInStandardUnits);
-        EnvironmentSensor *environmentSensor;
         bool initalized;
         
 };
+
+#endif // THERMOSTAT_HPP
