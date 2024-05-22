@@ -10,9 +10,16 @@ FetchContent_Declare(
 set(TESTS OFF CACHE BOOL "Switch off CppUTest Test build")
 FetchContent_MakeAvailable(CppUTest)
 
+# Include CTest
+include(CTest)
+
+# Enable testing
+enable_testing()
 
 add_subdirectory(thermostat)
 add_subdirectory(temperature_controller)
+add_subdirectory(environment_sensor)
+add_subdirectory(hvac)
 
     # Custom target to build all tests
 add_custom_target(build_tests

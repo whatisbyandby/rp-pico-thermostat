@@ -7,6 +7,28 @@ typedef enum ThermostatError {
     THERMOSTAT_OK
 } ThermostatError;
 
+typedef enum TemperatureState {
+    OVER_TEMPERATURE,
+    UNDER_TEMPERATURE,
+    IN_RANGE,
+} TemperatureState;
+
+typedef enum HVACState {
+    HEATER_ON,
+    COOLER_ON,
+    FAN_ON,
+    IDLE,
+    ALL_OFF
+} HVACState;
+
+typedef enum ThermostatMode {
+    HEATING,
+    COOLING,
+    FAN_ONLY,
+    ERROR,
+    OFF
+} ThermostatMode;
+
 typedef enum TemperatureUnits {
     FAHRENHEIT,
     CELSIUS

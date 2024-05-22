@@ -58,3 +58,56 @@ double Thermostat::getTemperatureInCurrentUnits(double temperatureInStandardUnit
     return temperatureInStandardUnits;
 }
 
+HVACState Thermostat::getDesiredHVACState(TemperatureState temperatureState, ThermostatMode thermostatMode, HVACState currentHVACState)
+{
+
+    if (thermostatMode == OFF)
+    {
+        return ALL_OFF;
+    }
+
+    if (thermostatMode == ERROR)
+    {
+        return ALL_OFF;
+    }
+
+    if (thermostatMode == FAN_ONLY)
+    {
+        return FAN_ON;
+    }
+
+    if (thermostatMode == HEATING)
+    {
+        if (temperatureState == UNDER_TEMPERATURE)
+        {
+            return HEATER_ON;
+        }
+        if (temperatureState == IN_RANGE && currentHVACState == HEATER_ON)
+        {
+            return HEATER_ON;
+        }
+        if (temperatureState == OVER_TEMPERATURE)
+        {
+            return IDLE;
+        }
+    }
+
+    if (thermostatMode == COOLING)
+    {
+        if (temperatureState == OVER_TEMPERATURE)
+        {
+            return COOLER_ON;
+        }
+        if (temperatureState == IN_RANGE && currentHVACState == COOLER_ON)
+        {
+            return COOLER_ON;
+        }
+        if (temperatureState == UNDER_TEMPERATURE)
+        {
+            return IDLE;
+        }
+    }
+
+    return ALL_OFF;
+}
+

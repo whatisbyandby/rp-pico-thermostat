@@ -17,6 +17,8 @@ class Thermostat {
         ThermostatError setTemperatureUnits(TemperatureUnits temperatureUnits);
         TemperatureUnits getTemperatureUnits();
 
+        HVACState getDesiredHVACState(TemperatureState temperatureState, ThermostatMode thermostatMode, HVACState currentHVACState);
+
     
     private:
         double targetTemperature;
