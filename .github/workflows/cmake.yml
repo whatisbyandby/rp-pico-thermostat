@@ -17,9 +17,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up CMake
-        uses: lukka/get-cmake@v3
+        uses: lukka/get-cmake@latest
         with:
-          cmake-version: '3.22.0'
+          cmakeVersion: latestrc     
+          ninjaVersion: latest
 
       - name: Set up dependencies
         run: |
