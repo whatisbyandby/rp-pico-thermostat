@@ -8,6 +8,7 @@ if(ON_TARGET)
     add_executable(test-hvac-target
         ${TEST_HVAC_SOURCES}
         ${HVAC_SOURCES}
+        ${PROJECT_SOURCE_DIR}/test/gpio/mock_gpio.cpp
     )
 
     target_compile_definitions(test-hvac-target PRIVATE ON_TARGET=1)
@@ -35,6 +36,7 @@ else()
     add_executable(test-hvac-host
         ${TEST_HVAC_SOURCES}
         ${HVAC_SOURCES}
+        ${PROJECT_SOURCE_DIR}/test/gpio/mock_gpio.cpp
     )
 
     target_compile_definitions(test-hvac-host PRIVATE ON_TARGET=0)
@@ -44,6 +46,7 @@ else()
         ${PROJECT_SOURCE_DIR}/src/environment_sensor
         ${PROJECT_SOURCE_DIR}/src/i2c_bus
         ${PROJECT_SOURCE_DIR}/src/common
+        ${PROJECT_SOURCE_DIR}/src/gpio
     )
 
     target_link_libraries(test-hvac-host
