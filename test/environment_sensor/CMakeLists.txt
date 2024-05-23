@@ -30,7 +30,7 @@ if(ON_TARGET)
     )
 
     # Add the test to CTest
-    add_test(NAME TestThermostat COMMAND test-environment-sensor-target)
+    add_test(NAME TestEnvironmentSensor COMMAND test-environment-sensor-target)
 
 else()
 
@@ -56,6 +56,6 @@ else()
     )
 
 # Add the test to CTest
-add_test(NAME TestThermostat COMMAND test-environment-sensor-host)
+add_test(NAME TestEnvironmentSensor COMMAND test-environment-sensor-host)
 
 endif()

@@ -28,7 +28,7 @@ if(ON_TARGET)
     )
 
     # Add the test to CTest
-    add_test(NAME TestThermostat COMMAND test-temperature-controller-target)
+    add_test(NAME TestTemperatureController COMMAND test-temperature-controller-target)
 
 else()
 
@@ -50,6 +50,6 @@ else()
     )
 
 # Add the test to CTest
-add_test(NAME TestThermostat COMMAND test-temperature-controller-host)
+add_test(NAME TestTemperatureController COMMAND test-temperature-controller-host)
 
 endif()

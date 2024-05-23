@@ -56,4 +56,5 @@ else()
     # Add the test to CTest
     add_test(NAME TestThermostat COMMAND test-thermostat-host)
 
+
 endif()
