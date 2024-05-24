@@ -43,28 +43,30 @@ TEST(HVACTestGroup, HVACConstructor)
 }
 
 
-IGNORE_TEST(HVACTestGroup, SetHeaterOn)
+TEST(HVACTestGroup, SetHeaterOn)
 {
-    mock().actualCall("Switch::turnOn").onObject(heater);
-    mock().actualCall("Switch::turnOff").onObject(ac);
-    mock().actualCall("Switch::turnOff").onObject(fan);
-    mock().actualCall("Switch::isOn").onObject(heater).returnBoolValueOrDefault(true);
-    mock().actualCall("Switch::isOn").onObject(ac).returnBoolValueOrDefault(false);
-    mock().actualCall("Switch::isOn").onObject(fan).returnBoolValueOrDefault(false);
+    mock().expectOneCall("Switch::turnOn").onObject(heater);
+    mock().expectOneCall("Switch::turnOff").onObject(ac);
+    mock().expectOneCall("Switch::turnOff").onObject(fan);
+
+    mock().expectOneCall("Switch::isOn").onObject(heater).andReturnValue(true);
+    mock().expectOneCall("Switch::isOn").onObject(ac).andReturnValue(false);
+    mock().expectOneCall("Switch::isOn").onObject(fan).andReturnValue(false);
+
     CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(HEATER_ON));
     CHECK_EQUAL(HEATER_ON, hvac->getCurrentState());
-    mock().checkExpectations();
 }
 
-IGNORE_TEST(HVACTestGroup, SetIdleMode)
+TEST(HVACTestGroup, SetIdleMode)
 {
     mock().expectOneCall("Switch::turnOff").onObject(heater);
     mock().expectOneCall("Switch::turnOff").onObject(ac);
     mock().expectOneCall("Switch::turnOff").onObject(fan);
-    mock().actualCall("Switch::isOn").onObject(heater).returnBoolValueOrDefault(false);
-    mock().actualCall("Switch::isOn").onObject(ac).returnBoolValueOrDefault(false);
-    mock().actualCall("Switch::isOn").onObject(fan).returnBoolValueOrDefault(false);
+
+    mock().expectOneCall("Switch::isOn").onObject(heater).andReturnValue(false);
+    mock().expectOneCall("Switch::isOn").onObject(ac).andReturnValue(false);
+    mock().expectOneCall("Switch::isOn").onObject(fan).andReturnValue(false);
+
     CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(IDLE));
     CHECK_EQUAL(IDLE, hvac->getCurrentState());
-    mock().checkExpectations();
 }

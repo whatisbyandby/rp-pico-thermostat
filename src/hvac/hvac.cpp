@@ -31,6 +31,7 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         ac->turnOff();
         fan->turnOff();
         currentState = readCurrentState();
+        // currentState = state;
         return THERMOSTAT_OK;
     } 
 
@@ -39,6 +40,7 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         ac->turnOff();
         fan->turnOff();
         currentState = readCurrentState();
+        // currentState = state;
         return THERMOSTAT_OK;
     }
 
@@ -47,6 +49,7 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         ac->turnOn();
         fan->turnOff();
         currentState = readCurrentState();
+        // currentState = state;
         return THERMOSTAT_OK;
     }
 
@@ -55,6 +58,7 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         ac->turnOff();
         fan->turnOn();
         currentState = readCurrentState();
+        // currentState = state;
         return THERMOSTAT_OK;
     }
 
