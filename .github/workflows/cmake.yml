@@ -1,17 +1,45 @@
-name: Target Build and Release
+name: Host Build and Test
 
 on:
   push:
+    branches:
+      - main
   pull_request:
-  release:
-    types: [created]
-
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+    branches:
+      - main
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: latestrc     
+          ninjaVersion: latest
+
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      - name: Create build directory
+        run: mkdir -p build
+          
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DON_TARGET=OFF
+
+      - name: Build with CMake
+        run: cmake --build build --config Release
+
+      - name: Run tests
+        run: cd build/test && ctest --output-on-failure
+        
+  build_target:
     name: ${{matrix.name}}
     strategy:
       matrix:
