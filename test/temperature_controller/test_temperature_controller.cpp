@@ -69,4 +69,6 @@ TEST(TemperatureControllerTestGroup, CheckTemperature)
     CHECK_EQUAL(IN_RANGE, temperatureController->checkTemperature(25.0));
     CHECK_EQUAL(UNDER_TEMPERATURE, temperatureController->checkTemperature(23.9));
     CHECK_EQUAL(OVER_TEMPERATURE, temperatureController->checkTemperature(26.1));
+    CHECK_EQUAL(UNDER_TEMPERATURE_IN_RANGE, temperatureController->checkTemperature(24.1));
+    CHECK_EQUAL(OVER_TEMPERATURE_IN_RANGE, temperatureController->checkTemperature(25.9));
 }

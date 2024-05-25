@@ -10,14 +10,15 @@ typedef enum ThermostatError {
 typedef enum TemperatureState {
     OVER_TEMPERATURE,
     UNDER_TEMPERATURE,
-    IN_RANGE,
+    UNDER_TEMPERATURE_IN_RANGE,
+    OVER_TEMPERATURE_IN_RANGE,
+    IN_RANGE
 } TemperatureState;
 
 typedef enum HVACState {
     HEATER_ON,
     COOLER_ON,
     FAN_ON,
-    IDLE,
     ALL_OFF
 } HVACState;
 

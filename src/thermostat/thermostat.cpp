@@ -3,11 +3,14 @@
 #include <cstddef>
 
 
-Thermostat::Thermostat()
+Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac)
 {
-    // Defaults to 20°C (68°F)
     temperatureUnits = FAHRENHEIT;
     initalized = false;
+
+    this->environmentSensor = environmentSensor;
+    this->temperatureController = temperatureController;
+    this->hvac = hvac;
 }
 
 Thermostat::~Thermostat()
@@ -17,6 +20,10 @@ Thermostat::~Thermostat()
 
 ThermostatError Thermostat::initialize()
 {
+    if (environmentSensor == NULL || temperatureController == NULL || hvac == NULL)
+    {
+        return THERMOSTAT_ERROR;
+    }
     initalized = true;
     return THERMOSTAT_OK;
 }
@@ -39,6 +46,17 @@ TemperatureUnits Thermostat::getTemperatureUnits()
     return temperatureUnits;
 }
 
+ThermostatMode Thermostat::getMode()
+{
+    return mode;
+}
+
+ThermostatError Thermostat::setMode(ThermostatMode newMode)
+{
+    mode = newMode;
+    return THERMOSTAT_OK;
+}
+
 
 double Thermostat::getTemperatureInStandardUnits(double temperature)
 {
@@ -58,56 +76,70 @@ double Thermostat::getTemperatureInCurrentUnits(double temperatureInStandardUnit
     return temperatureInStandardUnits;
 }
 
-HVACState Thermostat::getDesiredHVACState(TemperatureState temperatureState, ThermostatMode thermostatMode, HVACState currentHVACState)
+HVACState Thermostat::getDesiredHVACState(TemperatureState temperatureState, HVACState currentHVACState)
 {
 
-    if (thermostatMode == OFF)
+    if (mode == OFF)
     {
         return ALL_OFF;
     }
 
-    if (thermostatMode == ERROR)
+    if (mode == ERROR)
     {
         return ALL_OFF;
     }
 
-    if (thermostatMode == FAN_ONLY)
+    if (mode == FAN_ONLY)
     {
         return FAN_ON;
     }
 
-    if (thermostatMode == HEATING)
+    if (mode == HEATING)
     {
         if (temperatureState == UNDER_TEMPERATURE)
         {
             return HEATER_ON;
         }
-        if (temperatureState == IN_RANGE && currentHVACState == HEATER_ON)
+        if (temperatureState == UNDER_TEMPERATURE_IN_RANGE && currentHVACState == HEATER_ON)
         {
             return HEATER_ON;
-        }
-        if (temperatureState == OVER_TEMPERATURE)
-        {
-            return IDLE;
         }
     }
 
-    if (thermostatMode == COOLING)
+    if (mode == COOLING)
     {
         if (temperatureState == OVER_TEMPERATURE)
         {
             return COOLER_ON;
         }
-        if (temperatureState == IN_RANGE && currentHVACState == COOLER_ON)
+        if (temperatureState == OVER_TEMPERATURE_IN_RANGE && currentHVACState == COOLER_ON)
         {
             return COOLER_ON;
-        }
-        if (temperatureState == UNDER_TEMPERATURE)
-        {
-            return IDLE;
         }
     }
 
     return ALL_OFF;
+}
+
+
+ThermostatError Thermostat::update() {
+    // if (!isInitialized())
+    // {
+    //     return THERMOSTAT_ERROR;
+    // }
+
+    double currentTemperature;
+    double currentHumidity;
+
+    environmentSensor->readTemperatureHumidity(&currentTemperature, &currentHumidity);
+
+    TemperatureState temperatureState = temperatureController->checkTemperature(currentTemperature);
+
+    HVACState desiredState = getDesiredHVACState(temperatureState, hvac->getCurrentState());
+
+    hvac->setDesiredState(desiredState);
+
+
+    return THERMOSTAT_OK;
 }
 

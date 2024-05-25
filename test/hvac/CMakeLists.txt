@@ -1,6 +1,5 @@
 
 
-file(GLOB_RECURSE TEST_HVAC_SOURCES ${PROJECT_SOURCE_DIR}/test/hvac/*.cpp)
 file(GLOB_RECURSE HVAC_SOURCES ${PROJECT_SOURCE_DIR}/src/hvac/*.cpp)
 
 if(ON_TARGET)
@@ -35,7 +34,9 @@ else()
 
     add_executable(test-hvac-host
         ${TEST_HVAC_SOURCES}
-        ${HVAC_SOURCES}
+        ${PROJECT_SOURCE_DIR}/src/hvac/hvac.cpp
+        ${PROJECT_SOURCE_DIR}/test/hvac/test_hvac.cpp
+        ${PROJECT_SOURCE_DIR}/test/hvac/test_hvac_main.cpp
         ${PROJECT_SOURCE_DIR}/test/gpio/mock_gpio.cpp
     )
 

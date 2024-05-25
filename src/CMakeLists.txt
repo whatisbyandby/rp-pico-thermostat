@@ -7,6 +7,9 @@ if (ON_TARGET)
         ${PROJECT_SOURCE_DIR}/src/thermostat/*.cpp
         ${PROJECT_SOURCE_DIR}/src/environment_sensor/*.cpp
         ${PROJECT_SOURCE_DIR}/src/i2c_bus/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/gpio/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/hvac/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/temperature_controller/*.cpp
     )
 
     # Add your source files
@@ -21,6 +24,8 @@ if (ON_TARGET)
         temperature_controller
         environment_sensor
         i2c_bus
+        hvac
+        gpio
     )
 
     # Include required libraries
@@ -35,6 +40,9 @@ if (ON_TARGET)
     target_link_libraries(${NAME}
         pico_stdlib
         hardware_i2c
+        pico_explorer
+        pico_graphics
+        st7789
     )
 
     # # create map/bin/hex file etc.

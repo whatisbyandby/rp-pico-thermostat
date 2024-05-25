@@ -12,6 +12,7 @@ typedef enum EnvironmentSensorError {
 class EnvironmentSensor {
     public:
         EnvironmentSensor(I2CDevice *i2cDevice);
+        ~EnvironmentSensor();
 
         EnvironmentSensorError readTemperatureHumidity(double *temperature, double *humidity);
     private:

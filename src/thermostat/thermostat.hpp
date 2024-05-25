@@ -2,12 +2,14 @@
 #define THERMOSTAT_HPP
 
 #include "environment_sensor.hpp"
+#include "temperature_controller.hpp"
+#include "hvac.hpp"
 #include "thermostat_common.hpp"
 
 
 class Thermostat {
     public:
-        Thermostat();
+        Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac);
         ~Thermostat();
 
         ThermostatError initialize();
@@ -17,15 +19,25 @@ class Thermostat {
         ThermostatError setTemperatureUnits(TemperatureUnits temperatureUnits);
         TemperatureUnits getTemperatureUnits();
 
-        HVACState getDesiredHVACState(TemperatureState temperatureState, ThermostatMode thermostatMode, HVACState currentHVACState);
+        HVACState getDesiredHVACState(TemperatureState temperatureState, HVACState currentHVACState);
+
+        ThermostatMode getMode();
+        ThermostatError setMode(ThermostatMode mode);
+
+        double getTemperatureInStandardUnits(double temperature);
+        double getTemperatureInCurrentUnits(double temperatureInStandardUnits);
+
+        ThermostatError update();
 
     
     private:
-        double targetTemperature;
         TemperatureUnits temperatureUnits;
-        double getTemperatureInStandardUnits(double temperature);
-        double getTemperatureInCurrentUnits(double temperatureInStandardUnits);
+        
+        ThermostatMode mode;
         bool initalized;
+        EnvironmentSensor *environmentSensor;
+        TemperatureController *temperatureController;
+        HVAC *hvac;
         
 };
 

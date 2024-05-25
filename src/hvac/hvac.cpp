@@ -1,7 +1,11 @@
 #include "hvac.hpp"
 
-HVAC::HVAC() {
-
+HVAC::HVAC(Switch *heater, Switch *ac, Switch *fan)
+{
+    this->heater = heater;
+    this->ac = ac;
+    this->fan = fan;
+    currentState = ALL_OFF;
 }
 
 HVACState HVAC::readCurrentState() {
@@ -16,7 +20,7 @@ HVACState HVAC::readCurrentState() {
     } else if (fanState) {
         return FAN_ON;
     } else {
-        return IDLE;
+        return ALL_OFF;
     }
 }
 
@@ -26,7 +30,7 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         return THERMOSTAT_OK;
     }
 
-    if (state == IDLE) {
+    if (state == ALL_OFF) {
         heater->turnOff();
         ac->turnOff();
         fan->turnOff();
@@ -40,7 +44,6 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         ac->turnOff();
         fan->turnOff();
         currentState = readCurrentState();
-        // currentState = state;
         return THERMOSTAT_OK;
     }
 
@@ -49,7 +52,6 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         ac->turnOn();
         fan->turnOff();
         currentState = readCurrentState();
-        // currentState = state;
         return THERMOSTAT_OK;
     }
 
@@ -58,26 +60,17 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         ac->turnOff();
         fan->turnOn();
         currentState = readCurrentState();
-        // currentState = state;
         return THERMOSTAT_OK;
     }
 
+    heater->turnOff();
+    ac->turnOff();
+    fan->turnOff();
+    currentState = readCurrentState();
     return THERMOSTAT_ERROR;
 }
 
 HVACState HVAC::getCurrentState() {
     return currentState;
-}
-
-void HVAC::setHeater(Switch *heater) {
-    this->heater = heater;
-}
-
-void HVAC::setAC(Switch *ac) {
-    this->ac = ac;
-}
-
-void HVAC::setFan(Switch *fan) {
-    this->fan = fan;
 }
 

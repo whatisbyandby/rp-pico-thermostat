@@ -68,9 +68,15 @@ TemperatureState TemperatureController::checkTemperature(double currentTemperatu
     {
         return UNDER_TEMPERATURE;
     }
-    else if (currentTemperature > targetTemperature + temperatureRange)
+    if (currentTemperature < targetTemperature) {
+        return UNDER_TEMPERATURE_IN_RANGE;
+    }
+    if (currentTemperature > targetTemperature + temperatureRange)
     {
         return OVER_TEMPERATURE;
+    }
+    if (currentTemperature > targetTemperature) {
+        return OVER_TEMPERATURE_IN_RANGE;
     }
     return IN_RANGE;
 }

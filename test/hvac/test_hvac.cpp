@@ -14,14 +14,10 @@ TEST_GROUP(HVACTestGroup)
 {
     void setup()
     {
-        hvac = new HVAC();
         heater = new Switch(1);
         ac = new Switch(2);
         fan = new Switch(3);
-
-        hvac->setHeater(heater);
-        hvac->setAC(ac);
-        hvac->setFan(fan);
+        hvac = new HVAC(heater, ac, fan);
     }
 
     void teardown()
@@ -36,7 +32,7 @@ TEST_GROUP(HVACTestGroup)
 
 TEST(HVACTestGroup, HVACConstructor)
 {
-    HVAC *testHvac = new HVAC();
+    HVAC *testHvac = new HVAC(NULL, NULL, NULL);
 
     delete testHvac;
     
@@ -57,7 +53,7 @@ TEST(HVACTestGroup, SetHeaterOn)
     CHECK_EQUAL(HEATER_ON, hvac->getCurrentState());
 }
 
-TEST(HVACTestGroup, SetIdleMode)
+TEST(HVACTestGroup, SetAllOffMode)
 {
     mock().expectOneCall("Switch::turnOff").onObject(heater);
     mock().expectOneCall("Switch::turnOff").onObject(ac);
@@ -67,6 +63,34 @@ TEST(HVACTestGroup, SetIdleMode)
     mock().expectOneCall("Switch::isOn").onObject(ac).andReturnValue(false);
     mock().expectOneCall("Switch::isOn").onObject(fan).andReturnValue(false);
 
-    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(IDLE));
-    CHECK_EQUAL(IDLE, hvac->getCurrentState());
+    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(ALL_OFF));
+    CHECK_EQUAL(ALL_OFF, hvac->getCurrentState());
+}
+
+TEST(HVACTestGroup, SetFanMode)
+{
+    mock().expectOneCall("Switch::turnOff").onObject(heater);
+    mock().expectOneCall("Switch::turnOff").onObject(ac);
+    mock().expectOneCall("Switch::turnOn").onObject(fan);
+
+    mock().expectOneCall("Switch::isOn").onObject(heater).andReturnValue(false);
+    mock().expectOneCall("Switch::isOn").onObject(ac).andReturnValue(false);
+    mock().expectOneCall("Switch::isOn").onObject(fan).andReturnValue(true);
+
+    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(FAN_ON));
+    CHECK_EQUAL(FAN_ON, hvac->getCurrentState());
+}
+
+TEST(HVACTestGroup, SetCoolerMode)
+{
+    mock().expectOneCall("Switch::turnOff").onObject(heater);
+    mock().expectOneCall("Switch::turnOn").onObject(ac);
+    mock().expectOneCall("Switch::turnOff").onObject(fan);
+
+    mock().expectOneCall("Switch::isOn").onObject(heater).andReturnValue(false);
+    mock().expectOneCall("Switch::isOn").onObject(ac).andReturnValue(true);
+    mock().expectOneCall("Switch::isOn").onObject(fan).andReturnValue(false);
+
+    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(COOLER_ON));
+    CHECK_EQUAL(COOLER_ON, hvac->getCurrentState());
 }

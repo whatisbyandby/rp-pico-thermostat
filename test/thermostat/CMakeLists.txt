@@ -9,6 +9,7 @@ if(ON_TARGET)
         ${TEST_THERMOSTAT_SOURCES}
         ${THERMOSTAT_SOURCES}
         ${PROJECT_SOURCE_DIR}/test/environment_sensor/mock_environment_sensor.cpp
+        ${PROJECT_SOURCE_DIR}/test/hvac/mock_hvac.cpp
     )
 
     target_compile_definitions(test-thermostat-target PRIVATE ON_TARGET=1)
@@ -37,6 +38,9 @@ else()
         ${TEST_THERMOSTAT_SOURCES}
         ${THERMOSTAT_SOURCES}
         ${PROJECT_SOURCE_DIR}/test/environment_sensor/mock_environment_sensor.cpp
+        ${PROJECT_SOURCE_DIR}/src/temperature_controller/temperature_controller.cpp
+        ${PROJECT_SOURCE_DIR}/test/hvac/mock_hvac.cpp
+
     )
 
     target_compile_definitions(test-thermostat-host PRIVATE ON_TARGET=0)
@@ -44,8 +48,11 @@ else()
     target_include_directories(test-thermostat-host PRIVATE
         ${PROJECT_SOURCE_DIR}/src/thermostat
         ${PROJECT_SOURCE_DIR}/src/environment_sensor
+        ${PROJECT_SOURCE_DIR}/src/temperature_controller
         ${PROJECT_SOURCE_DIR}/src/i2c_bus
         ${PROJECT_SOURCE_DIR}/src/common
+        ${PROJECT_SOURCE_DIR}/src/hvac
+        ${PROJECT_SOURCE_DIR}/src/gpio
     )
 
     target_link_libraries(test-thermostat-host
