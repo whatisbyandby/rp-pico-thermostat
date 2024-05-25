@@ -54,6 +54,11 @@ jobs:
 
     runs-on: ${{matrix.os}}
 
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+
     env:
       PICO_SDK_PATH: $GITHUB_WORKSPACE/pico-sdk
       PIMORONI_PICO_LIBS: $GITHUB_WORKSPACE/pimoroni-pico
