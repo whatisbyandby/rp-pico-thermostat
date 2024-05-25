@@ -1,13 +1,13 @@
 
 
-file(GLOB_RECURSE HVAC_SOURCES ${PROJECT_SOURCE_DIR}/src/hvac/*.cpp)
-
 if(ON_TARGET)
 
     add_executable(test-hvac-target
-        ${TEST_HVAC_SOURCES}
-        ${HVAC_SOURCES}
         ${PROJECT_SOURCE_DIR}/test/gpio/mock_gpio.cpp
+        ${PROJECT_SOURCE_DIR}/src/hvac/hvac.cpp
+        ${PROJECT_SOURCE_DIR}/test/hvac/test_hvac.cpp
+        ${PROJECT_SOURCE_DIR}/test/hvac/test_hvac_main.cpp
+
     )
 
     target_compile_definitions(test-hvac-target PRIVATE ON_TARGET=1)
@@ -17,6 +17,7 @@ if(ON_TARGET)
         ${PROJECT_SOURCE_DIR}/src/environment_sensor
         ${PROJECT_SOURCE_DIR}/src/i2c_bus
         ${PROJECT_SOURCE_DIR}/src/common
+        ${PROJECT_SOURCE_DIR}/src/gpio
     )
 
     target_link_libraries(test-hvac-target

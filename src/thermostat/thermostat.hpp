@@ -29,6 +29,8 @@ class Thermostat {
 
         ThermostatError update();
 
+        void printState();
+
     
     private:
         TemperatureUnits temperatureUnits;
@@ -38,6 +40,9 @@ class Thermostat {
         EnvironmentSensor *environmentSensor;
         TemperatureController *temperatureController;
         HVAC *hvac;
+
+        double currentTemperature;
+        double currentHumidity;
         
 };
 

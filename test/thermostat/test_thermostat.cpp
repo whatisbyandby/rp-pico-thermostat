@@ -37,6 +37,7 @@ TEST(ThermostatTestGroup, ThermostatConstructor)
 
    CHECK_EQUAL(FAHRENHEIT, thermostat->getTemperatureUnits());
    CHECK_FALSE(thermostat->isInitialized());
+   CHECK_EQUAL(OFF, thermostat->getMode());
 
    delete thermostatConstructor;
 }

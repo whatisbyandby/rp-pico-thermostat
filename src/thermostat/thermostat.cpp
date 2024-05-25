@@ -1,12 +1,14 @@
 #include "thermostat.hpp"
 #include "thermostat_common.hpp"
 #include <cstddef>
+#include <iostream>
 
 
 Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac)
 {
     temperatureUnits = FAHRENHEIT;
     initalized = false;
+    mode = OFF;
 
     this->environmentSensor = environmentSensor;
     this->temperatureController = temperatureController;
@@ -128,8 +130,6 @@ ThermostatError Thermostat::update() {
     //     return THERMOSTAT_ERROR;
     // }
 
-    double currentTemperature;
-    double currentHumidity;
 
     environmentSensor->readTemperatureHumidity(&currentTemperature, &currentHumidity);
 
@@ -143,3 +143,13 @@ ThermostatError Thermostat::update() {
     return THERMOSTAT_OK;
 }
 
+void Thermostat::printState() {
+    std::cout << std::endl;
+    std::cout << "Current Temperature: " << getTemperatureInCurrentUnits(currentTemperature) << std::endl;
+    std::cout << "Target Temperature " << getTemperatureInCurrentUnits(temperatureController->getTargetTemperature()) << std::endl;
+    std::cout << "Current Humidity: " << currentHumidity << std::endl;
+    std::cout << "Current HVAC State: " <<  hvacStateToString(hvac->getCurrentState()) << std::endl;
+    std::cout << "Current Thermostat Mode: " << thermostatModeToString(mode) << std::endl;
+    std::cout << "Current Temperature Units: " << temperatureUnitsToString(temperatureUnits) << std::endl;
+    std::cout << std::endl;
+}
