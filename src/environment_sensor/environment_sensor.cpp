@@ -5,6 +5,10 @@ EnvironmentSensor::EnvironmentSensor(I2CDevice *i2cDevice)
     this->i2cDevice = i2cDevice;
 }
 
+EnvironmentSensor::~EnvironmentSensor()
+{
+}
+
 EnvironmentSensorError EnvironmentSensor::readTemperatureHumidity(double *temperature, double *humidity)
 {
     uint8_t write_data[3] = {0xAC, 0x33, 0x00};
