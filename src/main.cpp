@@ -5,6 +5,7 @@
 #include "thermostat.hpp"
 #include "temperature_controller.hpp"
 #include "thermostat_common.hpp"
+#include "pins.h"
 #include "gpio.hpp"
 #include <iostream>
 
@@ -20,11 +21,11 @@ int main()
     TemperatureController temperatureController;
 
 
-    Switch switch1(1);
-    Switch switch2(2);
-    Switch switch3(3);
+    Switch heater(HEATER_PIN);
+    Switch cooler(COOLER_PIN);
+    Switch fan(FAN_PIN);
 
-    HVAC hvac(&switch1, &switch2, &switch3);
+    HVAC hvac(&heater, &cooler, &fan);
 
     Thermostat thermostat(&environmentSensor, &temperatureController, &hvac);
 

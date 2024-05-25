@@ -1,16 +1,5 @@
 #include "pico/stdlib.h"
 #include "gpio.hpp"
-// class Switch {
-//     public:
-//         Switch(int pin);
-//         ~Switch();
-//         void turnOn();
-//         void turnOff();
-//         bool isOn();
-//     private:
-//         int pin;
-//         bool state;
-// };
 
 Switch::Switch(int pin) {
 
