@@ -40,4 +40,4 @@ else()
     target_compile_definitions(test-hvac PRIVATE ON_TARGET=0)
 endif()
 
-add_test(NAME TestHvac COMMAND test-hvac-host)
+add_test(NAME TestHvac COMMAND test-hvac)
