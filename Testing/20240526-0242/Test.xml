@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20240526-0242-Experimental"
+	Name="(empty)"
+	Generator="ctest-3.25.1"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="Linux"
+	Hostname="perky-dev-pi"
+	OSRelease="6.6.28+rpt-rpi-v8"
+	OSVersion="#1 SMP PREEMPT Debian 1:6.6.28-1+rpt1 (2024-04-22)"
+	OSPlatform="aarch64"
+	Is64Bits="1"
+	VendorString=""
+	VendorID="Unknown Manufacturer"
+	FamilyID="8"
+	ModelID="0"
+	ProcessorCacheSize="0"
+	NumberOfLogicalCPU="4"
+	NumberOfPhysicalCPU="1"
+	TotalVirtualMemory="99"
+	TotalPhysicalMemory="7810"
+	LogicalProcessorsPerPhysical="4"
+	ProcessorClockFrequency="0"
+	>
+	<Testing>
+		<StartDateTime>May 25 20:42 MDT</StartDateTime>
+		<StartTestTime>1716691325</StartTestTime>
+		<TestList/>
+		<EndDateTime>May 25 20:42 MDT</EndDateTime>
+		<EndTestTime>1716691325</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

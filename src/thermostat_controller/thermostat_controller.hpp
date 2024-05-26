@@ -1,4 +1,5 @@
 #include "thermostat.hpp"
+#include "gpio.hpp"
 
 enum ThermostatCommandType {
     SET_TARGET_TEMPERATURE,
@@ -15,9 +16,11 @@ struct ThermostatCommand {
 class ThermostatController {
 
     public: 
-        ThermostatController(Thermostat *thermostat);
+        ThermostatController(Thermostat *thermostat, Button *upButton);
         ThermostatError executeCommand(ThermostatCommand *command);
+        ThermostatError update();
 
     private:
         Thermostat *thermostat;
+        Button *upButton;
 };

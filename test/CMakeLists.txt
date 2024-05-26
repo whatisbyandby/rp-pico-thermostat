@@ -1,10 +1,4 @@
 
-# Include CTest
-include(CTest)
-
-# Enable testing
-enable_testing()
-
 # CppUTest
 include(FetchContent)
 FetchContent_Declare(

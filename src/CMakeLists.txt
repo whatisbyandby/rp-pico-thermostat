@@ -51,7 +51,7 @@ if (ON_TARGET)
     # # Set up files for the release packages
     install(FILES
         ${CMAKE_CURRENT_BINARY_DIR}/${NAME}.uf2
-        ${CMAKE_CURRENT_LIST_DIR}/README.md
+        ${PROJECT_SOURCE_DIR}/README.md
         DESTINATION .
     )
 

@@ -39,7 +39,10 @@ jobs:
         run: cmake --build build --config Release
 
       - name: Run tests
-        run: cd build/test && ctest --output-on-failure
+        working-directory: ${{github.workspace}}/build/test
+        shell: bash
+        run: | 
+          ctest --output-on-failure
         
   build_target:
     name: ${{matrix.name}}

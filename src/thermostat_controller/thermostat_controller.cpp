@@ -1,8 +1,11 @@
 #include "thermostat_controller.hpp"
 
-ThermostatController::ThermostatController(Thermostat *thermostat)
+
+
+ThermostatController::ThermostatController(Thermostat *thermostat, Button *upButton)
 {
     this->thermostat = thermostat;
+    this->upButton = upButton;
 }
 
 ThermostatError ThermostatController::executeCommand(ThermostatCommand *command)
@@ -19,4 +22,8 @@ ThermostatError ThermostatController::executeCommand(ThermostatCommand *command)
             return THERMOSTAT_ERROR;
             
     }
+}
+
+ThermostatError ThermostatController::update() {
+
 }

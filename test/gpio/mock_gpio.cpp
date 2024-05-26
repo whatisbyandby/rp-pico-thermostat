@@ -21,3 +21,27 @@ void Switch::turnOff() {
 bool Switch::isOn() {
    return mock().actualCall("Switch::isOn").onObject(this).returnBoolValue();
 }
+
+
+Button::Button(int pin) {
+    this->pin = pin;
+    this->numOfPresses = 0;
+}
+
+Button::~Button() {
+    // nothing to do
+}
+
+bool Button::isPressed() {
+    return mock()
+        .actualCall("Button::isPressed")
+        .onObject(this)
+        .returnBoolValue();
+}
+
+int Button::readNumberOfPresses() {
+    return mock()
+        .actualCall("Button::readNumberOfPresses")
+        .onObject(this)
+        .returnIntValue();
+}

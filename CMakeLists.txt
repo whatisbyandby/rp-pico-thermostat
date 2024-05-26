@@ -25,6 +25,12 @@ project(${NAME} C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+# Include CTest
+include(CTest)
+
+# Enable testing
+enable_testing()
+
 
 add_subdirectory(src)
 add_subdirectory(test)

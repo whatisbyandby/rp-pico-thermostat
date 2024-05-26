@@ -14,4 +14,16 @@ class Switch {
         bool state;
 };
 
+class Button {
+    public:
+        Button(int pin);
+        ~Button();
+        bool isPressed();
+        int readNumberOfPresses();
+    private:
+        int pin;
+        int numOfPresses;
+};
+
+
 #endif

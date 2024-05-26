@@ -4,6 +4,7 @@
 
 static Thermostat *thermostat;
 static ThermostatController *thermostatController;
+static Button *upButton;
 
 
 TEST_GROUP(ThermostatControllerTestGroup)
@@ -11,7 +12,8 @@ TEST_GROUP(ThermostatControllerTestGroup)
     void setup()
     {
         thermostat = new Thermostat(NULL, NULL, NULL);
-        thermostatController = new ThermostatController(thermostat);
+        upButton = new Button(1);
+        thermostatController = new ThermostatController(thermostat, upButton);
     }
 
     void teardown()
@@ -19,17 +21,19 @@ TEST_GROUP(ThermostatControllerTestGroup)
         mock().clear();
         delete thermostatController;
         delete thermostat;
+        delete upButton;
     }
 };
 
 TEST(ThermostatControllerTestGroup, TestThermostatControllerConstructor) {
 
     Thermostat *testThermostat = new Thermostat(NULL, NULL, NULL);
-
-    ThermostatController *testController = new ThermostatController(testThermostat);
+    Button *testButton = new Button(1);
+    ThermostatController *testController = new ThermostatController(testThermostat, testButton);
 
     delete testController;
     delete testThermostat;
+    delete testButton;
 }
 
 TEST(ThermostatControllerTestGroup, ExecuteCommandSetTemperature_Valid) {
@@ -86,4 +90,10 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetMode_Invalid) {
         .withParameter("mode", 47).andReturnValue(THERMOSTAT_INVALID_INPUT);
 
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_INVALID_INPUT, thermostatController->executeCommand(&validCommand));
+}
+
+TEST(ThermostatControllerTestGroup, update) {
+
+   
+
 }

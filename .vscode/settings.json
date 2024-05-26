@@ -1,8 +1,5 @@
 {
     "cmake.buildDirectory": "${workspaceFolder}/build/${buildKitTargetArch}",
-    "cmake.ctestArgs": [
-        "--test-dir", "${workspaceFolder}/build/${buildKitTargetArch}/test"
-    ],
     "cmake.configureSettings": {
         "PIMORONI_PICO_PATH": "/home/scott/Documents/pimoroni-pico",
         "TARGET_ARCH": "${buildKitTargetArch}"

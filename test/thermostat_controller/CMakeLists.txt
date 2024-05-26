@@ -2,7 +2,10 @@
 
 file(GLOB TEST_SOURCE ${PROJECT_SOURCE_DIR}/test/thermostat_controller/*.cpp)
 file(GLOB SOURCE ${PROJECT_SOURCE_DIR}/src/thermostat_controller/*.cpp)
-file(GLOB MOCK_SOURCE ${PROJECT_SOURCE_DIR}/test/thermostat/mock_thermostat.cpp)
+file(GLOB MOCK_SOURCE 
+    ${PROJECT_SOURCE_DIR}/test/thermostat/mock_thermostat.cpp
+    ${PROJECT_SOURCE_DIR}/test/gpio/mock_gpio.cpp
+)
 
 
 add_executable(test-thermostat-controller
