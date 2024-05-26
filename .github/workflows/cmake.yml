@@ -66,7 +66,7 @@ jobs:
       PICO_SDK_PATH: $GITHUB_WORKSPACE/pico-sdk
       PIMORONI_PICO_LIBS: $GITHUB_WORKSPACE/pimoroni-pico
       RELEASE_FILE: ${{github.event.repository.name}}-${{github.event.release.tag_name}}
-      COMMIT_FILE: ${{github.event.repository.name}}-${{github.sha}}
+      COMMIT_FILE: ${{github.event.repository.name}}-${{github.ref}}
 
     steps:
     - name: Checkout Code
@@ -96,18 +96,23 @@ jobs:
         sudo apt update && sudo apt install ${{matrix.apt-packages}}
 
     - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
+      run: cmake -E make_directory ${{github.workspace}}/build
 
     - name: Configure CMake
       shell: bash
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{github.workspace}}/build
       run: cmake $GITHUB_WORKSPACE/project -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DON_TARGET=ON -DCPACK_PACKAGE_FILE_NAME=${{env.RELEASE_FILE}} ${{matrix.cmake-args}}
 
     - name: Build
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{github.workspace}}/build
       shell: bash
       run: |
         cmake --build . --config $BUILD_TYPE -j 2
+
+    - name: Debug Archive
+      shell: bash
+      run: |
+        ls -la ${{github.workspace}}/build
 
     - name: Archive Build
       uses: actions/upload-artifact@v4
@@ -118,7 +123,7 @@ jobs:
 
     - name: Build Release Packages
       if: github.event_name == 'release'
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{github.workspace}}/build
       shell: bash
       run: |
         cmake --build . --config $BUILD_TYPE --target package -j 2
@@ -129,7 +134,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
-        asset_path: ${{runner.workspace}}/build/${{env.RELEASE_FILE}}.zip
+        asset_path: ${{github.workspace}}/build/${{env.RELEASE_FILE}}.zip
         upload_url: ${{github.event.release.upload_url}}
         asset_name: ${{env.RELEASE_FILE}}.zip
         asset_content_type: application/zip
@@ -140,7 +145,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
-        asset_path: ${{runner.workspace}}/build/${{env.RELEASE_FILE}}.tar.gz
+        asset_path: ${{github.workspace}}/build/${{env.RELEASE_FILE}}.tar.gz
         upload_url: ${{github.event.release.upload_url}}
         asset_name: ${{env.RELEASE_FILE}}.tar.gz
         asset_content_type: application/octet-stream
