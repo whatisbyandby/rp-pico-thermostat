@@ -66,6 +66,7 @@ jobs:
       PICO_SDK_PATH: $GITHUB_WORKSPACE/pico-sdk
       PIMORONI_PICO_LIBS: $GITHUB_WORKSPACE/pimoroni-pico
       RELEASE_FILE: ${{github.event.repository.name}}-${{github.event.release.tag_name}}
+      COMMIT_FILE: ${{github.event.repository.name}}-${{github.sha}}
 
     steps:
     - name: Checkout Code
@@ -107,6 +108,12 @@ jobs:
       shell: bash
       run: |
         cmake --build . --config $BUILD_TYPE -j 2
+
+    - name: Archive Build
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{env.COMMIT_FILE}}.uf2
+        path: ${{github.workspace}}/build/src/pico-thermostat.uf2
 
     - name: Build Release Packages
       if: github.event_name == 'release'
