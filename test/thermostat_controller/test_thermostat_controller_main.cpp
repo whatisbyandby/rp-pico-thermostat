@@ -19,9 +19,5 @@ int main(int ac, char** av)
 {  
    setup();
 
-   int num = 2;
-   const char* args[2] = {"", "-c"};
-
-
-   return CommandLineTestRunner::RunAllTests(num, args);
+   return CommandLineTestRunner::RunAllTests(ac, av);
 }

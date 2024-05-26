@@ -1,6 +1,8 @@
 {
+    "cmake.buildDirectory": "${workspaceFolder}/build/${buildKitTargetArch}",
     "cmake.configureSettings": {
-        // "PICO_SDK_PATH": "../../pico-sdk" // <-- Set this if you've not set ${env:PICO_SDK_PATH}
+        "PIMORONI_PICO_PATH": "/home/scott/Documents/pimoroni-pico",
+        "TARGET_ARCH": "${buildKitTargetArch}"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "files.associations": {

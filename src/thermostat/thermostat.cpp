@@ -55,8 +55,24 @@ ThermostatMode Thermostat::getMode()
 
 ThermostatError Thermostat::setMode(ThermostatMode newMode)
 {
+
+    ThermostatError err = validateThermostatMode(newMode);
+    if (err != THERMOSTAT_OK)
+    {
+        return err;
+    }
     mode = newMode;
     return THERMOSTAT_OK;
+}
+
+ThermostatError Thermostat::setTargetTemperature(double targetTemperature) {
+    double temperatureInStandardUnits = getTemperatureInStandardUnits(targetTemperature);
+    return temperatureController->setTargetTemperature(temperatureInStandardUnits);
+}
+
+double Thermostat::getTargetTemperature() {
+    double temperatureInStandardUnits = temperatureController->getTargetTemperature();
+    return getTemperatureInCurrentUnits(temperatureInStandardUnits);
 }
 
 

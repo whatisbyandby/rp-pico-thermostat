@@ -55,6 +55,32 @@ TEST(ThermostatTestGroup, ThermostatInitalize_NULL){
    delete testInitalize;
 }
 
+TEST(ThermostatTestGroup, UpdateTargetTemperatureCelsius) {
+   thermostat->setTemperatureUnits(CELSIUS);
+
+   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setTargetTemperature(25.0));
+   DOUBLES_EQUAL(25.0, thermostat->getTargetTemperature(), 0.01);
+
+   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(9.0));
+   DOUBLES_EQUAL(25.0, thermostat->getTargetTemperature(), 0.01);
+
+   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(31.0));
+   DOUBLES_EQUAL(25.0, thermostat->getTargetTemperature(), 0.01);
+}
+
+TEST(ThermostatTestGroup, UpdateTargetTemperatureFAHRENHEIT) {
+   thermostat->setTemperatureUnits(FAHRENHEIT);
+
+   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setTargetTemperature(60.0));
+   DOUBLES_EQUAL(60.0, thermostat->getTargetTemperature(), 0.01);
+
+   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(48.0));
+   DOUBLES_EQUAL(60.0, thermostat->getTargetTemperature(), 0.01);
+
+   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(88.0));
+   DOUBLES_EQUAL(60.0, thermostat->getTargetTemperature(), 0.01);
+}
+
 
 TEST(ThermostatTestGroup, UpdateTemperatureUnits)
 {
@@ -63,6 +89,26 @@ TEST(ThermostatTestGroup, UpdateTemperatureUnits)
 
    CHECK_EQUAL(THERMOSTAT_OK, thermostat->setTemperatureUnits(FAHRENHEIT));
    CHECK_EQUAL(FAHRENHEIT, thermostat->getTemperatureUnits());
+}
+
+TEST(ThermostatTestGroup, UpdateMode_Valid) {
+   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setMode(HEATING));
+   CHECK_EQUAL(HEATING, thermostat->getMode());
+
+   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setMode(COOLING));
+   CHECK_EQUAL(COOLING, thermostat->getMode());
+
+   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setMode(FAN_ONLY));
+   CHECK_EQUAL(FAN_ONLY, thermostat->getMode());
+
+   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setMode(OFF));
+   CHECK_EQUAL(OFF, thermostat->getMode());
+}
+
+TEST(ThermostatTestGroup, UpdateMode_Invalid) {
+   int badValue = 47;
+   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setMode((ThermostatMode) badValue));
+   CHECK_EQUAL(OFF, thermostat->getMode());
 }
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeHeating) {

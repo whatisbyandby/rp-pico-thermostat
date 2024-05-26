@@ -21,16 +21,7 @@ add_subdirectory(thermostat)
 add_subdirectory(temperature_controller)
 add_subdirectory(environment_sensor)
 add_subdirectory(hvac)
+add_subdirectory(thermostat_controller)
 
 
-    # Custom target to build all tests
-add_custom_target(build_tests
-    DEPENDS test-thermostat # Add all your test executables here
-)
-
-    # Custom target to run all tests
-add_custom_target(run_tests
-    COMMAND ${CMAKE_COMMAND} -E env bash ${CMAKE_SOURCE_DIR}/run_tests.sh ${TEST_EXECUTABLES_DIR}
-    DEPENDS build_tests
-)
 

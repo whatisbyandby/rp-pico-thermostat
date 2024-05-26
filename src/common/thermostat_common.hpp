@@ -1,10 +1,11 @@
 #ifndef THERMOSTAT_COMMON_HPP
 #define THERMOSTAT_COMMON_HPP
 
+
 typedef enum ThermostatError {
+    THERMOSTAT_OK = 0,
     THERMOSTAT_ERROR,
     THERMOSTAT_INVALID_INPUT,
-    THERMOSTAT_OK
 } ThermostatError;
 
 inline const char *thermostatErrorToString(ThermostatError error)
@@ -80,6 +81,21 @@ typedef enum ThermostatMode {
     ERROR,
     OFF
 } ThermostatMode;
+
+inline ThermostatError validateThermostatMode(ThermostatMode mode)
+{
+    switch (mode)
+    {
+    case HEATING:
+    case COOLING:
+    case FAN_ONLY:
+    case ERROR:
+    case OFF:
+        return THERMOSTAT_OK;
+    default:
+        return THERMOSTAT_INVALID_INPUT;
+    }
+}
 
 inline const char *thermostatModeToString(ThermostatMode mode)
 {

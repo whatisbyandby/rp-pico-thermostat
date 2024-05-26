@@ -24,6 +24,11 @@ class Thermostat {
         ThermostatMode getMode();
         ThermostatError setMode(ThermostatMode mode);
 
+        ThermostatError setTargetTemperature(double targetTemperature);
+        double getTargetTemperature();
+
+
+
         double getTemperatureInStandardUnits(double temperature);
         double getTemperatureInCurrentUnits(double temperatureInStandardUnits);
 
