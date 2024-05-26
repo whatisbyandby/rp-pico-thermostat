@@ -97,7 +97,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE/project -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCPACK_PACKAGE_FILE_NAME=${{env.RELEASE_FILE}} ${{matrix.cmake-args}}
+      run: cmake $GITHUB_WORKSPACE/project -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DON_TARGET=ON -DCPACK_PACKAGE_FILE_NAME=${{env.RELEASE_FILE}} ${{matrix.cmake-args}}
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
