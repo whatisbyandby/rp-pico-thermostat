@@ -22,6 +22,7 @@ TEST_GROUP(ThermostatTestGroup)
 
    void teardown()
    {
+      mock().checkExpectations();
       mock().clear();
       delete thermostat;
       delete environmentSensor;

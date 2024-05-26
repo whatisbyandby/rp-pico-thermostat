@@ -18,6 +18,7 @@ TEST_GROUP(ThermostatControllerTestGroup)
 
     void teardown()
     {
+        mock().checkExpectations();
         mock().clear();
         delete thermostatController;
         delete thermostat;
@@ -92,8 +93,11 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetMode_Invalid) {
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_INVALID_INPUT, thermostatController->executeCommand(&validCommand));
 }
 
-TEST(ThermostatControllerTestGroup, update) {
-
-   
-
+TEST(ThermostatControllerTestGroup, update_UpButtonPressed) {
+    
+        mock().expectOneCall("Button::readNumberOfPresses").onObject(upButton).andReturnValue(2);
+        mock().expectOneCall("Thermostat::getTargetTemperature").andReturnValue(25.0);
+        mock().expectOneCall("Thermostat::setTargetTemperature").withParameter("targetTemperature", 26.0).andReturnValue(THERMOSTAT_OK);
+    
+        ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_OK, thermostatController->update());
 }

@@ -26,16 +26,12 @@ HVACState HVAC::readCurrentState() {
 
 ThermostatError HVAC::setDesiredState(HVACState state) {
 
-    if (state == currentState) {
-        return THERMOSTAT_OK;
-    }
 
     if (state == ALL_OFF) {
         heater->turnOff();
         ac->turnOff();
         fan->turnOff();
         currentState = readCurrentState();
-        // currentState = state;
         return THERMOSTAT_OK;
     } 
 

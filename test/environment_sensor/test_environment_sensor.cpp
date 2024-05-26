@@ -18,11 +18,12 @@ TEST_GROUP(EnvironmentSensorTestGroup)
     }
 
     void teardown()
-    {
+    {   
+        mock().checkExpectations();
+        mock().clear();
         delete environmentSensor;
         delete i2cDevice;
         delete i2cBus;
-        mock().clear();
     }
 };
 
@@ -61,6 +62,4 @@ TEST(EnvironmentSensorTestGroup, EnvironmentSensorReadTemperature) {
 
     DOUBLES_EQUAL(20.0, temperatureReading, 0.01);
     DOUBLES_EQUAL(50.0, humidityReading, 0.01);
-
-    mock().checkExpectations();
 }

@@ -25,5 +25,11 @@ ThermostatError ThermostatController::executeCommand(ThermostatCommand *command)
 }
 
 ThermostatError ThermostatController::update() {
-
+    int numberOfPresses = upButton->readNumberOfPresses();
+    if (numberOfPresses > 0) {
+        double targetTemperature = thermostat->getTargetTemperature();
+        targetTemperature += temperatureStep * numberOfPresses;
+        return thermostat->setTargetTemperature(targetTemperature);
+    }
+    return THERMOSTAT_OK;
 }

@@ -2,7 +2,6 @@
 #include "CppUTest/CommandLineTestRunner.h"
 
 
-
 #if ON_TARGET
 
    #include "pico/stdlib.h"

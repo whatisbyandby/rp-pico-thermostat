@@ -3,7 +3,7 @@
 #include "hvac.hpp"
 #include "thermostat_common.hpp"
 #include "gpio.hpp"
-#include <CppUTestExt/MockExpectedCall.h>
+
 
 static HVAC *hvac;
 static Switch *heater;
@@ -22,11 +22,12 @@ TEST_GROUP(HVACTestGroup)
 
     void teardown()
     {
+        mock().checkExpectations();
+        mock().clear();
         delete hvac;
         delete heater;
         delete ac;
         delete fan;
-        mock().clear();
     }
 };
 
@@ -35,9 +36,7 @@ TEST(HVACTestGroup, HVACConstructor)
     HVAC *testHvac = new HVAC(NULL, NULL, NULL);
 
     delete testHvac;
-    
 }
-
 
 TEST(HVACTestGroup, SetHeaterOn)
 {
@@ -55,6 +54,7 @@ TEST(HVACTestGroup, SetHeaterOn)
 
 TEST(HVACTestGroup, SetAllOffMode)
 {
+
     mock().expectOneCall("Switch::turnOff").onObject(heater);
     mock().expectOneCall("Switch::turnOff").onObject(ac);
     mock().expectOneCall("Switch::turnOff").onObject(fan);
@@ -69,6 +69,7 @@ TEST(HVACTestGroup, SetAllOffMode)
 
 TEST(HVACTestGroup, SetFanMode)
 {
+
     mock().expectOneCall("Switch::turnOff").onObject(heater);
     mock().expectOneCall("Switch::turnOff").onObject(ac);
     mock().expectOneCall("Switch::turnOn").onObject(fan);

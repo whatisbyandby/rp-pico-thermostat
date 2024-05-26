@@ -36,6 +36,12 @@ ThermostatError Thermostat::setTargetTemperature(double targetTemperature) {
         .returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
+double Thermostat::getTargetTemperature() {
+    return mock()
+        .actualCall("Thermostat::getTargetTemperature")
+        .returnDoubleValueOrDefault(0.0);
+}
+
 HVACState Thermostat::getDesiredHVACState(TemperatureState temperatureState, HVACState currentHVACState) {
     return (HVACState) mock()
         .actualCall("Thermostat::getDesiredHVACState")

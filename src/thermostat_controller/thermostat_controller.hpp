@@ -23,4 +23,5 @@ class ThermostatController {
     private:
         Thermostat *thermostat;
         Button *upButton;
+        float temperatureStep = 0.5;
 };
