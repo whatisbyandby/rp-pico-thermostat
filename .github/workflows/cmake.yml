@@ -113,7 +113,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{env.COMMIT_FILE}}.uf2
-        path: build/src/pico-thermostat.uf2
+        path: src/main.cpp
         
 
     - name: Build Release Packages
