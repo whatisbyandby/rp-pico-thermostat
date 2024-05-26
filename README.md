@@ -2,6 +2,8 @@
 
 This project is intended as a starting point for working with the Pico SDK and Pimoroni Libraries in C++.
 
+[![Build for Host and Target](https://github.com/whatisbyandby/rp-pico-thermostat/actions/workflows/cmake.yml/badge.svg)](https://github.com/whatisbyandby/rp-pico-thermostat/actions/workflows/cmake.yml)
+
 - [Before you start](#before-you-start)
 - [Preparing your build environment](#preparing-your-build-environment)
 - [Grab the Pimoroni libraries](#grab-the-pimoroni-libraries)
