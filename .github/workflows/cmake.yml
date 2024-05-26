@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up CMake
         uses: lukka/get-cmake@latest
@@ -45,7 +45,7 @@ jobs:
           ctest --output-on-failure --output-junit ${GITHUB_WORKSPACE}/test-results.xml
 
       - name: Archive Test Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: test-results.xml
@@ -78,20 +78,20 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: project
 
     # Checkout the Pimoroni Pico Libraries
     - name: Checkout Pimoroni Pico Libraries
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: pimoroni/pimoroni-pico
         path: pimoroni-pico
 
     # Checkout the Pico SDK
     - name: Checkout Pico SDK
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: raspberrypi/pico-sdk
         path: pico-sdk
@@ -140,22 +140,15 @@ jobs:
 
     - name: Upload .zip
       if: github.event_name == 'release'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      uses: softprops/action-gh-release@v2
       with:
-        asset_path: ${{github.workspace}}/build/${{env.RELEASE_FILE}}.zip
-        upload_url: ${{github.event.release.upload_url}}
-        asset_name: ${{env.RELEASE_FILE}}.zip
-        asset_content_type: application/zip
+        files: ${{github.workspace}}/build/${{env.RELEASE_FILE}}.zip
+        name: ${{env.RELEASE_FILE}}.zip
 
     - name: Upload .tar.gz
       if: github.event_name == 'release'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      uses: softprops/action-gh-release@v2
       with:
-        asset_path: ${{github.workspace}}/build/${{env.RELEASE_FILE}}.tar.gz
-        upload_url: ${{github.event.release.upload_url}}
-        asset_name: ${{env.RELEASE_FILE}}.tar.gz
-        asset_content_type: application/octet-stream
+        files: ${{github.workspace}}/build/${{env.RELEASE_FILE}}.tar.gz
+        name: ${{env.RELEASE_FILE}}.tar.gz
+
