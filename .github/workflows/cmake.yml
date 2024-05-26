@@ -42,7 +42,15 @@ jobs:
         working-directory: ${{github.workspace}}/build/test
         shell: bash
         run: | 
-          ctest --output-on-failure
+          ctest --output-on-failure --output-junit ${GITHUB_WORKSPACE}/test-results.xml
+
+      - name: Archive Test Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: test-results.xml
+
+        
         
   build_target:
     name: ${{matrix.name}}
@@ -66,7 +74,7 @@ jobs:
       PICO_SDK_PATH: $GITHUB_WORKSPACE/pico-sdk
       PIMORONI_PICO_LIBS: $GITHUB_WORKSPACE/pimoroni-pico
       RELEASE_FILE: ${{github.event.repository.name}}-${{github.event.release.tag_name}}
-      COMMIT_FILE: ${{github.event.repository.name}}-${{github.event.head_commit.id}}
+      COMMIT_FILE: ${{github.event.repository.name}}-${{github.sha}}
 
     steps:
     - name: Checkout Code
@@ -110,9 +118,11 @@ jobs:
         cmake --build . --config $BUILD_TYPE -j 2
 
     - name: Debug Archive
+      working-directory: ${{github.workspace}}/build/src
       shell: bash
       run: |
-        ls -la ${{github.workspace}}/build
+        ls -la
+      
 
     - name: Archive Build
       uses: actions/upload-artifact@v4

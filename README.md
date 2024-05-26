@@ -1,16 +1,16 @@
-# Pico C++ Boilerplate Project <!-- omit in toc -->
+# Raspberry Pi Pico Thermostat
 
-This project is intended as a starting point for working with the Pico SDK and Pimoroni Libraries in C++.
 
 [![Build for Host and Target](https://github.com/whatisbyandby/rp-pico-thermostat/actions/workflows/cmake.yml/badge.svg)](https://github.com/whatisbyandby/rp-pico-thermostat/actions/workflows/cmake.yml)
 
-- [Before you start](#before-you-start)
-- [Preparing your build environment](#preparing-your-build-environment)
-- [Grab the Pimoroni libraries](#grab-the-pimoroni-libraries)
-- [Clone this boilerplate](#clone-this-boilerplate)
-- [Prepare Visual Studio Code](#prepare-visual-studio-code)
-- [Prepare your project](#prepare-your-project)
-- [Pick your LICENSE](#pick-your-license)
+- [Raspberry Pi Pico Thermostat](#raspberry-pi-pico-thermostat)
+  - [Before you start](#before-you-start)
+  - [Preparing your build environment](#preparing-your-build-environment)
+  - [Grab the Pimoroni libraries](#grab-the-pimoroni-libraries)
+  - [Clone this boilerplate](#clone-this-boilerplate)
+  - [Prepare Visual Studio Code](#prepare-visual-studio-code)
+  - [Prepare your project](#prepare-your-project)
+  - [Pick your LICENSE](#pick-your-license)
 
 ## Before you start
 
