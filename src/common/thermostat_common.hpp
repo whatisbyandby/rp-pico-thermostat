@@ -6,6 +6,7 @@ typedef enum ThermostatError {
     THERMOSTAT_OK = 0,
     THERMOSTAT_ERROR,
     THERMOSTAT_INVALID_INPUT,
+    THERMOSTAT_UNKNOWN_COMMAND
 } ThermostatError;
 
 inline const char *thermostatErrorToString(ThermostatError error)
@@ -18,10 +19,30 @@ inline const char *thermostatErrorToString(ThermostatError error)
         return "THERMOSTAT_INVALID_INPUT";
     case THERMOSTAT_OK:
         return "THERMOSTAT_OK";
+    case THERMOSTAT_UNKNOWN_COMMAND:
+        return "THERMOSTAT_UNKNOWN_COMMAND";
     default:
         return "UNKNOWN";
     }
 }
+
+enum ThermostatCommandType {
+    SET_TEMPERATURE,
+    SET_MODE,
+    SET_UNITS,
+    PRINT_STATE,
+    GET_STATE,
+    GET_HVAC_STATE,
+    GET_ERROR,
+    VERSION,
+    HELP,
+    INVALID_COMMAND
+};
+
+struct ThermostatCommand {
+    ThermostatCommandType command_type;
+    double parameter;
+};
 
 typedef enum TemperatureState {
     OVER_TEMPERATURE,

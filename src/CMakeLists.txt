@@ -1,7 +1,17 @@
 
+
+
+
 if (ON_TARGET)
 
     pico_sdk_init()
+
+    add_executable(main_test test_main.cpp)
+
+    target_link_libraries(main_test
+        pico_stdlib
+        pico_multicore
+    )
 
     file(GLOB_RECURSE SOURCES
         ${PROJECT_SOURCE_DIR}/src/thermostat/*.cpp
@@ -10,6 +20,9 @@ if (ON_TARGET)
         ${PROJECT_SOURCE_DIR}/src/gpio/*.cpp
         ${PROJECT_SOURCE_DIR}/src/hvac/*.cpp
         ${PROJECT_SOURCE_DIR}/src/temperature_controller/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/command_parser/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/thermostat_controller/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/repl/*.cpp
     )
 
     # Add your source files
@@ -26,6 +39,10 @@ if (ON_TARGET)
         i2c_bus
         hvac
         gpio
+        thermostat_controller
+        command_parser
+        repl
+        
     )
 
     # Include required libraries
@@ -39,6 +56,7 @@ if (ON_TARGET)
     # Don't forget to link the libraries you need!
     target_link_libraries(${NAME}
         pico_stdlib
+        pico_multicore
         hardware_i2c
         pico_explorer
         pico_graphics

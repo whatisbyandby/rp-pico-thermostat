@@ -61,11 +61,16 @@ ThermostatError Thermostat::setMode(ThermostatMode mode) {
         .returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
-void Thermostat::printState() {
-    mock().actualCall("Thermostat::printState");
+ThermostatError Thermostat::printState(std::string *output) {
+    return (ThermostatError) mock()
+        .actualCall("Thermostat::printState")
+        .withPointerParameter("output", output)
+        .returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
 
 ThermostatError Thermostat::update() {
-    return (ThermostatError) mock().actualCall("Thermostat::update").returnIntValueOrDefault(THERMOSTAT_OK);
+    return (ThermostatError) mock()
+        .actualCall("Thermostat::update")
+        .returnIntValueOrDefault(THERMOSTAT_OK);
 }

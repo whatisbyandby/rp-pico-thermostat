@@ -5,6 +5,7 @@
 #include "temperature_controller.hpp"
 #include "hvac.hpp"
 #include "thermostat_common.hpp"
+#include <iostream>
 
 
 class Thermostat {
@@ -34,7 +35,7 @@ class Thermostat {
 
         ThermostatError update();
 
-        void printState();
+        ThermostatError printState(std::string *output);
 
     
     private:

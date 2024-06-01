@@ -4,7 +4,6 @@
 
 static Thermostat *thermostat;
 static ThermostatController *thermostatController;
-static Button *upButton;
 
 
 TEST_GROUP(ThermostatControllerTestGroup)
@@ -12,8 +11,7 @@ TEST_GROUP(ThermostatControllerTestGroup)
     void setup()
     {
         thermostat = new Thermostat(NULL, NULL, NULL);
-        upButton = new Button(1);
-        thermostatController = new ThermostatController(thermostat, upButton);
+        thermostatController = new ThermostatController(thermostat);
     }
 
     void teardown()
@@ -22,30 +20,31 @@ TEST_GROUP(ThermostatControllerTestGroup)
         mock().clear();
         delete thermostatController;
         delete thermostat;
-        delete upButton;
     }
 };
 
 TEST(ThermostatControllerTestGroup, TestThermostatControllerConstructor) {
 
     Thermostat *testThermostat = new Thermostat(NULL, NULL, NULL);
-    Button *testButton = new Button(1);
-    ThermostatController *testController = new ThermostatController(testThermostat, testButton);
+    ThermostatController *testController = new ThermostatController(testThermostat);
 
     delete testController;
     delete testThermostat;
-    delete testButton;
 }
 
 TEST(ThermostatControllerTestGroup, ExecuteCommandSetTemperature_Valid) {
 
     ThermostatCommand validCommand {
-        SET_TARGET_TEMPERATURE,
+        SET_TEMPERATURE,
         25.0
     };
 
     mock().expectOneCall("Thermostat::setTargetTemperature")
-        .withParameter("targetTemperature", 25.0).andReturnValue(THERMOSTAT_OK);
+        .withParameter("targetTemperature", 25.0)
+        .andReturnValue(THERMOSTAT_OK);
+
+    mock().expectOneCall("Thermostat::getTargetTemperature")
+        .andReturnValue(25.0);
 
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_OK, thermostatController->executeCommand(&validCommand));
 
@@ -55,12 +54,16 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetTemperature_Invalid) {
 
 
      ThermostatCommand invalidCommand {
-        SET_TARGET_TEMPERATURE,
+        SET_TEMPERATURE,
         9.0
     };
 
     mock().expectOneCall("Thermostat::setTargetTemperature")
-        .withParameter("targetTemperature", 9.0).andReturnValue(THERMOSTAT_INVALID_INPUT);
+        .withParameter("targetTemperature", 9.0)
+        .andReturnValue(THERMOSTAT_INVALID_INPUT);
+
+     mock().expectOneCall("Thermostat::getTargetTemperature")
+        .andReturnValue(25.0);
 
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_INVALID_INPUT, thermostatController->executeCommand(&invalidCommand));
 }
@@ -74,6 +77,22 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetMode_Valid) {
 
     mock().expectOneCall("Thermostat::setMode")
         .withParameter("mode", HEATING).andReturnValue(THERMOSTAT_OK);
+
+    mock().expectOneCall("Thermostat::getMode")
+        .andReturnValue(HEATING);
+
+    ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_OK, thermostatController->executeCommand(&validCommand));
+
+}
+
+TEST(ThermostatControllerTestGroup, ExecuteCommand_PrintState) {
+
+    ThermostatCommand validCommand {
+        PRINT_STATE,
+        0
+    };
+
+    mock().expectOneCall("Thermostat::printState").ignoreOtherParameters();
 
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_OK, thermostatController->executeCommand(&validCommand));
 
@@ -90,14 +109,9 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetMode_Invalid) {
     mock().expectOneCall("Thermostat::setMode")
         .withParameter("mode", 47).andReturnValue(THERMOSTAT_INVALID_INPUT);
 
+    mock().expectOneCall("Thermostat::getMode")
+        .andReturnValue(HEATING);
+
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_INVALID_INPUT, thermostatController->executeCommand(&validCommand));
 }
 
-TEST(ThermostatControllerTestGroup, update_UpButtonPressed) {
-    
-        mock().expectOneCall("Button::readNumberOfPresses").onObject(upButton).andReturnValue(2);
-        mock().expectOneCall("Thermostat::getTargetTemperature").andReturnValue(25.0);
-        mock().expectOneCall("Thermostat::setTargetTemperature").withParameter("targetTemperature", 26.0).andReturnValue(THERMOSTAT_OK);
-    
-        ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_OK, thermostatController->update());
-}

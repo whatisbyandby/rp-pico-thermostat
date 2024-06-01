@@ -2,6 +2,8 @@
 #include "thermostat_common.hpp"
 #include <cstddef>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 
 Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac)
@@ -159,13 +161,17 @@ ThermostatError Thermostat::update() {
     return THERMOSTAT_OK;
 }
 
-void Thermostat::printState() {
-    std::cout << std::endl;
-    std::cout << "Current Temperature: " << getTemperatureInCurrentUnits(currentTemperature) << std::endl;
-    std::cout << "Target Temperature " << getTemperatureInCurrentUnits(temperatureController->getTargetTemperature()) << std::endl;
-    std::cout << "Current Humidity: " << currentHumidity << std::endl;
-    std::cout << "Current HVAC State: " <<  hvacStateToString(hvac->getCurrentState()) << std::endl;
-    std::cout << "Current Thermostat Mode: " << thermostatModeToString(mode) << std::endl;
-    std::cout << "Current Temperature Units: " << temperatureUnitsToString(temperatureUnits) << std::endl;
-    std::cout << std::endl;
+ThermostatError Thermostat::printState(std::string *output) {
+
+    std::ostringstream oss;
+
+    oss << "Current Temperature: " << getTemperatureInCurrentUnits(currentTemperature) << std::endl;
+    oss << "Target Temperature " << getTemperatureInCurrentUnits(temperatureController->getTargetTemperature()) << std::endl;
+    oss << "Current Humidity: " << currentHumidity << std::endl;
+    oss << "Current HVAC State: " <<  hvacStateToString(hvac->getCurrentState()) << std::endl;
+    oss << "Current Thermostat Mode: " << thermostatModeToString(mode) << std::endl;
+    oss << "Current Temperature Units: " << temperatureUnitsToString(temperatureUnits) << std::endl;
+
+    *output = oss.str();
+    return THERMOSTAT_OK;
 }

@@ -4,6 +4,7 @@
 #include "environment_sensor.hpp"
 #include "thermostat_common.hpp"
 #include "hvac.hpp"
+#include <iostream>
 
 static Thermostat *thermostat;
 static EnvironmentSensor *environmentSensor;
@@ -248,4 +249,20 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectAllOff_OverTemp) {
 
    CHECK_EQUAL(THERMOSTAT_OK, thermostat->update());
    
+}
+
+TEST(ThermostatTestGroup, PrintState) {
+   thermostat->setMode(HEATING);
+   thermostat->setTemperatureUnits(CELSIUS);
+   thermostat->setTargetTemperature(25.0);
+
+   // initalize an empty string using std::string
+   std::string state;
+
+   mock().expectOneCall("HVAC::getCurrentState")
+      .andReturnValue(HEATER_ON);
+
+   thermostat->printState(&state);
+   std::cout << state << std::endl;
+
 }

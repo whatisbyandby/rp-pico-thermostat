@@ -1,27 +1,13 @@
 #include "thermostat.hpp"
-#include "gpio.hpp"
-
-enum ThermostatCommandType {
-    SET_TARGET_TEMPERATURE,
-    SET_MODE,
-    SET_TEMPERATURE_UNITS
-};
-
-struct ThermostatCommand {
-    ThermostatCommandType type;
-    double value;
-};
+#include "thermostat_common.hpp"
 
 
 class ThermostatController {
 
     public: 
-        ThermostatController(Thermostat *thermostat, Button *upButton);
+        ThermostatController(Thermostat *thermostat);
         ThermostatError executeCommand(ThermostatCommand *command);
-        ThermostatError update();
 
     private:
         Thermostat *thermostat;
-        Button *upButton;
-        float temperatureStep = 0.5;
 };
