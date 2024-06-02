@@ -1,6 +1,8 @@
 #ifndef THERMOSTAT_COMMON_HPP
 #define THERMOSTAT_COMMON_HPP
 
+#include <string>
+
 
 typedef enum ThermostatError {
     THERMOSTAT_OK = 0,
@@ -43,6 +45,7 @@ enum ThermostatCommandType {
 struct ThermostatCommand {
     ThermostatCommandType command_type;
     double parameter;
+    std::string resultString;
 };
 
 typedef enum TemperatureState {

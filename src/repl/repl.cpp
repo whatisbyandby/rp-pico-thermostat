@@ -1,14 +1,32 @@
 #include "repl.hpp"
 #include <iostream>
 
-void printPrompt() {
-    std::cout << std::endl << "-> " << std::flush;
+Repl::Repl(ThermostatController *controller, CommandParser *parser) {
+    thermostatController = controller;
+    commandParser = parser;
+    
 }
 
-void printError(ThermostatError err) {
-    if (err == THERMOSTAT_OK) {
-        std::cout << "[OK] ";
-    } else {
-        std::cout << "[ERROR] " << thermostatErrorToString(err) << " ";
-    }
+Repl::~Repl() {
+}
+
+ThermostatError Repl::read(ThermostatCommand *command) {
+    std::cout << "-> ";
+    std::string input;
+    std::getline(std::cin, input);
+
+    commandParser->parseString(input, command);
+
+    return THERMOSTAT_OK;
+    
+}
+
+ThermostatError Repl::evaluate(ThermostatCommand *command) {
+    thermostatController->executeCommand(command);
+    return THERMOSTAT_OK;
+}
+
+ThermostatError Repl::print(ThermostatCommand *command) {
+    std::cout << command->resultString << std::endl;
+    return THERMOSTAT_OK;
 }

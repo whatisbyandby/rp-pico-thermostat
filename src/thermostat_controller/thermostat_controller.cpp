@@ -1,5 +1,7 @@
 #include "thermostat_controller.hpp"
 #include <iostream>
+#include <sstream>
+#include <string>
 #include "repl.hpp"
 
 
@@ -12,25 +14,27 @@ ThermostatController::ThermostatController(Thermostat *thermostat)
 ThermostatError ThermostatController::executeCommand(ThermostatCommand *command)
 {   
     ThermostatError error = THERMOSTAT_OK;
+    std::ostringstream oss;
     switch (command->command_type) {
         case HELP:
-            printError(error);
-            std::cout << "Printing help: " << std::endl;
-            std::cout << "set_temperature <temperature> - Set the target temperature in the current units" << std::endl;
-            std::cout << "set_mode <mode> - Set the mode of operation" << std::endl;
-            std::cout << "set_units <units> - Set the units of the thermostat" << std::endl;
-            std::cout << "print_state - Print the current state of the thermostat" << std::endl;
+            oss << "[OK] ";
+            oss << "Printing help: " << std::endl;
+            oss << "set_temperature <temperature> - Set the target temperature in the current units" << std::endl;
+            oss << "set_mode <mode> - Set the mode of operation" << std::endl;
+            oss << "set_units <units> - Set the units of the thermostat" << std::endl;
+            oss << "print_state - Print the current state of the thermostat" << std::endl;
+
+            command->resultString = oss.str();
             return THERMOSTAT_OK;
         case SET_TEMPERATURE:
             error = thermostat->setTargetTemperature(command->parameter);
-            printError(error);
-            std::cout << "Target Temperature set to " << thermostat->getTargetTemperature();
+            oss << "Target Temperature set to " << thermostat->getTargetTemperature();
+            command->resultString = oss.str();
             return error;
         case SET_MODE:
         {
             int parsedValue = (int)command->parameter;
             error = thermostat->setMode((ThermostatMode)parsedValue);
-            printError(error);
             std::cout << "Mode set to " << thermostatModeToString(thermostat->getMode());
             return error;
         }
@@ -38,12 +42,10 @@ ThermostatError ThermostatController::executeCommand(ThermostatCommand *command)
         {
             std::string stateString;
             error = thermostat->printState(&stateString);
-            printError(error);
             std::cout << stateString;
             return error;
         }
         default: 
-            printError(THERMOSTAT_UNKNOWN_COMMAND);
             return THERMOSTAT_UNKNOWN_COMMAND;
             
     }

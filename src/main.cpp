@@ -16,27 +16,15 @@
 
 static Thermostat *thermostat_inst;
 
-
 void commandLoop() {
     stdio_init_all();
-    std::string command;
-    CommandParser commandParser;
-    ThermostatController thermostatController(thermostat_inst);
-    ThermostatCommand thermostatCommand;
-
-    printPrompt();
+    Repl repl(new ThermostatController(thermostat_inst), new CommandParser());
 
     while (true) {
-        ThermostatError err;
-        std::getline(std::cin, command);
-        err = commandParser.parseString(command, &thermostatCommand);
-        if (err != THERMOSTAT_OK) {
-            printError(err);
-            printPrompt();
-            continue;
-        }
-        err = thermostatController.executeCommand(&thermostatCommand);
-        printPrompt();
+        ThermostatCommand command;
+        repl.read(&command);
+        repl.evaluate(&command);
+        repl.print(&command);
     }
 }
 

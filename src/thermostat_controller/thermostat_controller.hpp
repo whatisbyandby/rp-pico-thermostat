@@ -1,3 +1,7 @@
+#ifndef THERMOSTAT_CONTROLLER_HPP
+#define THERMOSTAT_CONTROLLER_HPP
+
+
 #include "thermostat.hpp"
 #include "thermostat_common.hpp"
 
@@ -11,3 +15,5 @@ class ThermostatController {
     private:
         Thermostat *thermostat;
 };
+
+#endif
