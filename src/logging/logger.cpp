@@ -1,6 +1,6 @@
 #include "logger.hpp"
 
-static bool isEnabled = true;
+volatile static bool isEnabled = true;
 
 void disableLogging() {
     isEnabled = false;
@@ -47,7 +47,7 @@ void Logger::trace(const char* message) {
 }
 
 void Logger::log(LogLevel level, const char* message) {
-    if (level <= logLevel && isEnabled) {
+    if (isEnabled && level <= logLevel) {
         if (outputStream) {
             *outputStream << "[" << logLevelToString(level) << "] " << message << std::endl;
         }

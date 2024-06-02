@@ -24,6 +24,8 @@ TEST_GROUP(LoggingTestGroup)
 TEST(LoggingTestGroup, TestLogger_Error)
 {
 
+    enableLogging();
+
     std::ostringstream oss;
     
     logger->setOutputStream(oss);
@@ -39,6 +41,7 @@ TEST(LoggingTestGroup, TestLogger_Error)
 
 TEST(LoggingTestGroup, TestLogger_Warn)
 {
+    enableLogging();
 
     std::ostringstream oss;
     
@@ -55,6 +58,8 @@ TEST(LoggingTestGroup, TestLogger_Warn)
 TEST(LoggingTestGroup, TestLogger_Info)
 {
 
+    enableLogging();
+
     std::ostringstream oss;
     
     logger->setOutputStream(oss);
@@ -70,6 +75,8 @@ TEST(LoggingTestGroup, TestLogger_Info)
 TEST(LoggingTestGroup, TestLogger_Debug)
 {
 
+    enableLogging();
+
     std::ostringstream oss;
     
     logger->setOutputStream(oss);
@@ -84,6 +91,7 @@ TEST(LoggingTestGroup, TestLogger_Debug)
 
 TEST(LoggingTestGroup, TestLogger_Trace)
 {
+    enableLogging();
 
     std::ostringstream oss;
     
@@ -94,5 +102,23 @@ TEST(LoggingTestGroup, TestLogger_Trace)
     logger->trace("Debug message");
 
     STRCMP_EQUAL("[TRACE] Debug message\n", oss.str().c_str());
+
+}
+
+TEST(LoggingTestGroup, TestLogger_Disabled)
+{   
+    enableLogging();
+
+    std::ostringstream oss;
+    
+    logger->setOutputStream(oss);
+
+    logger->setLogLevel(Logger::TRACE);
+
+    disableLogging();
+
+    logger->trace("Debug message");
+
+    CHECK_EQUAL(oss.str().empty(), true);
 
 }
