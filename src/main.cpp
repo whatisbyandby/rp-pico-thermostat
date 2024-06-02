@@ -72,11 +72,6 @@ int main()
     while (true)
     {
         ThermostatError err = thermostat.update();
-
-        if (err != THERMOSTAT_OK) {
-            std::cout << "Error: " << err << std::endl;
-        }
-
         sleep_ms(1000);
     }
 }

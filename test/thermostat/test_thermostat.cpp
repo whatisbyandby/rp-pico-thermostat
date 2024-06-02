@@ -313,6 +313,5 @@ TEST(ThermostatTestGroup, PrintState) {
       .andReturnValue(HEATER_ON);
 
    thermostat->printState(&state);
-   std::cout << state << std::endl;
 
 }

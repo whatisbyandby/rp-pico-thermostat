@@ -18,6 +18,7 @@ add_subdirectory(hvac)
 add_subdirectory(thermostat_controller)
 add_subdirectory(i2c_bus)
 add_subdirectory(command_parser)
+add_subdirectory(logging)
 
 
 
