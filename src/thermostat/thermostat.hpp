@@ -15,26 +15,17 @@ class Thermostat {
 
         ThermostatError initialize();
         bool isInitialized();
-
-
         ThermostatError setTemperatureUnits(TemperatureUnits temperatureUnits);
         TemperatureUnits getTemperatureUnits();
-
         HVACState getDesiredHVACState(TemperatureState temperatureState, HVACState currentHVACState);
-
         ThermostatMode getMode();
         ThermostatError setMode(ThermostatMode mode);
-
         ThermostatError setTargetTemperature(double targetTemperature);
         double getTargetTemperature();
-
-
-
         double getTemperatureInStandardUnits(double temperature);
         double getTemperatureInCurrentUnits(double temperatureInStandardUnits);
-
         ThermostatError update();
-
+        ThermostatError getState(ThermostatState *currentState);
         ThermostatError printState(std::string *output);
 
     
@@ -49,7 +40,7 @@ class Thermostat {
 
         double currentTemperature;
         double currentHumidity;
-        
+        ThermostatError err;
 };
 
 #endif // THERMOSTAT_HPP

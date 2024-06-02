@@ -19,6 +19,8 @@ TEST_GROUP(ThermostatTestGroup)
       temperatureController = new TemperatureController();
       hvac = new HVAC(NULL, NULL, NULL);
       thermostat = new Thermostat(environmentSensor, temperatureController, hvac);
+
+      thermostat->initialize();
    }
 
    void teardown()
@@ -38,7 +40,7 @@ TEST(ThermostatTestGroup, ThermostatConstructor)
    Thermostat *thermostatConstructor = new Thermostat(NULL, NULL, NULL);
 
    CHECK_EQUAL(FAHRENHEIT, thermostat->getTemperatureUnits());
-   CHECK_FALSE(thermostat->isInitialized());
+   CHECK_FALSE(thermostatConstructor->isInitialized());
    CHECK_EQUAL(OFF, thermostat->getMode());
 
    delete thermostatConstructor;
@@ -247,8 +249,56 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectAllOff_OverTemp) {
       .withParameter("state", ALL_OFF)
       .andReturnValue(THERMOSTAT_OK);
 
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->update());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->update());
    
+}
+
+TEST(ThermostatTestGroup, GetState) {
+   thermostat->setMode(HEATING);
+   thermostat->setTemperatureUnits(FAHRENHEIT);
+   thermostat->setTargetTemperature(68.0);
+
+   temperatureController->setTargetTemperature(20);
+   temperatureController->setTemperatureRange(1.0);
+
+   mock().expectOneCall("HVAC::getCurrentState")
+      .andReturnValue(HEATER_ON);
+
+   double temperature = 20;
+   double humidity = 50.0;
+
+   mock()
+      .expectOneCall("EnvironmentSensor::readTemperatureHumidity")
+      .withOutputParameterReturning("temperature", &temperature, sizeof(double))
+      .withOutputParameterReturning("humidity", &humidity, sizeof(double))
+      .andReturnValue(ENVIRONMENT_SENSOR_OK);
+
+   mock().expectOneCall("HVAC::setDesiredState")
+      .ignoreOtherParameters()
+      .andReturnValue(THERMOSTAT_OK);
+
+
+   mock().expectOneCall("HVAC::getCurrentState")
+      .andReturnValue(HEATER_ON);
+
+   
+
+   thermostat->update();
+
+   ThermostatState state; 
+   ThermostatError err = thermostat->getState(&state);
+
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, err);
+   ENUMS_EQUAL_INT(HEATING, state.mode);
+   ENUMS_EQUAL_INT(FAHRENHEIT, state.temperatureUnits);
+   ENUMS_EQUAL_INT(HEATER_ON, state.hvacState);
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, state.error);
+   DOUBLES_EQUAL(68.0, state.targetTemperature, 0.01);
+   DOUBLES_EQUAL(68, state.currentTemperature, 0.01);
+   DOUBLES_EQUAL(50.0, state.currentHumidity, 0.01);
+   DOUBLES_EQUAL(20, state.currentTemperatureStandardUnits, 0.01);
+   DOUBLES_EQUAL(20, state.targetTemperatureStandardUnits, 0.01);
+   DOUBLES_EQUAL(1.0, state.temperatureRange, 0.1);
 }
 
 TEST(ThermostatTestGroup, PrintState) {

@@ -6,6 +6,7 @@ typedef enum ThermostatError {
     THERMOSTAT_OK = 0,
     THERMOSTAT_ERROR,
     THERMOSTAT_INVALID_INPUT,
+    THERMOSTAT_NOT_INITALIZED,
     THERMOSTAT_UNKNOWN_COMMAND
 } ThermostatError;
 
@@ -51,6 +52,7 @@ typedef enum TemperatureState {
     OVER_TEMPERATURE_IN_RANGE,
     IN_RANGE
 } TemperatureState;
+
 
 inline const char *temperatureStateToString(TemperatureState state)
 {
@@ -168,5 +170,19 @@ inline double convertCelsiusToFahrenheit(double celsius)
 {
     return celsius * 9.0 / 5.0 + 32;
 }
+
+struct ThermostatState {
+    double currentTemperature;
+    double targetTemperature;
+    double temperatureRange;
+    double currentTemperatureStandardUnits;
+    double targetTemperatureStandardUnits;
+    double currentHumidity;
+    TemperatureState temperatureState;
+    HVACState hvacState;
+    ThermostatMode mode;
+    TemperatureUnits temperatureUnits;
+    ThermostatError error;
+};
 
 #endif // THERMOSTAT_COMMON_HPP
