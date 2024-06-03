@@ -11,6 +11,7 @@ if (ON_TARGET)
     target_link_libraries(main_test
         pico_stdlib
         pico_multicore
+        json_maker
     )
 
     file(GLOB_RECURSE SOURCES
