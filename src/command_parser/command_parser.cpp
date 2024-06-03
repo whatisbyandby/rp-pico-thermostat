@@ -25,7 +25,7 @@ ThermostatError CommandParser::parseString(std::string command, ThermostatComman
         return THERMOSTAT_OK;
     }
 
-    if (cmd == "set_temperature")
+    if (cmd == "temperature")
     {
         if (!(iss >> value)) {
             thermostat_command->command_type = INVALID_COMMAND;
@@ -36,13 +36,23 @@ ThermostatError CommandParser::parseString(std::string command, ThermostatComman
         return THERMOSTAT_OK;
     }
 
-    if (cmd == "set_mode")
+    if (cmd == "mode")
     {
         if (!(iss >> value)) {
             thermostat_command->command_type = INVALID_COMMAND;
             return THERMOSTAT_INVALID_INPUT;
         }
         thermostat_command->command_type = SET_MODE;
+        thermostat_command->parameter = value;
+        return THERMOSTAT_OK;
+    }
+
+    if (cmd == "units"){
+        if (!(iss >> value)) {
+            thermostat_command->command_type = INVALID_COMMAND;
+            return THERMOSTAT_INVALID_INPUT;
+        }
+        thermostat_command->command_type = SET_UNITS;
         thermostat_command->parameter = value;
         return THERMOSTAT_OK;
     }

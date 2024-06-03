@@ -62,8 +62,6 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetTemperature_Invalid) {
         .withParameter("targetTemperature", 9.0)
         .andReturnValue(THERMOSTAT_INVALID_INPUT);
 
-     mock().expectOneCall("Thermostat::getTargetTemperature")
-        .andReturnValue(25.0);
 
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_INVALID_INPUT, thermostatController->executeCommand(&invalidCommand));
 }
@@ -80,6 +78,23 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetMode_Valid) {
 
     mock().expectOneCall("Thermostat::getMode")
         .andReturnValue(HEATING);
+
+    ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_OK, thermostatController->executeCommand(&validCommand));
+
+}
+
+TEST(ThermostatControllerTestGroup, ExecuteCommandSetUnits_Valid) {
+
+    ThermostatCommand validCommand {
+        SET_UNITS,
+        CELSIUS
+    };
+
+    mock().expectOneCall("Thermostat::setTemperatureUnits")
+        .withParameter("temperatureUnits", CELSIUS).andReturnValue(THERMOSTAT_OK);
+
+    mock().expectOneCall("Thermostat::getTemperatureUnits")
+        .andReturnValue(CELSIUS);
 
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_OK, thermostatController->executeCommand(&validCommand));
 
@@ -109,8 +124,6 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetMode_Invalid) {
     mock().expectOneCall("Thermostat::setMode")
         .withParameter("mode", 47).andReturnValue(THERMOSTAT_INVALID_INPUT);
 
-    mock().expectOneCall("Thermostat::getMode")
-        .andReturnValue(HEATING);
 
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_INVALID_INPUT, thermostatController->executeCommand(&validCommand));
 }
