@@ -6,11 +6,17 @@ if (ON_TARGET)
 
     pico_sdk_init()
 
-    add_executable(main_test test_main.cpp)
+    add_executable(main_test test_main.cpp i2c_bus/i2c_bus.cpp)
+
+    target_include_directories(main_test PRIVATE i2c_bus)
 
     target_link_libraries(main_test
         pico_stdlib
         pico_multicore
+        hardware_i2c
+        pico_explorer
+        pico_graphics
+        st7789
         json_maker
     )
 
@@ -24,6 +30,11 @@ if (ON_TARGET)
         ${PROJECT_SOURCE_DIR}/src/command_parser/*.cpp
         ${PROJECT_SOURCE_DIR}/src/thermostat_controller/*.cpp
         ${PROJECT_SOURCE_DIR}/src/repl/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/json/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/display/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/producer/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/mqtt/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/wifi/*.cpp
     )
 
     # Add your source files
@@ -43,7 +54,11 @@ if (ON_TARGET)
         thermostat_controller
         command_parser
         repl
-        
+        json
+        display
+        producer
+        mqtt
+        wifi
     )
 
     # Include required libraries
@@ -58,10 +73,13 @@ if (ON_TARGET)
     target_link_libraries(${NAME}
         pico_stdlib
         pico_multicore
+        pico_cyw43_arch_lwip_threadsafe_background
+        pico_lwip_mqtt
         hardware_i2c
         pico_explorer
         pico_graphics
         st7789
+        json_maker
     )
 
     # # create map/bin/hex file etc.

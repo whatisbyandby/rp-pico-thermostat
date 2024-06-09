@@ -3,7 +3,7 @@
 
 #include "thermostat_common.hpp"
 
-ThermostatError parse(std::string json, ThermostatCommand *command);
+ThermostatError parse(char *buffer, ThermostatCommand *command);
 
 ThermostatError serialize(char *buffer, size_t len, ThermostatState *state);
 

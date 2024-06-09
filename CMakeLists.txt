@@ -6,6 +6,7 @@ set(NAME pico-thermostat) # <-- Name your project/executable here!
 
 
 option(ON_TARGET "Build for a Pico target" OFF)
+set(PICO_BOARD pico_w)
 
 
 if(TARGET_ARCH STREQUAL "arm")

@@ -73,5 +73,6 @@
         "cfenv": "cpp",
         "cinttypes": "cpp",
         "variant": "cpp"
-    }
+    },
+    "cortex-debug.variableUseNaturalFormat": false
 }
