@@ -37,7 +37,6 @@ void commandLoop()
 
 int main()
 {   
-    // stdio_init_all();
     I2CBus i2cBus;
     i2cBus.initialize();
     I2CDevice i2cDevice(&i2cBus, 0x38);
@@ -78,7 +77,6 @@ int main()
         ThermostatState state;
         err = thermostat.getState(&state);
 
-        // display.update(&state);
         producer.update(&state);
 
         sleep_ms(5000);

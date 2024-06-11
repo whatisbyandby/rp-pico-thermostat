@@ -15,8 +15,7 @@ ThermostatError Wifi::initalize() {
         return THERMOSTAT_OK;
     }
     if (cyw43_arch_init()) {
-        printf("failed to initialise\n");
-        return THERMOSTAT_ERROR;
+        return THERMOSTAT_INIT_FAILED;
     }
     cyw43_arch_enable_sta_mode();
     initalized = true;
@@ -24,12 +23,8 @@ ThermostatError Wifi::initalize() {
 }
 
 ThermostatError Wifi::connect(const char *ssid, const char *password) {
-    printf("Connecting to Wi-Fi...\n");
     if (cyw43_arch_wifi_connect_timeout_ms(ssid, password, CYW43_AUTH_WPA2_AES_PSK, 30000)) {
-        printf("failed to connect.\n");
-        return THERMOSTAT_ERROR;
-    } else {
-        printf("Connected.\n");
+        return THERMOSTAT_INIT_FAILED;
     }
     return THERMOSTAT_OK;
 }
@@ -41,3 +36,4 @@ ThermostatError Wifi::disconnect() {
 ThermostatError Wifi::deinitalize() {
     return THERMOSTAT_OK;
 }
+

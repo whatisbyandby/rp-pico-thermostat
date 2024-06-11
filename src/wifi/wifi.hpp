@@ -11,6 +11,7 @@ class Wifi {
         ThermostatError connect(const char *ssid, const char *password);
         ThermostatError disconnect();
         ThermostatError deinitalize();
+        bool isConnected();
     private:
         bool initalized;
 

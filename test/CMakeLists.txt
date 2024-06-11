@@ -21,6 +21,7 @@ add_subdirectory(command_parser)
 add_subdirectory(logging)
 add_subdirectory(json)
 add_subdirectory(producer)
+add_subdirectory(wifi)
 
 
 
