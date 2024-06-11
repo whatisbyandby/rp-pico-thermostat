@@ -58,7 +58,7 @@ ThermostatError Mqtt::publish(const char *topic, char *message)
     return THERMOSTAT_OK;
 }
 
-ThermostatError Mqtt::subscribe()
+ThermostatError Mqtt::subscribe(const char *topic)
 {
     return THERMOSTAT_OK;
 }

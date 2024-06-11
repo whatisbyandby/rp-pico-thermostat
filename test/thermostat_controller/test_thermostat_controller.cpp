@@ -55,11 +55,11 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetTemperature_Invalid) {
 
      ThermostatCommand invalidCommand {
         SET_TEMPERATURE,
-        9.0
+        6.9
     };
 
     mock().expectOneCall("Thermostat::setTargetTemperature")
-        .withParameter("targetTemperature", 9.0)
+        .withParameter("targetTemperature", 6.9)
         .andReturnValue(THERMOSTAT_INVALID_INPUT);
 
 

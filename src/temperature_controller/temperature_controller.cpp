@@ -38,7 +38,7 @@ double TemperatureController::getTargetTemperature()
 
 ThermostatError TemperatureController::validateTargetTemperature(double targetTemperature)
 {
-    if (targetTemperature < 10 || targetTemperature > 30)
+    if (targetTemperature < 7 || targetTemperature > 35)
     {
         return THERMOSTAT_INVALID_INPUT;
     }

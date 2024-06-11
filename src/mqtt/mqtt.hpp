@@ -10,7 +10,7 @@ class Mqtt {
         ThermostatError initalize();
         ThermostatError connect();
         ThermostatError publish(const char *topic, char *message);
-        ThermostatError subscribe();
+        ThermostatError subscribe(const char *topic);
         bool isConnected();
     private:
         bool initalized;

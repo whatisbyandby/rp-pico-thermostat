@@ -39,22 +39,23 @@ TEST(ThermostatTestGroup, ThermostatConstructor)
 {
    Thermostat *thermostatConstructor = new Thermostat(NULL, NULL, NULL);
 
-   CHECK_EQUAL(FAHRENHEIT, thermostat->getTemperatureUnits());
+   ENUMS_EQUAL_INT(FAHRENHEIT, thermostat->getTemperatureUnits());
    CHECK_FALSE(thermostatConstructor->isInitialized());
-   CHECK_EQUAL(OFF, thermostat->getMode());
+   ENUMS_EQUAL_INT(OFF, thermostat->getMode());
 
    delete thermostatConstructor;
 }
 
+
 TEST(ThermostatTestGroup, ThermostatInitalize)
 {
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->initialize());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->initialize());
    CHECK_TRUE(thermostat->isInitialized());
 }
 
 TEST(ThermostatTestGroup, ThermostatInitalize_NULL){
    Thermostat *testInitalize = new Thermostat(NULL, NULL, NULL);
-   CHECK_EQUAL(THERMOSTAT_ERROR, testInitalize->initialize());
+   ENUMS_EQUAL_INT(THERMOSTAT_ERROR, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
    delete testInitalize;
 }
@@ -62,113 +63,133 @@ TEST(ThermostatTestGroup, ThermostatInitalize_NULL){
 TEST(ThermostatTestGroup, UpdateTargetTemperatureCelsius) {
    thermostat->setTemperatureUnits(CELSIUS);
 
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setTargetTemperature(25.0));
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTargetTemperature(25.0));
    DOUBLES_EQUAL(25.0, thermostat->getTargetTemperature(), 0.01);
 
-   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(9.0));
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTargetTemperature(35.0));
+   DOUBLES_EQUAL(35.0, thermostat->getTargetTemperature(), 0.01);
+
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTargetTemperature(7.0));
+   DOUBLES_EQUAL(7.0, thermostat->getTargetTemperature(), 0.01);
+
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTargetTemperature(25.0));
    DOUBLES_EQUAL(25.0, thermostat->getTargetTemperature(), 0.01);
 
-   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(31.0));
+
+   ENUMS_EQUAL_INT(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(6.9));
+   DOUBLES_EQUAL(25.0, thermostat->getTargetTemperature(), 0.01);
+
+   ENUMS_EQUAL_INT(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(35.1));
    DOUBLES_EQUAL(25.0, thermostat->getTargetTemperature(), 0.01);
 }
 
 TEST(ThermostatTestGroup, UpdateTargetTemperatureFAHRENHEIT) {
    thermostat->setTemperatureUnits(FAHRENHEIT);
 
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setTargetTemperature(60.0));
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTargetTemperature(60.0));
    DOUBLES_EQUAL(60.0, thermostat->getTargetTemperature(), 0.01);
 
-   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(48.0));
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTargetTemperature(44.6));
+   DOUBLES_EQUAL(44.6, thermostat->getTargetTemperature(), 0.01);
+
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTargetTemperature(95.0));
+   DOUBLES_EQUAL(95, thermostat->getTargetTemperature(), 0.01);
+
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTargetTemperature(60.0));
    DOUBLES_EQUAL(60.0, thermostat->getTargetTemperature(), 0.01);
 
-   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(88.0));
+   ENUMS_EQUAL_INT(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(44.5));
+   DOUBLES_EQUAL(60.0, thermostat->getTargetTemperature(), 0.01);
+
+
+   ENUMS_EQUAL_INT(THERMOSTAT_INVALID_INPUT, thermostat->setTargetTemperature(95.1));
    DOUBLES_EQUAL(60.0, thermostat->getTargetTemperature(), 0.01);
 }
 
 
 TEST(ThermostatTestGroup, UpdateTemperatureUnits)
 {
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setTemperatureUnits(CELSIUS));
-   CHECK_EQUAL(CELSIUS, thermostat->getTemperatureUnits());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTemperatureUnits(CELSIUS));
+   ENUMS_EQUAL_INT(CELSIUS, thermostat->getTemperatureUnits());
 
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setTemperatureUnits(FAHRENHEIT));
-   CHECK_EQUAL(FAHRENHEIT, thermostat->getTemperatureUnits());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setTemperatureUnits(FAHRENHEIT));
+   ENUMS_EQUAL_INT(FAHRENHEIT, thermostat->getTemperatureUnits());
 }
 
 TEST(ThermostatTestGroup, UpdateMode_Valid) {
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setMode(HEATING));
-   CHECK_EQUAL(HEATING, thermostat->getMode());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(HEATING));
+   ENUMS_EQUAL_INT(HEATING, thermostat->getMode());
 
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setMode(COOLING));
-   CHECK_EQUAL(COOLING, thermostat->getMode());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(COOLING));
+   ENUMS_EQUAL_INT(COOLING, thermostat->getMode());
 
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setMode(FAN_ONLY));
-   CHECK_EQUAL(FAN_ONLY, thermostat->getMode());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(FAN_ONLY));
+   ENUMS_EQUAL_INT(FAN_ONLY, thermostat->getMode());
 
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setMode(OFF));
-   CHECK_EQUAL(OFF, thermostat->getMode());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(OFF));
+   ENUMS_EQUAL_INT(OFF, thermostat->getMode());
 }
 
 TEST(ThermostatTestGroup, UpdateMode_Invalid) {
    int badValue = 47;
-   CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, thermostat->setMode((ThermostatMode) badValue));
-   CHECK_EQUAL(OFF, thermostat->getMode());
+   ENUMS_EQUAL_INT(THERMOSTAT_INVALID_INPUT, thermostat->setMode((ThermostatMode) badValue));
+   ENUMS_EQUAL_INT(OFF, thermostat->getMode());
 }
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeHeating) {
 
    thermostat->setMode(HEATING);
 
-   CHECK_EQUAL(HEATER_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, ALL_OFF));
-   CHECK_EQUAL(HEATER_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, HEATER_ON));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, HEATER_ON));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, HEATER_ON));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE, HEATER_ON));
+   ENUMS_EQUAL_INT(HEATER_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, ALL_OFF));
+   ENUMS_EQUAL_INT(HEATER_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, HEATER_ON));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, HEATER_ON));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, HEATER_ON));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE, HEATER_ON));
 }
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeCooling) {
 
    thermostat->setMode(COOLING);
 
-   CHECK_EQUAL(COOLER_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, ALL_OFF));
-   CHECK_EQUAL(COOLER_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, COOLER_ON));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, COOLER_ON));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, COOLER_ON));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, COOLER_ON));
+   ENUMS_EQUAL_INT(COOLER_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, ALL_OFF));
+   ENUMS_EQUAL_INT(COOLER_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, COOLER_ON));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, COOLER_ON));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, COOLER_ON));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, COOLER_ON));
 }
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeFanOnly) {
 
    thermostat->setMode(FAN_ONLY);
    
-   CHECK_EQUAL(FAN_ON, thermostat->getDesiredHVACState(IN_RANGE, ALL_OFF));
-   CHECK_EQUAL(FAN_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
-   CHECK_EQUAL(FAN_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(FAN_ON, thermostat->getDesiredHVACState(IN_RANGE, ALL_OFF));
+   ENUMS_EQUAL_INT(FAN_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(FAN_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
 }
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeOff) {
 
    thermostat->setMode(OFF);
 
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, ALL_OFF));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, ALL_OFF));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
 }
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeError) {
 
    thermostat->setMode(ERROR);
 
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, ALL_OFF));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
-   CHECK_EQUAL(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, ALL_OFF));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
 }
 
 TEST(ThermostatTestGroup, UpdateThermostatMode) {
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->setMode(HEATING));
-   CHECK_EQUAL(HEATING, thermostat->getMode());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(HEATING));
+   ENUMS_EQUAL_INT(HEATING, thermostat->getMode());
 }
 
 TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_UnderTemp) {
@@ -195,7 +216,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_UnderTemp) {
       .withParameter("state", HEATER_ON)
       .andReturnValue(THERMOSTAT_OK);
 
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->update());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->update());
    
 }
 
@@ -222,7 +243,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_InRange) {
       .withParameter("state", HEATER_ON)
       .andReturnValue(THERMOSTAT_OK);
 
-   CHECK_EQUAL(THERMOSTAT_OK, thermostat->update());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->update());
    
 }
 
