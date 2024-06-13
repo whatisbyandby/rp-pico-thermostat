@@ -35,13 +35,24 @@ TEST(TemperatureControllerTestGroup, UpdateTargetTemperature)
 TEST(TemperatureControllerTestGroup, UpdateTargetTemperature_Invalid)
 {   
 
-    temperatureController->setTargetTemperature(25.0);
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, temperatureController->setTargetTemperature(25.0));
+   DOUBLES_EQUAL(25.0, temperatureController->getTargetTemperature(), 0.01);
 
-    CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, temperatureController->setTargetTemperature(31.0));
-    DOUBLES_EQUAL(25.0, temperatureController->getTargetTemperature(), 0.01);
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, temperatureController->setTargetTemperature(35.0));
+   DOUBLES_EQUAL(35.0, temperatureController->getTargetTemperature(), 0.01);
 
-    CHECK_EQUAL(THERMOSTAT_INVALID_INPUT, temperatureController->setTargetTemperature(9.0));
-    DOUBLES_EQUAL(25.0, temperatureController->getTargetTemperature(), 0.01);
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, temperatureController->setTargetTemperature(7.0));
+   DOUBLES_EQUAL(7.0, temperatureController->getTargetTemperature(), 0.01);
+
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, temperatureController->setTargetTemperature(25.0));
+   DOUBLES_EQUAL(25.0, temperatureController->getTargetTemperature(), 0.01);
+
+
+   ENUMS_EQUAL_INT(THERMOSTAT_INVALID_INPUT, temperatureController->setTargetTemperature(6.9));
+   DOUBLES_EQUAL(25.0, temperatureController->getTargetTemperature(), 0.01);
+
+   ENUMS_EQUAL_INT(THERMOSTAT_INVALID_INPUT, temperatureController->setTargetTemperature(35.1));
+   DOUBLES_EQUAL(25.0, temperatureController->getTargetTemperature(), 0.01);
 }
 
 TEST(TemperatureControllerTestGroup, UpdateTemperatureRange)
