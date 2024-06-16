@@ -1,0 +1,28 @@
+//devcontainer.json
+{
+    "name": "RP Pico Dev Container",
+  
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "dockerFile": "./Dockerfile",
+  
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+    "containerEnv": {
+      "PICO_SDK_PATH": "/pico/pico-sdk"
+    },
+  
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "cmake.buildDirectory": "${workspaceFolder}/build/${buildKitTargetArch}",
+          "cmake.configureSettings": {
+              "PIMORONI_PICO_PATH": "/pico/pimoroni-pico",
+              "PICO_SDK_PATH": "/pico/pico-sdk",
+              "TARGET_ARCH": "${buildKitTargetArch}"
+          },
+          "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+        },
+        "extensions": ["ms-vscode.cpptools", "ms-vscode.cmake-tools"]
+      }
+    }
+  }

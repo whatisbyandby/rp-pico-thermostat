@@ -1,7 +1,7 @@
 {
     "cmake.buildDirectory": "${workspaceFolder}/build/${buildKitTargetArch}",
     "cmake.configureSettings": {
-        "PIMORONI_PICO_PATH": "/home/scott/Documents/pimoroni-pico",
+        // "PIMORONI_PICO_PATH": "/home/scott/Documents/pimoroni-pico",
         "TARGET_ARCH": "${buildKitTargetArch}"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
