@@ -6,6 +6,7 @@
 
 typedef enum ThermostatError {
     THERMOSTAT_OK = 0,
+    THERMOSTAT_NO_DATA,
     THERMOSTAT_ERROR,
     THERMOSTAT_INVALID_INPUT,
     THERMOSTAT_NOT_INITALIZED,
@@ -46,6 +47,7 @@ enum ThermostatCommandType {
 struct ThermostatCommand {
     ThermostatCommandType command_type;
     double parameter;
+    std::string command_string;
     std::string resultString;
 };
 

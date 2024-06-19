@@ -23,15 +23,27 @@ static Thermostat *thermostat_inst;
 
 void commandLoop()
 {
+
     stdio_init_all();
-    Repl repl(new ThermostatController(thermostat_inst), new CommandParser());
+
+
+    ThermostatController controller = ThermostatController(thermostat_inst);
+    CommandParser parser = CommandParser();
+
+
+    Repl repl(&parser);
+
+    ThermostatError err = repl.init();
 
     while (true)
     {
         ThermostatCommand command;
-        repl.read(&command);
-        repl.evaluate(&command);
-        repl.print(&command);
+        err = repl.read(&command);
+        if (err == THERMOSTAT_OK)
+        {
+            err = controller.executeCommand(&command);
+            err = repl.print(&command);
+        }
     }
 }
 
@@ -58,26 +70,26 @@ int main()
     thermostat.initialize();
 
 
-    Wifi wifi;
-    ThermostatError err = wifi.initalize();
-    err = wifi.connect(WIFI_SSID, WIFI_PASSWORD);
+    // Wifi wifi;
+    // ThermostatError err = wifi.initalize();
+    // err = wifi.connect(WIFI_SSID, WIFI_PASSWORD);
 
-    Mqtt mqtt;
-    err = mqtt.initalize();
-    err = mqtt.connect();
+    // Mqtt mqtt;
+    // err = mqtt.initalize();
+    // err = mqtt.connect();
 
-    Producer producer(&wifi, &mqtt);
-    err = producer.initalize();
+    // Producer producer(&wifi, &mqtt);
+    // err = producer.initalize();
 
     multicore_launch_core1(commandLoop);
 
     while (true)
     {
-        ThermostatError err = thermostat.update();
-        ThermostatState state;
-        err = thermostat.getState(&state);
+        // ThermostatError err = thermostat.update();
+        // ThermostatState state;
+        // err = thermostat.getState(&state);
 
-        producer.update(&state);
+        // producer.update(&state);
 
         sleep_ms(5000);
     }

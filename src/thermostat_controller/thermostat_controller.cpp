@@ -2,8 +2,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "repl.hpp"
-
 
 
 ThermostatController::ThermostatController(Thermostat *thermostat)

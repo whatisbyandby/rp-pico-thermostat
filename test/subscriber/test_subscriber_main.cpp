@@ -7,7 +7,7 @@
    #include "pico/stdlib.h"
 
    void setup() {
-      // stdio_init_all();
+      stdio_init_all();
    }
 #else 
    void setup() {

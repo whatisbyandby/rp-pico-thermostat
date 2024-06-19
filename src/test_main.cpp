@@ -1,55 +1,49 @@
-#include <string.h>
-#include <math.h>
-#include <vector>
-#include <cstdlib>
+/**
+ * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 
-#include "pico_explorer.hpp"
-#include "drivers/st7789/st7789.hpp"
-#include "libraries/pico_graphics/pico_graphics.hpp"
 
-#include "font6_data.hpp"
-#include "font8_data.hpp"
+#include <stdio.h>
+#include "pico/stdlib.h"
+#include "hardware/uart.h"
 
-#include "i2c_bus.hpp"
 
-using namespace pimoroni;
+#define UART_ID uart0
+#define BAUD_RATE 115200
 
-extern unsigned char _binary_fox_tga_start[];
+// We are using pins 0 and 1, but see the GPIO function select table in the
+// datasheet for information on which other pins can be used.
+#define UART_TX_PIN 0
+#define UART_RX_PIN 1
 
-ST7789 st7789(PicoExplorer::WIDTH, PicoExplorer::HEIGHT, ROTATE_0, false, get_spi_pins(BG_SPI_FRONT));
-PicoGraphics_PenRGB332 graphics(st7789.width, st7789.height, nullptr);
+int main() {
+    stdio_init_all();
 
-int main()
-{
-    graphics.set_font(&font8);
+    // Set up our UART with the required speed.
+    uart_init(UART_ID, BAUD_RATE);
 
-    Pen BG = graphics.create_pen(120, 40, 60);
-    Pen WHITE = graphics.create_pen(255, 255, 255);
+    // Set the TX and RX pins by using the function select on the GPIO
+    // Set datasheet for more information on function select
+    gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
 
-    I2CBus i2cBus;
-    i2cBus.initialize();
-    I2CDevice i2cDevice(&i2cBus, 0x38);
 
-    uint32_t i = 0;
-    while (true)
-    {
-        graphics.set_pen(BG);
-        graphics.clear();
 
-        uint8_t data[2] = {0x00, 0x00};
-        i2cDevice.read(data, 2);
+    while (true) {
+        if(uart_is_readable(UART_ID)) {
+            int i = 0;
+            uint8_t buffer[100];
+            while (uart_is_readable(UART_ID)) {
+                uint8_t character = uart_getc(UART_ID);
+                buffer[i] = character;
+                i++;
+            }
 
-        graphics.set_pen(WHITE);
-        graphics.set_font(&font8);
-        graphics.text("6x8: The quick, brown fox jumps over the lazy dog! UPPER. lower.", Point(10, 120), 220);
-        graphics.text("0123456789 !$%^&*()", Point(10, 180), 220);
-
-        st7789.update(&graphics);
+            printf("Received: %s\n", buffer);
+        }
         sleep_ms(1000);
-        printf("i: %d\n", i);
-
-        i++;
     }
-
-    return 0;
 }
+

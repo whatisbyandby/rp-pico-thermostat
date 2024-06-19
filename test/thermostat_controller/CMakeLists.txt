@@ -3,8 +3,6 @@
 file(GLOB TEST_SOURCE ${PROJECT_SOURCE_DIR}/test/thermostat_controller/*.cpp)
 file(GLOB SOURCE 
     ${PROJECT_SOURCE_DIR}/src/thermostat_controller/*.cpp
-    ${PROJECT_SOURCE_DIR}/src/command_parser/*.cpp
-    ${PROJECT_SOURCE_DIR}/src/repl/*.cpp
 )
 file(GLOB MOCK_SOURCE 
     ${PROJECT_SOURCE_DIR}/test/thermostat/mock_thermostat.cpp
@@ -28,8 +26,6 @@ target_include_directories(test-thermostat-controller PRIVATE
     ${PROJECT_SOURCE_DIR}/src/thermostat
     ${PROJECT_SOURCE_DIR}/src/environment_sensor
     ${PROJECT_SOURCE_DIR}/src/i2c_bus
-    ${PROJECT_SOURCE_DIR}/src/repl
-    ${PROJECT_SOURCE_DIR}/src/command_parser
 )
 
 target_link_libraries(test-thermostat-controller

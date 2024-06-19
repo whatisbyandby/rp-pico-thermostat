@@ -6,18 +6,11 @@ if (ON_TARGET)
 
     pico_sdk_init()
 
-    add_executable(main_test test_main.cpp i2c_bus/i2c_bus.cpp)
-
-    target_include_directories(main_test PRIVATE i2c_bus)
+    add_executable(main_test test_main.cpp)
 
     target_link_libraries(main_test
         pico_stdlib
-        pico_multicore
-        hardware_i2c
-        pico_explorer
-        pico_graphics
-        st7789
-        json_maker
+        hardware_uart
     )
 
     file(GLOB_RECURSE SOURCES

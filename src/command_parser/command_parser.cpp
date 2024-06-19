@@ -11,9 +11,9 @@ CommandParser::~CommandParser()
 {
 }
 
-ThermostatError CommandParser::parseString(std::string command, ThermostatCommand *thermostat_command)
+ThermostatError CommandParser::parseString(ThermostatCommand *thermostat_command)
 {
-    std::istringstream iss(command);
+    std::istringstream iss(thermostat_command->command_string);
     std::string cmd;
     double value;
 
