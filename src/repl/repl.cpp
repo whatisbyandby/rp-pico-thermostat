@@ -5,6 +5,7 @@
 #include "hardware/uart.h"
 
 #include "repl.hpp"
+#include "thermostat_common.hpp"
 
 #define UART_ID uart0
 #define BAUD_RATE 115200
@@ -32,8 +33,13 @@ ThermostatError Repl::init()
     // Set datasheet for more information on function select
     gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
+
+    std::cout << "Thermostat Version " << THERMOSTAT_VERSION << std::endl;
+    std::cout << "Enter a command: ->" << std::endl;
+
     return THERMOSTAT_OK;
 }
+
 
 ThermostatError Repl::read(ThermostatCommand *command)
 {

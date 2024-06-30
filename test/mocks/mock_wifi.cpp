@@ -19,3 +19,8 @@ ThermostatError Wifi::connect(const char *ssid, const char *password)
     return (ThermostatError) mock().actualCall("Wifi::connect").returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
+ThermostatError Wifi::connect()
+{
+    return (ThermostatError) mock().actualCall("Wifi::connect").returnIntValueOrDefault(THERMOSTAT_OK);
+}
+

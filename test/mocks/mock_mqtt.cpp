@@ -1,7 +1,7 @@
 #include "mqtt.hpp"
 #include <CppUTestExt/MockSupport.h>
 
-Mqtt::Mqtt()
+Mqtt::Mqtt(Configuration *config)
 {
 }
 

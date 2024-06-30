@@ -1,0 +1,38 @@
+
+file(GLOB_RECURSE SOURCE ${PROJECT_SOURCE_DIR}/src/{{CLASS_NAME}}/*.cpp)
+
+file(GLOB TEST_SOURCE
+    ${PROJECT_SOURCE_DIR}/test/{{CLASS_NAME}}/test_{{CLASS_NAME}}.cpp
+    ${PROJECT_SOURCE_DIR}/test/{{CLASS_NAME}}/test_{{CLASS_NAME}}_main.cpp
+)
+
+add_executable(test-{{CLASS_NAME}}
+    ${SOURCE}
+    ${TEST_SOURCE}
+)
+
+target_include_directories(test-{{CLASS_NAME}} PRIVATE
+    ${PROJECT_SOURCE_DIR}/src/{{CLASS_NAME}}
+)
+
+target_link_libraries(test-{{CLASS_NAME}}
+    CppUTest::CppUTest
+    CppUTest::CppUTestExt
+)
+
+# Add the test to CTest
+if(ON_TARGET)
+    target_link_libraries(test-{{CLASS_NAME}}
+        pico_stdlib
+    )
+
+    target_compile_definitions(test-{{CLASS_NAME}} PRIVATE
+        ON_TARGET=1
+        PICO_CXX_DISABLE_ALLOCATION_OVERRIDES
+    )
+
+else()
+    target_compile_definitions(test-{{CLASS_NAME}} PRIVATE ON_TARGET=0)
+endif()
+
+add_test(NAME Test{{CLASS_NAME}} COMMAND test-{{CLASS_NAME}})

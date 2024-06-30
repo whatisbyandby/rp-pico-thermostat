@@ -1,6 +1,5 @@
 #include "producer.hpp"
 #include "json.hpp"
-#include "secrets.h"
 
 
 Producer::Producer(Wifi *wifi, Mqtt *mqtt)
@@ -17,7 +16,7 @@ Producer::~Producer()
 ThermostatError Producer::initalize()
 {
     ThermostatError error = wifi->initalize();
-    error = wifi->connect(WIFI_SSID, WIFI_PASSWORD);
+    error = wifi->connect();
     if (error != THERMOSTAT_OK)
     {
         return THERMOSTAT_INIT_FAILED;

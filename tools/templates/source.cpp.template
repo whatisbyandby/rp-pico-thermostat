@@ -1,0 +1,16 @@
+#include "{{CLASS_NAME}}.hpp"
+
+{{CLASS_NAME_CAP}}::{{CLASS_NAME_CAP}}()
+{
+    // Constructor implementation
+}
+
+{{CLASS_NAME_CAP}}::~{{CLASS_NAME_CAP}}()
+{
+    // Destructor implementation
+}
+
+void {{CLASS_NAME_CAP}}::exampleMethod()
+{
+    // Method implementation
+}

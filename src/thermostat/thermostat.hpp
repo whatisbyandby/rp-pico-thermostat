@@ -41,6 +41,11 @@ class Thermostat {
         double currentTemperature;
         double currentHumidity;
         ThermostatError err;
+
+
+        // Wifi Credentials
+        char ssid[256];
+        char password[256]; 
 };
 
 #endif // THERMOSTAT_HPP

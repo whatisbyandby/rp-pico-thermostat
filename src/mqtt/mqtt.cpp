@@ -1,12 +1,13 @@
 #include "mqtt.hpp"
-#include "secrets.h"
 #include "lwip/apps/mqtt.h"
 #include "pico/cyw43_arch.h"
 
+
 static mqtt_client_t *client;
 
-Mqtt::Mqtt()
-{
+Mqtt::Mqtt(Configuration *newConfig)
+{   
+    configuration = newConfig;
     client = mqtt_client_new();
 }
 
@@ -21,11 +22,15 @@ ThermostatError Mqtt::initalize()
 }
 
 ThermostatError Mqtt::connect()
-{
+{   
+
+    ConfigValues configValues;
+    configuration->getConfig(&configValues);
+
     const struct mqtt_connect_client_info_t client_info = {
         .client_id = "home-thermostat",
-        .client_user = MQTT_USER,
-        .client_pass = MQTT_PASS,
+        .client_user = configValues.mqtt_username,
+        .client_pass = configValues.mqtt_password,
         .will_topic = "home/themostat/status",
         .will_msg = "offline",
         .will_qos = 1,
@@ -33,7 +38,7 @@ ThermostatError Mqtt::connect()
     };
 
     ip_addr_t ipaddr;
-    const char *ip_str = MQTT_SERVER_HOST;
+    const char *ip_str = configValues.mqtt_host;
 
     if (!ipaddr_aton(ip_str, &ipaddr))
     {
@@ -43,7 +48,7 @@ ThermostatError Mqtt::connect()
     }
 
     cyw43_arch_lwip_begin();
-    err_t err = mqtt_client_connect(client, &ipaddr, MQTT_SERVER_PORT, NULL, 0, &client_info);
+    err_t err = mqtt_client_connect(client, &ipaddr, configValues.mqtt_port, NULL, 0, &client_info);
     cyw43_arch_lwip_end();
     return THERMOSTAT_OK;
 }

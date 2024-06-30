@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
 
@@ -15,21 +16,18 @@
 #include "repl.hpp"
 #include "display.hpp"
 #include "producer.hpp"
+#include "configuration.hpp"
 #include "wifi.hpp"
 #include "mqtt.hpp"
-#include "secrets.h"
 
 static Thermostat *thermostat_inst;
 
 void commandLoop()
 {
-
     stdio_init_all();
-
 
     ThermostatController controller = ThermostatController(thermostat_inst);
     CommandParser parser = CommandParser();
-
 
     Repl repl(&parser);
 
@@ -43,12 +41,18 @@ void commandLoop()
         {
             err = controller.executeCommand(&command);
             err = repl.print(&command);
+            std::cout << "->" << std::endl;
         }
     }
 }
 
 int main()
-{   
+ {
+    stdio_init_all();
+
+    Configuration configuration;
+    configuration.load();
+
     I2CBus i2cBus;
     i2cBus.initialize();
     I2CDevice i2cDevice(&i2cBus, 0x38);
@@ -69,28 +73,31 @@ int main()
 
     thermostat.initialize();
 
+    Wifi wifi;
+    ThermostatError err = wifi.initalize();
 
-    // Wifi wifi;
-    // ThermostatError err = wifi.initalize();
-    // err = wifi.connect(WIFI_SSID, WIFI_PASSWORD);
+    ConfigValues values;
+    configuration.getConfig(&values);
+    
+    
+    err = wifi.connect(values.ssid, values.password);
 
-    // Mqtt mqtt;
-    // err = mqtt.initalize();
-    // err = mqtt.connect();
+    Mqtt mqtt(&configuration);
+    err = mqtt.initalize();
+    err = mqtt.connect();
 
-    // Producer producer(&wifi, &mqtt);
-    // err = producer.initalize();
+    Producer producer(&wifi, &mqtt);
+    err = producer.initalize();
 
     multicore_launch_core1(commandLoop);
 
     while (true)
     {
-        // ThermostatError err = thermostat.update();
-        // ThermostatState state;
-        // err = thermostat.getState(&state);
+        thermostat.update();
+        ThermostatState currentState;
+        thermostat.getState(&currentState);
 
-        // producer.update(&state);
-
+        producer.update(&currentState);
         sleep_ms(5000);
     }
 }

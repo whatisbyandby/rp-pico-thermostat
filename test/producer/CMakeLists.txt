@@ -13,6 +13,7 @@ file(GLOB MOCK_SOURCE
     ${PROJECT_SOURCE_DIR}/test/mocks/mock_wifi.cpp
     ${PROJECT_SOURCE_DIR}/test/mocks/mock_mqtt.cpp
     ${PROJECT_SOURCE_DIR}/test/mocks/mock_json.cpp
+    ${PROJECT_SOURCE_DIR}/test/mocks/mock_configuration.cpp
 )
 
 
@@ -25,6 +26,7 @@ add_executable(test-producer
     
 target_include_directories(test-producer PRIVATE
     ${PROJECT_SOURCE_DIR}/src/producer
+    ${PROJECT_SOURCE_DIR}/src/configuration
     ${PROJECT_SOURCE_DIR}/src/common
     ${PROJECT_SOURCE_DIR}/src/wifi
     ${PROJECT_SOURCE_DIR}/src/mqtt

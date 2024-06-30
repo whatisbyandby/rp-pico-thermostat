@@ -1,0 +1,10 @@
+#pragma once
+
+class {{CLASS_NAME_CAP}}
+{
+public:
+    {{CLASS_NAME_CAP}}();
+    ~{{CLASS_NAME_CAP}}();
+    
+    void exampleMethod();
+};

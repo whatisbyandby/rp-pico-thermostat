@@ -6,13 +6,15 @@
 static Producer *producer;
 static Wifi *wifi;
 static Mqtt *mqtt;
+static Configuration *config;
 
 TEST_GROUP(TestGroupProducer)
 {
     void setup()
-    {
+    {   
+        config = new Configuration();
         wifi = new Wifi();
-        mqtt = new Mqtt();
+        mqtt = new Mqtt(config);
         producer = new Producer(wifi, mqtt);
     }
 
@@ -21,6 +23,7 @@ TEST_GROUP(TestGroupProducer)
         delete producer;
         delete wifi;
         delete mqtt;
+        delete config;
         mock().checkExpectations();
         mock().clear();
     }

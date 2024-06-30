@@ -6,13 +6,6 @@ if (ON_TARGET)
 
     pico_sdk_init()
 
-    add_executable(main_test test_main.cpp)
-
-    target_link_libraries(main_test
-        pico_stdlib
-        hardware_uart
-    )
-
     file(GLOB_RECURSE SOURCES
         ${PROJECT_SOURCE_DIR}/src/thermostat/*.cpp
         ${PROJECT_SOURCE_DIR}/src/environment_sensor/*.cpp
@@ -28,9 +21,9 @@ if (ON_TARGET)
         ${PROJECT_SOURCE_DIR}/src/producer/*.cpp
         ${PROJECT_SOURCE_DIR}/src/mqtt/*.cpp
         ${PROJECT_SOURCE_DIR}/src/wifi/*.cpp
+		${PROJECT_SOURCE_DIR}/src/configuration/*.cpp
     )
 
-    # Add your source files
     add_executable(${NAME}
         main.cpp # <-- Add source files here!
         ${SOURCES}
@@ -52,6 +45,7 @@ if (ON_TARGET)
         producer
         mqtt
         wifi
+		configuration
     )
 
     # Include required libraries
@@ -69,6 +63,8 @@ if (ON_TARGET)
         pico_cyw43_arch_lwip_threadsafe_background
         pico_lwip_mqtt
         hardware_i2c
+        hardware_flash 
+        hardware_sync
         pico_explorer
         pico_graphics
         st7789

@@ -13,6 +13,7 @@ file(GLOB MOCK_SOURCE
     ${PROJECT_SOURCE_DIR}/test/mocks/mock_wifi.cpp
     ${PROJECT_SOURCE_DIR}/test/mocks/mock_mqtt.cpp
     ${PROJECT_SOURCE_DIR}/test/mocks/mock_json.cpp
+    ${PROJECT_SOURCE_DIR}/test/mocks/mock_configuration.cpp
 )
 
 
@@ -29,6 +30,7 @@ target_include_directories(test-subscriber PRIVATE
     ${PROJECT_SOURCE_DIR}/src/wifi
     ${PROJECT_SOURCE_DIR}/src/mqtt
     ${PROJECT_SOURCE_DIR}/src/json
+    ${PROJECT_SOURCE_DIR}/src/configuration
 )
 
 

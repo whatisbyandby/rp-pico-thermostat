@@ -3,6 +3,7 @@
 
 #include "subscriber.hpp"
 
+
 TEST_GROUP(TestGroupSubscriber)
 {
     void setup()
@@ -22,8 +23,9 @@ TEST(TestGroupSubscriber, SubscriberConstructor)
 }
 
 TEST(TestGroupSubscriber, SubscriberSubscribe)
-{
-    Mqtt mqtt;
+{   
+    Configuration config;
+    Mqtt mqtt(&config);
     Subscriber testSubscriber(nullptr, &mqtt);
 
     mock().expectOneCall("Mqtt::subscribe")

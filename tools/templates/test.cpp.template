@@ -1,0 +1,18 @@
+#include "CppUTest/TestHarness.h"
+#include "{{CLASS_NAME}}.hpp"
+
+TEST_GROUP({{CLASS_NAME}}TestGroup)
+{
+    void setup() {
+        // Initialization before each test
+    }
+
+    void teardown() {
+        // Cleanup after each test
+    }
+};
+
+TEST({{CLASS_NAME}}TestGroup, TestExample)
+{
+    CHECK(false);
+}

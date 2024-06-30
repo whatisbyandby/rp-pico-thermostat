@@ -3,6 +3,8 @@
 
 #include <string>
 
+#define THERMOSTAT_VERSION "1.0.0"
+
 
 typedef enum ThermostatError {
     THERMOSTAT_OK = 0,

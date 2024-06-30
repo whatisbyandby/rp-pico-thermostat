@@ -2,10 +2,11 @@
 #define MQTT_HPP
 
 #include "thermostat_common.hpp"
+#include "configuration.hpp"
 
 class Mqtt {
     public:
-        Mqtt();
+        Mqtt(Configuration *configuration);
         ~Mqtt();
         ThermostatError initalize();
         ThermostatError connect();
@@ -14,6 +15,7 @@ class Mqtt {
         bool isConnected();
     private:
         bool initalized;
+        Configuration *configuration;
 
 };
 
