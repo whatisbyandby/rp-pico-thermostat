@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <iostream>
 #include <sstream>
-#include <string>
+#include <string.h>
 
 
 Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac)
@@ -18,6 +18,7 @@ Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureControll
     this->currentError = THERMOSTAT_OK;
     this->currentHumidity = -1;
     this->currentTemperature = -1;
+    memset(this->errorString, 0, sizeof(this->errorString));
 }
 
 Thermostat::~Thermostat()
@@ -27,8 +28,23 @@ Thermostat::~Thermostat()
 
 ThermostatError Thermostat::initialize()
 {
-    if (environmentSensor == NULL || temperatureController == NULL || hvac == NULL)
+    if (environmentSensor == NULL)
     {
+        strcpy(errorString, "Environment Sensor is NULL");
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
+    }
+
+    if (temperatureController == NULL)
+    {
+        strcpy(errorString, "Temperature Controller is NULL");
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
+    }
+
+    if (hvac == NULL)
+    {
+        strcpy(errorString, "HVAC is NULL");
         currentError = THERMOSTAT_INIT_FAILED;
         return currentError;
     }
@@ -36,18 +52,21 @@ ThermostatError Thermostat::initialize()
     EnvironmentSensorError sensorErr = environmentSensor->readTemperatureHumidity(&currentTemperature, &currentHumidity);
     if (sensorErr != ENVIRONMENT_SENSOR_OK)
     {   
+        strcpy(errorString, "Error reading temperature and humidity from sensor");
         currentError = THERMOSTAT_SENSOR_ERROR;
         return currentError;
     }
 
     if (currentHumidity < 0 || currentTemperature < 0)
-    {
+    {   
+        strcpy(errorString, "Temperature or Humidity values are under a reasonable value");
         currentError = THERMOSTAT_SENSOR_ERROR;
         return currentError;
     }
 
     if (currentHumidity > 100 || currentTemperature > 100)
-    {
+    {   
+        strcpy(errorString, "Temperature or Humidity values are over a reasonable value");
         currentError = THERMOSTAT_SENSOR_ERROR;
         return currentError;
     }
@@ -82,6 +101,12 @@ ThermostatMode Thermostat::getMode()
 ThermostatError Thermostat::getCurrentError()
 {
     return currentError;
+}
+
+ThermostatError Thermostat::getCurrentErrorMessage(char *errorString)
+{
+    strcpy(errorString, this->errorString);
+    return THERMOSTAT_OK;
 }
 
 ThermostatError Thermostat::setMode(ThermostatMode newMode)

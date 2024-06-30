@@ -27,6 +27,7 @@ class Thermostat {
         ThermostatError update();
         ThermostatError getState(ThermostatState *currentState);
         ThermostatError getCurrentError();
+        ThermostatError getCurrentErrorMessage(char *errorString);
         ThermostatError printState(std::string *output);
 
     
@@ -42,11 +43,9 @@ class Thermostat {
         double currentTemperature;
         double currentHumidity;
         ThermostatError currentError;
+        char errorString[256];
 
 
-        // Wifi Credentials
-        char ssid[256];
-        char password[256]; 
 };
 
 #endif // THERMOSTAT_HPP

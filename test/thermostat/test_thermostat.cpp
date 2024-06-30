@@ -72,10 +72,33 @@ TEST(ThermostatTestGroup, ThermostatInitalize)
    delete testInit;
 }
 
-TEST(ThermostatTestGroup, ThermostatInitalize_NULL){
+TEST(ThermostatTestGroup, ThermostatInitalize_NULL_EnvironmentSensor){
    Thermostat *testInitalize = new Thermostat(NULL, NULL, NULL);
    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
+   char messageBuffer[256];
+   testInitalize->getCurrentErrorMessage(messageBuffer);
+   STRCMP_EQUAL("Environment Sensor is NULL", messageBuffer);
+   delete testInitalize;
+}
+
+TEST(ThermostatTestGroup, ThermostatInitalize_NULL_TemperatureController){
+   Thermostat *testInitalize = new Thermostat(environmentSensor, NULL, NULL);
+   ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
+   CHECK_FALSE(testInitalize->isInitialized());
+   char messageBuffer[256];
+   testInitalize->getCurrentErrorMessage(messageBuffer);
+   STRCMP_EQUAL("Temperature Controller is NULL", messageBuffer);
+   delete testInitalize;
+}
+
+TEST(ThermostatTestGroup, ThermostatInitalize_NULL_hvac){
+   Thermostat *testInitalize = new Thermostat(environmentSensor, temperatureController, NULL);
+   ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
+   CHECK_FALSE(testInitalize->isInitialized());
+   char messageBuffer[256];
+   testInitalize->getCurrentErrorMessage(messageBuffer);
+   STRCMP_EQUAL("HVAC is NULL", messageBuffer);
    delete testInitalize;
 }
 
@@ -94,6 +117,9 @@ TEST(ThermostatTestGroup, ThermostatSensorError)
 	ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->initialize());
    CHECK_FALSE(testInit->isInitialized());
    ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());
+   char messageBuffer[256];
+   testInit->getCurrentErrorMessage(messageBuffer);
+   STRCMP_EQUAL("Error reading temperature and humidity from sensor", messageBuffer);
    delete testInit;
 
 }

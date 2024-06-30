@@ -71,7 +71,18 @@ int main()
 
     thermostat.setMode(HEATING);
 
-    thermostat.initialize();
+    ThermostatError err = thermostat.initialize();
+
+    if (err != THERMOSTAT_OK)
+    {
+        std::cout << "Error initializing thermostat" << std::endl;
+        char errorMessage[256];
+        thermostat.getCurrentErrorMessage(errorMessage);
+        std::cout << errorMessage << std::endl;
+        while (true) {
+            tight_loop_contents();
+        }
+    }
 
     Wifi wifi;
     ThermostatError err = wifi.initalize();
