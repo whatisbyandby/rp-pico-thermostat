@@ -85,7 +85,7 @@ int main()
     }
 
     Wifi wifi;
-    ThermostatError err = wifi.initalize();
+    err = wifi.initalize();
 
     ConfigValues values;
     configuration.getConfig(&values);
