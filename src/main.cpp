@@ -19,6 +19,7 @@
 #include "configuration.hpp"
 #include "wifi.hpp"
 #include "mqtt.hpp"
+#include "watchdog.hpp"
 
 static Thermostat *thermostat_inst;
 
@@ -41,17 +42,27 @@ void commandLoop()
         {
             err = controller.executeCommand(&command);
             err = repl.print(&command);
-            std::cout << "->" << std::endl;
+            std::cout << "-> ";
         }
     }
 }
 
 int main()
- {
+{
     stdio_init_all();
+    Watchdog watchdog;
+
+    if (watchdog.causedReboot())
+    {
+        std::cout << "Watchdog caused reboot" << std::endl;
+        std::cout << "Delaying for 30 seconds before trying to recover" << std::endl;
+        sleep_ms(30000);
+    }
+
 
     Configuration configuration;
     configuration.load();
+
 
     I2CBus i2cBus;
     i2cBus.initialize();
@@ -79,9 +90,8 @@ int main()
         char errorMessage[256];
         thermostat.getCurrentErrorMessage(errorMessage);
         std::cout << errorMessage << std::endl;
-        while (true) {
-            tight_loop_contents();
-        }
+        watchdog.reset();
+
     }
 
     Wifi wifi;
@@ -100,15 +110,36 @@ int main()
     Producer producer(&wifi, &mqtt);
     err = producer.initalize();
 
+    if (err != THERMOSTAT_OK)
+    {
+        std::cout << "Error initializing producer" << std::endl;
+        char errorMessage[256];
+        thermostat.getCurrentErrorMessage(errorMessage);
+        std::cout << errorMessage << std::endl;
+        while (true) {
+            tight_loop_contents();
+        }
+    }
+
     multicore_launch_core1(commandLoop);
+
+    watchdog.initalize(6000);
 
     while (true)
     {
-        thermostat.update();
+        err = thermostat.update();
+        if (err != THERMOSTAT_OK)
+        {
+            std::cout << "Error updating thermostat" << std::endl;
+            char errorMessage[256];
+            thermostat.getCurrentErrorMessage(errorMessage);
+            std::cout << errorMessage << std::endl;
+            watchdog.reset();
+        }
         ThermostatState currentState;
         thermostat.getState(&currentState);
-
         producer.update(&currentState);
+        watchdog.feed();
         sleep_ms(5000);
     }
 }

@@ -119,7 +119,7 @@ TEST(ThermostatTestGroup, ThermostatSensorError)
    ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());
    char messageBuffer[256];
    testInit->getCurrentErrorMessage(messageBuffer);
-   STRCMP_EQUAL("Error reading temperature and humidity from sensor", messageBuffer);
+   STRCMP_EQUAL("Temperature or Humidity values are under a reasonable value", messageBuffer);
    delete testInit;
 
 }

@@ -15,19 +15,6 @@ Producer::~Producer()
 
 ThermostatError Producer::initalize()
 {
-    ThermostatError error = wifi->initalize();
-    error = wifi->connect();
-    if (error != THERMOSTAT_OK)
-    {
-        return THERMOSTAT_INIT_FAILED;
-    }
-    error = mqtt->initalize();
-    error = mqtt->connect();
-
-    if (error != THERMOSTAT_OK)
-    {
-        return THERMOSTAT_INIT_FAILED;
-    }
 
     return THERMOSTAT_OK;
 }

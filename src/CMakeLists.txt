@@ -22,6 +22,7 @@ if (ON_TARGET)
         ${PROJECT_SOURCE_DIR}/src/mqtt/*.cpp
         ${PROJECT_SOURCE_DIR}/src/wifi/*.cpp
 		${PROJECT_SOURCE_DIR}/src/configuration/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/watchdog/*.cpp
     )
 
     add_executable(${NAME}
@@ -46,6 +47,7 @@ if (ON_TARGET)
         mqtt
         wifi
 		configuration
+        watchdog
     )
 
     # Include required libraries
@@ -65,6 +67,7 @@ if (ON_TARGET)
         hardware_i2c
         hardware_flash 
         hardware_sync
+        hardware_watchdog
         pico_explorer
         pico_graphics
         st7789

@@ -45,6 +45,9 @@ class Thermostat {
         ThermostatError currentError;
         char errorString[256];
 
+        ThermostatError updateTemperatureHumidity();
+        ThermostatError validateReading();
+
 
 };
 
