@@ -5,7 +5,7 @@
 
 ThermostatError parse(char *buffer, ThermostatCommand *command);
 
-ThermostatError serialize(char *buffer, size_t len, ThermostatState *state);
+ThermostatError serialize(char *buffer, size_t len, ThermostatData *data);
 
 
 

@@ -18,8 +18,8 @@ ThermostatError Producer::initalize()
 }
 
 
-ThermostatError Producer::update(ThermostatState *state)
+ThermostatError Producer::update(ThermostatData *data)
 {
-    return (ThermostatError) mock().actualCall("Producer::update").withPointerParameter("state", state).returnIntValueOrDefault(THERMOSTAT_OK);
+    return (ThermostatError) mock().actualCall("Producer::update").withPointerParameter("state", data).returnIntValueOrDefault(THERMOSTAT_OK);
 }
 

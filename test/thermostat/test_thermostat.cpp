@@ -203,11 +203,11 @@ TEST(ThermostatTestGroup, UpdateTemperatureUnits)
 }
 
 TEST(ThermostatTestGroup, UpdateMode_Valid) {
-   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(HEATING));
-   ENUMS_EQUAL_INT(HEATING, thermostat->getMode());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(HEAT));
+   ENUMS_EQUAL_INT(HEAT, thermostat->getMode());
 
-   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(COOLING));
-   ENUMS_EQUAL_INT(COOLING, thermostat->getMode());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(COOL));
+   ENUMS_EQUAL_INT(COOL, thermostat->getMode());
 
    ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(FAN_ONLY));
    ENUMS_EQUAL_INT(FAN_ONLY, thermostat->getMode());
@@ -224,64 +224,56 @@ TEST(ThermostatTestGroup, UpdateMode_Invalid) {
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeHeating) {
 
-   thermostat->setMode(HEATING);
+   thermostat->setMode(HEAT);
 
-   ENUMS_EQUAL_INT(HEATER_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, ALL_OFF));
-   ENUMS_EQUAL_INT(HEATER_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, HEATER_ON));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, HEATER_ON));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, HEATER_ON));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE, HEATER_ON));
+   ENUMS_EQUAL_INT(HEATING, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, IDLE));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, IDLE));
+   ENUMS_EQUAL_INT(HEATING, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, HEATING));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(IN_RANGE, HEATING));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, HEATING));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(OVER_TEMPERATURE, HEATING));
 }
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeCooling) {
 
-   thermostat->setMode(COOLING);
+   thermostat->setMode(COOL);
 
-   ENUMS_EQUAL_INT(COOLER_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, ALL_OFF));
-   ENUMS_EQUAL_INT(COOLER_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, COOLER_ON));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, COOLER_ON));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, COOLER_ON));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, COOLER_ON));
+   ENUMS_EQUAL_INT(COOLING, thermostat->getDesiredHVACState(OVER_TEMPERATURE, IDLE));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, IDLE));
+   ENUMS_EQUAL_INT(COOLING, thermostat->getDesiredHVACState(OVER_TEMPERATURE_IN_RANGE, COOLING));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(IN_RANGE, COOLING));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(UNDER_TEMPERATURE_IN_RANGE, COOLING));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, COOLING));
 }
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeFanOnly) {
 
    thermostat->setMode(FAN_ONLY);
    
-   ENUMS_EQUAL_INT(FAN_ON, thermostat->getDesiredHVACState(IN_RANGE, ALL_OFF));
-   ENUMS_EQUAL_INT(FAN_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
-   ENUMS_EQUAL_INT(FAN_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(FAN_ON, thermostat->getDesiredHVACState(IN_RANGE, IDLE));
+   ENUMS_EQUAL_INT(FAN_ON, thermostat->getDesiredHVACState(OVER_TEMPERATURE, IDLE));
+   ENUMS_EQUAL_INT(FAN_ON, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, IDLE));
 }
 
 TEST(ThermostatTestGroup, GetDesiredHVACState_ModeOff) {
 
    thermostat->setMode(OFF);
 
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, ALL_OFF));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(IN_RANGE, IDLE));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(OVER_TEMPERATURE, IDLE));
+   ENUMS_EQUAL_INT(IDLE, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, IDLE));
 }
 
-TEST(ThermostatTestGroup, GetDesiredHVACState_ModeError) {
-
-   thermostat->setMode(ERROR);
-
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(IN_RANGE, ALL_OFF));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(OVER_TEMPERATURE, ALL_OFF));
-   ENUMS_EQUAL_INT(ALL_OFF, thermostat->getDesiredHVACState(UNDER_TEMPERATURE, ALL_OFF));
-}
 
 TEST(ThermostatTestGroup, UpdateThermostatMode) {
-   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(HEATING));
-   ENUMS_EQUAL_INT(HEATING, thermostat->getMode());
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->setMode(HEAT));
+   ENUMS_EQUAL_INT(HEAT, thermostat->getMode());
 }
 
 TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_UnderTemp) {
 
 
-   thermostat->setMode(HEATING);
+   thermostat->setMode(HEAT);
    temperatureController->setTargetTemperature(25.0);
 
    double temperature = 20.0;
@@ -295,11 +287,11 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_UnderTemp) {
 
    mock()
       .expectOneCall("HVAC::getCurrentState")
-      .andReturnValue(ALL_OFF);
+      .andReturnValue(IDLE);
 
    mock()
       .expectOneCall("HVAC::setDesiredState")
-      .withParameter("state", HEATER_ON)
+      .withParameter("state", HEATING)
       .andReturnValue(THERMOSTAT_OK);
 
    ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->update());
@@ -308,7 +300,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_UnderTemp) {
 
 TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_InRange) {
 
-   thermostat->setMode(HEATING);
+   thermostat->setMode(HEAT);
    temperatureController->setTargetTemperature(20);
 
    double temperature = 19.9;
@@ -322,11 +314,11 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_InRange) {
 
    mock()
       .expectOneCall("HVAC::getCurrentState")
-      .andReturnValue(HEATER_ON);
+      .andReturnValue(HEATING);
 
    mock()
       .expectOneCall("HVAC::setDesiredState")
-      .withParameter("state", HEATER_ON)
+      .withParameter("state", HEATING)
       .andReturnValue(THERMOSTAT_OK);
 
    ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->update());
@@ -335,7 +327,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_InRange) {
 
 TEST(ThermostatTestGroup, UpdateThermostat_ExpectAllOff_OverTemp) {
 
-   thermostat->setMode(HEATING);
+   thermostat->setMode(HEAT);
    temperatureController->setTargetTemperature(20);
 
    double temperature = 20.1;
@@ -349,11 +341,11 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectAllOff_OverTemp) {
 
    mock()
       .expectOneCall("HVAC::getCurrentState")
-      .andReturnValue(HEATER_ON);
+      .andReturnValue(HEATING);
 
    mock()
       .expectOneCall("HVAC::setDesiredState")
-      .withParameter("state", ALL_OFF)
+      .withParameter("state", IDLE)
       .andReturnValue(THERMOSTAT_OK);
 
    ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->update());
@@ -361,7 +353,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectAllOff_OverTemp) {
 }
 
 TEST(ThermostatTestGroup, GetState) {
-   thermostat->setMode(HEATING);
+   thermostat->setMode(HEAT);
    thermostat->setTemperatureUnits(FAHRENHEIT);
    thermostat->setTargetTemperature(68.0);
 
@@ -369,7 +361,7 @@ TEST(ThermostatTestGroup, GetState) {
    temperatureController->setTemperatureRange(1.0);
 
    mock().expectOneCall("HVAC::getCurrentState")
-      .andReturnValue(HEATER_ON);
+      .andReturnValue(HEATING);
 
    double temperature = 20;
    double humidity = 50.0;
@@ -386,30 +378,30 @@ TEST(ThermostatTestGroup, GetState) {
 
 
    mock().expectOneCall("HVAC::getCurrentState")
-      .andReturnValue(HEATER_ON);
+      .andReturnValue(HEATING);
 
    
 
    thermostat->update();
 
-   ThermostatState state; 
-   ThermostatError err = thermostat->getState(&state);
+   ThermostatData data; 
+   ThermostatError err = thermostat->getData(&data);
 
    ENUMS_EQUAL_INT(THERMOSTAT_OK, err);
-   ENUMS_EQUAL_INT(HEATING, state.mode);
-   ENUMS_EQUAL_INT(FAHRENHEIT, state.temperatureUnits);
-   ENUMS_EQUAL_INT(HEATER_ON, state.hvacState);
-   ENUMS_EQUAL_INT(THERMOSTAT_OK, state.error);
-   DOUBLES_EQUAL(68.0, state.targetTemperature, 0.01);
-   DOUBLES_EQUAL(68, state.currentTemperature, 0.01);
-   DOUBLES_EQUAL(50.0, state.currentHumidity, 0.01);
-   DOUBLES_EQUAL(20, state.currentTemperatureStandardUnits, 0.01);
-   DOUBLES_EQUAL(20, state.targetTemperatureStandardUnits, 0.01);
-   DOUBLES_EQUAL(1.0, state.temperatureRange, 0.1);
+   ENUMS_EQUAL_INT(HEAT, data.mode);
+   ENUMS_EQUAL_INT(FAHRENHEIT, data.temperatureUnits);
+   ENUMS_EQUAL_INT(HEATING, data.hvacState);
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, data.error);
+   DOUBLES_EQUAL(68.0, data.targetTemperature, 0.01);
+   DOUBLES_EQUAL(68, data.currentTemperature, 0.01);
+   DOUBLES_EQUAL(50.0, data.currentHumidity, 0.01);
+   DOUBLES_EQUAL(20, data.currentTemperatureStandardUnits, 0.01);
+   DOUBLES_EQUAL(20, data.targetTemperatureStandardUnits, 0.01);
+   DOUBLES_EQUAL(1.0, data.temperatureRange, 0.1);
 }
 
 TEST(ThermostatTestGroup, PrintState) {
-   thermostat->setMode(HEATING);
+   thermostat->setMode(HEAT);
    thermostat->setTemperatureUnits(CELSIUS);
    thermostat->setTargetTemperature(25.0);
 
@@ -417,7 +409,7 @@ TEST(ThermostatTestGroup, PrintState) {
    std::string state;
 
    mock().expectOneCall("HVAC::getCurrentState")
-      .andReturnValue(HEATER_ON);
+      .andReturnValue(HEATING);
 
    thermostat->printState(&state);
 

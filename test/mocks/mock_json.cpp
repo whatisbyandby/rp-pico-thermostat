@@ -1,7 +1,7 @@
 #include <CppUTestExt/MockSupport.h>
 #include "json.hpp"
 
-ThermostatError serialize(char *buffer, size_t size, ThermostatState *state)
+ThermostatError serialize(char *buffer, size_t size, ThermostatData *state)
 {
   return (ThermostatError) mock()
     .actualCall("serialize")

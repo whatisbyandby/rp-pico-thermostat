@@ -82,24 +82,25 @@ inline const char *temperatureStateToString(TemperatureState state)
     }
 }
 
-typedef enum HVACState {
-    HEATER_ON,
-    COOLER_ON,
+typedef enum ThermostatState {
+    HEATING,
+    COOLING,
     FAN_ON,
-    ALL_OFF
-} HVACState;
+    IDLE,
+    ERROR
+} ThermostatState;
 
-inline const char *hvacStateToString(HVACState state)
+inline const char *hvacStateToString(ThermostatState state)
 {
     switch (state)
     {
-    case HEATER_ON:
+    case HEATING:
         return "HEATER_ON";
-    case COOLER_ON:
+    case COOLING:
         return "COOLER_ON";
     case FAN_ON:
         return "FAN_ON";
-    case ALL_OFF:
+    case IDLE:
         return "ALL_OFF";
     default:
         return "UNKNOWN";
@@ -107,10 +108,9 @@ inline const char *hvacStateToString(HVACState state)
 }
 
 typedef enum ThermostatMode {
-    HEATING,
-    COOLING,
+    HEAT,
+    COOL,
     FAN_ONLY,
-    ERROR,
     OFF
 } ThermostatMode;
 
@@ -118,10 +118,9 @@ inline ThermostatError validateThermostatMode(ThermostatMode mode)
 {
     switch (mode)
     {
-    case HEATING:
-    case COOLING:
+    case HEAT:
+    case COOL:
     case FAN_ONLY:
-    case ERROR:
     case OFF:
         return THERMOSTAT_OK;
     default:
@@ -133,14 +132,12 @@ inline const char *thermostatModeToString(ThermostatMode mode)
 {
     switch (mode)
     {
-    case HEATING:
+    case HEAT:
         return "HEATING";
-    case COOLING:
+    case COOL:
         return "COOLING";
     case FAN_ONLY:
         return "FAN_ONLY";
-    case ERROR:
-        return "ERROR";
     case OFF:
         return "OFF";
     default:
@@ -180,7 +177,7 @@ inline double convertCelsiusToFahrenheit(double celsius)
     return celsius * 9.0 / 5.0 + 32;
 }
 
-struct ThermostatState {
+struct ThermostatData {
     double currentTemperature;
     double targetTemperature;
     double temperatureRange;
@@ -188,7 +185,7 @@ struct ThermostatState {
     double targetTemperatureStandardUnits;
     double currentHumidity;
     TemperatureState temperatureState;
-    HVACState hvacState;
+    ThermostatState hvacState;
     ThermostatMode mode;
     TemperatureUnits temperatureUnits;
     ThermostatError error;

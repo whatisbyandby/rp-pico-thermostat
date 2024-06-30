@@ -19,10 +19,10 @@ ThermostatError Producer::initalize()
     return THERMOSTAT_OK;
 }
 
-ThermostatError Producer::update(ThermostatState *state)
+ThermostatError Producer::update(ThermostatData *data)
 {
     char buffer[1024];
-    serialize(buffer, sizeof(buffer), state);
+    serialize(buffer, sizeof(buffer), data);
     ThermostatError err = mqtt->publish("home/thermostat/state", buffer);
 
     return THERMOSTAT_OK;

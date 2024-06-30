@@ -80,7 +80,7 @@ int main()
 
     thermostat_inst = &thermostat;
 
-    thermostat.setMode(HEATING);
+    thermostat.setMode(HEAT);
 
     ThermostatError err = thermostat.initialize();
 
@@ -136,9 +136,9 @@ int main()
             std::cout << errorMessage << std::endl;
             watchdog.reset();
         }
-        ThermostatState currentState;
-        thermostat.getState(&currentState);
-        producer.update(&currentState);
+        ThermostatData currentData;
+        thermostat.getData(&currentData);
+        producer.update(&currentData);
         watchdog.feed();
         sleep_ms(5000);
     }

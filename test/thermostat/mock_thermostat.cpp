@@ -42,12 +42,12 @@ double Thermostat::getTargetTemperature() {
         .returnDoubleValueOrDefault(0.0);
 }
 
-HVACState Thermostat::getDesiredHVACState(TemperatureState temperatureState, HVACState currentHVACState) {
-    return (HVACState) mock()
+ThermostatState Thermostat::getDesiredHVACState(TemperatureState temperatureState, ThermostatState currentHVACState) {
+    return (ThermostatState) mock()
         .actualCall("Thermostat::getDesiredHVACState")
         .withIntParameter("temperatureState", temperatureState)
         .withIntParameter("currentHVACState", currentHVACState)
-        .returnIntValueOrDefault(ALL_OFF);
+        .returnIntValueOrDefault(IDLE);
 }
 
 ThermostatMode Thermostat::getMode() {

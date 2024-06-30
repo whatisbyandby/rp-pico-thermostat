@@ -13,10 +13,10 @@ TEST_GROUP(JsonTestGroup)
     }
 };
 
-TEST(JsonTestGroup, SerializeThermostatState)
+TEST(JsonTestGroup, SerializeThermostatData)
 {
 
-    ThermostatState state;
+    ThermostatData state;
     state.currentTemperature = 22.1;
     state.currentHumidity = 50.1;
     state.targetTemperature = 22.1;
@@ -25,8 +25,8 @@ TEST(JsonTestGroup, SerializeThermostatState)
     state.temperatureRange = 1.1;
     state.temperatureState = OVER_TEMPERATURE;
     state.temperatureUnits = CELSIUS;
-    state.hvacState = HEATER_ON;
-    state.mode = HEATING;
+    state.hvacState = HEATING;
+    state.mode = HEAT;
     state.error = THERMOSTAT_OK;
     
     size_t len = 1024;

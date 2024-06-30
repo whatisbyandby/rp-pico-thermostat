@@ -5,29 +5,29 @@ HVAC::HVAC(Switch *heater, Switch *ac, Switch *fan)
     this->heater = heater;
     this->ac = ac;
     this->fan = fan;
-    currentState = ALL_OFF;
+    currentState = IDLE;
 }
 
-HVACState HVAC::readCurrentState() {
+ThermostatState HVAC::readCurrentState() {
     bool heaterState = heater->isOn();
     bool acState = ac->isOn();
     bool fanState = fan->isOn();
     
     if (heaterState) {
-        return HEATER_ON;
+        return HEATING;
     } else if (acState) {
-        return COOLER_ON;
+        return COOLING;
     } else if (fanState) {
         return FAN_ON;
     } else {
-        return ALL_OFF;
+        return IDLE;
     }
 }
 
-ThermostatError HVAC::setDesiredState(HVACState state) {
+ThermostatError HVAC::setDesiredState(ThermostatState state) {
 
 
-    if (state == ALL_OFF) {
+    if (state == IDLE) {
         heater->turnOff();
         ac->turnOff();
         fan->turnOff();
@@ -35,7 +35,7 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         return THERMOSTAT_OK;
     } 
 
-    if (state == HEATER_ON) {
+    if (state == HEATING) {
         heater->turnOn();
         ac->turnOff();
         fan->turnOff();
@@ -43,7 +43,7 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
         return THERMOSTAT_OK;
     }
 
-    if (state == COOLER_ON) {
+    if (state == COOLING) {
         heater->turnOff();
         ac->turnOn();
         fan->turnOff();
@@ -66,7 +66,7 @@ ThermostatError HVAC::setDesiredState(HVACState state) {
     return THERMOSTAT_ERROR;
 }
 
-HVACState HVAC::getCurrentState() {
+ThermostatState HVAC::getCurrentState() {
     return currentState;
 }
 

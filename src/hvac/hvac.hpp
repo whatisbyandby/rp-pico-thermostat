@@ -9,12 +9,12 @@
 class HVAC {
     public:
         HVAC(Switch *heater, Switch *ac, Switch *fan);
-        ThermostatError setDesiredState(HVACState state);
-        HVACState getCurrentState();
+        ThermostatError setDesiredState(ThermostatState state);
+        ThermostatState getCurrentState();
 
     private:
-        HVACState currentState;
-        HVACState readCurrentState();
+        ThermostatState currentState;
+        ThermostatState readCurrentState();
         Switch *heater;
         Switch *ac;
         Switch *fan;

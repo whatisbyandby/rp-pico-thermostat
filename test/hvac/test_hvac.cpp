@@ -48,8 +48,8 @@ TEST(HVACTestGroup, SetHeaterOn)
     mock().expectOneCall("Switch::isOn").onObject(ac).andReturnValue(false);
     mock().expectOneCall("Switch::isOn").onObject(fan).andReturnValue(false);
 
-    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(HEATER_ON));
-    CHECK_EQUAL(HEATER_ON, hvac->getCurrentState());
+    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(HEATING));
+    CHECK_EQUAL(HEATING, hvac->getCurrentState());
 }
 
 TEST(HVACTestGroup, SetAllOffMode)
@@ -63,8 +63,8 @@ TEST(HVACTestGroup, SetAllOffMode)
     mock().expectOneCall("Switch::isOn").onObject(ac).andReturnValue(false);
     mock().expectOneCall("Switch::isOn").onObject(fan).andReturnValue(false);
 
-    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(ALL_OFF));
-    CHECK_EQUAL(ALL_OFF, hvac->getCurrentState());
+    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(IDLE));
+    CHECK_EQUAL(IDLE, hvac->getCurrentState());
 }
 
 TEST(HVACTestGroup, SetFanMode)
@@ -92,6 +92,6 @@ TEST(HVACTestGroup, SetCoolerMode)
     mock().expectOneCall("Switch::isOn").onObject(ac).andReturnValue(true);
     mock().expectOneCall("Switch::isOn").onObject(fan).andReturnValue(false);
 
-    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(COOLER_ON));
-    CHECK_EQUAL(COOLER_ON, hvac->getCurrentState());
+    CHECK_EQUAL(THERMOSTAT_OK, hvac->setDesiredState(COOLING));
+    CHECK_EQUAL(COOLING, hvac->getCurrentState());
 }

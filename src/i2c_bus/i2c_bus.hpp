@@ -1,4 +1,7 @@
-#pragma once
+#ifndef I2C_BUS_HPP
+#define I2C_BUS_HPP
+
+
 #include <stdint.h>
 
 typedef enum I2CError {
@@ -36,3 +39,5 @@ class I2CDevice {
         uint8_t address;
         bool initialized;
 };
+
+#endif

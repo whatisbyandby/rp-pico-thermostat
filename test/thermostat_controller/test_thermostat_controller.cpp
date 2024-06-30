@@ -70,14 +70,14 @@ TEST(ThermostatControllerTestGroup, ExecuteCommandSetMode_Valid) {
 
     ThermostatCommand validCommand {
         SET_MODE,
-        HEATING
+        HEAT
     };
 
     mock().expectOneCall("Thermostat::setMode")
-        .withParameter("mode", HEATING).andReturnValue(THERMOSTAT_OK);
+        .withParameter("mode", HEAT).andReturnValue(THERMOSTAT_OK);
 
     mock().expectOneCall("Thermostat::getMode")
-        .andReturnValue(HEATING);
+        .andReturnValue(HEAT);
 
     ENUMS_EQUAL_TYPE(ThermostatError, THERMOSTAT_OK, thermostatController->executeCommand(&validCommand));
 

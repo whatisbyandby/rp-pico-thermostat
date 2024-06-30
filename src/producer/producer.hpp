@@ -13,7 +13,7 @@ public:
 
     ThermostatError initalize();
 
-    ThermostatError update(ThermostatState *state);
+    ThermostatError update(ThermostatData *data);
 
     private:
         Wifi *wifi;

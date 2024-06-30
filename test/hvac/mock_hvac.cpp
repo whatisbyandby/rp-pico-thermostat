@@ -4,13 +4,13 @@
 
 HVAC::HVAC(Switch *heater, Switch *ac, Switch *fan)
 {
-    currentState = ALL_OFF;
+    currentState = IDLE;
 }
 
-ThermostatError HVAC::setDesiredState(HVACState state) {
+ThermostatError HVAC::setDesiredState(ThermostatState state) {
     return (ThermostatError) mock().actualCall("HVAC::setDesiredState").withParameter("state", state).returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
-HVACState HVAC::getCurrentState() {
-    return (HVACState) mock().actualCall("HVAC::getCurrentState").returnIntValueOrDefault(ALL_OFF);
+ThermostatState HVAC::getCurrentState() {
+    return (ThermostatState) mock().actualCall("HVAC::getCurrentState").returnIntValueOrDefault(IDLE);
 }

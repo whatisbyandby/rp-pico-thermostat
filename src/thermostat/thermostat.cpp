@@ -138,17 +138,12 @@ double Thermostat::getTemperatureInCurrentUnits(double temperatureInStandardUnit
     return temperatureInStandardUnits;
 }
 
-HVACState Thermostat::getDesiredHVACState(TemperatureState temperatureState, HVACState currentHVACState)
+ThermostatState Thermostat::getDesiredHVACState(TemperatureState temperatureState, ThermostatState currentHVACState)
 {
 
     if (mode == OFF)
     {
-        return ALL_OFF;
-    }
-
-    if (mode == ERROR)
-    {
-        return ALL_OFF;
+        return IDLE;
     }
 
     if (mode == FAN_ONLY)
@@ -156,31 +151,31 @@ HVACState Thermostat::getDesiredHVACState(TemperatureState temperatureState, HVA
         return FAN_ON;
     }
 
-    if (mode == HEATING)
+    if (mode == HEAT)
     {
         if (temperatureState == UNDER_TEMPERATURE)
         {
-            return HEATER_ON;
+            return HEATING;
         }
-        if (temperatureState == UNDER_TEMPERATURE_IN_RANGE && currentHVACState == HEATER_ON)
+        if (temperatureState == UNDER_TEMPERATURE_IN_RANGE && currentHVACState == HEATING)
         {
-            return HEATER_ON;
+            return HEATING;
         }
     }
 
-    if (mode == COOLING)
+    if (mode == COOL)
     {
         if (temperatureState == OVER_TEMPERATURE)
         {
-            return COOLER_ON;
+            return COOLING;
         }
-        if (temperatureState == OVER_TEMPERATURE_IN_RANGE && currentHVACState == COOLER_ON)
+        if (temperatureState == OVER_TEMPERATURE_IN_RANGE && currentHVACState == COOLING)
         {
-            return COOLER_ON;
+            return COOLING;
         }
     }
 
-    return ALL_OFF;
+    return IDLE;
 }
 
 ThermostatError Thermostat::updateTemperatureHumidity()
@@ -235,14 +230,14 @@ ThermostatError Thermostat::update() {
 
     TemperatureState temperatureState = temperatureController->checkTemperature(currentTemperature);
 
-    HVACState desiredState = getDesiredHVACState(temperatureState, hvac->getCurrentState());
+    ThermostatState desiredState = getDesiredHVACState(temperatureState, hvac->getCurrentState());
 
     currentError = hvac->setDesiredState(desiredState);
 
     return currentError;
 }
 
-ThermostatError Thermostat::getState(ThermostatState *currentState) {
+ThermostatError Thermostat::getData(ThermostatData *currentState) {
     currentState->mode = this->getMode();
     currentState->temperatureUnits = this->getTemperatureUnits();
     currentState->currentTemperature = this->getTemperatureInCurrentUnits(currentTemperature);

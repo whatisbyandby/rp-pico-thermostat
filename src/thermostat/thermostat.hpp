@@ -17,7 +17,7 @@ class Thermostat {
         bool isInitialized();
         ThermostatError setTemperatureUnits(TemperatureUnits temperatureUnits);
         TemperatureUnits getTemperatureUnits();
-        HVACState getDesiredHVACState(TemperatureState temperatureState, HVACState currentHVACState);
+        ThermostatState getDesiredHVACState(TemperatureState temperatureState, ThermostatState currentHVACState);
         ThermostatMode getMode();
         ThermostatError setMode(ThermostatMode mode);
         ThermostatError setTargetTemperature(double targetTemperature);
@@ -25,7 +25,7 @@ class Thermostat {
         double getTemperatureInStandardUnits(double temperature);
         double getTemperatureInCurrentUnits(double temperatureInStandardUnits);
         ThermostatError update();
-        ThermostatError getState(ThermostatState *currentState);
+        ThermostatError getData(ThermostatData *currentState);
         ThermostatError getCurrentError();
         ThermostatError getCurrentErrorMessage(char *errorString);
         ThermostatError printState(std::string *output);
