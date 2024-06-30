@@ -15,7 +15,9 @@ Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureControll
     this->environmentSensor = environmentSensor;
     this->temperatureController = temperatureController;
     this->hvac = hvac;
-    this->err = THERMOSTAT_OK;
+    this->currentError = THERMOSTAT_OK;
+    this->currentHumidity = -1;
+    this->currentTemperature = -1;
 }
 
 Thermostat::~Thermostat()
@@ -27,8 +29,29 @@ ThermostatError Thermostat::initialize()
 {
     if (environmentSensor == NULL || temperatureController == NULL || hvac == NULL)
     {
-        return THERMOSTAT_ERROR;
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
     }
+
+    EnvironmentSensorError sensorErr = environmentSensor->readTemperatureHumidity(&currentTemperature, &currentHumidity);
+    if (sensorErr != ENVIRONMENT_SENSOR_OK)
+    {   
+        currentError = THERMOSTAT_SENSOR_ERROR;
+        return currentError;
+    }
+
+    if (currentHumidity < 0 || currentTemperature < 0)
+    {
+        currentError = THERMOSTAT_SENSOR_ERROR;
+        return currentError;
+    }
+
+    if (currentHumidity > 100 || currentTemperature > 100)
+    {
+        currentError = THERMOSTAT_SENSOR_ERROR;
+        return currentError;
+    }
+
     initalized = true;
     return THERMOSTAT_OK;
 }
@@ -54,6 +77,11 @@ TemperatureUnits Thermostat::getTemperatureUnits()
 ThermostatMode Thermostat::getMode()
 {
     return mode;
+}
+
+ThermostatError Thermostat::getCurrentError()
+{
+    return currentError;
 }
 
 ThermostatError Thermostat::setMode(ThermostatMode newMode)
@@ -147,8 +175,8 @@ ThermostatError Thermostat::update() {
 
     if (!isInitialized())
     {
-        err = THERMOSTAT_NOT_INITALIZED;
-        return err;
+        currentError = THERMOSTAT_NOT_INITALIZED;
+        return currentError;
     }
 
 
@@ -158,9 +186,9 @@ ThermostatError Thermostat::update() {
 
     HVACState desiredState = getDesiredHVACState(temperatureState, hvac->getCurrentState());
 
-    err = hvac->setDesiredState(desiredState);
+    currentError = hvac->setDesiredState(desiredState);
 
-    return err;
+    return currentError;
 }
 
 ThermostatError Thermostat::getState(ThermostatState *currentState) {
@@ -173,7 +201,7 @@ ThermostatError Thermostat::getState(ThermostatState *currentState) {
     currentState->temperatureRange = temperatureController->getTemperatureRange();
     currentState->currentHumidity = this->currentHumidity;
     currentState->hvacState = hvac->getCurrentState();
-    currentState->error = err;
+    currentState->error = currentError;
 
     return THERMOSTAT_OK;
 }

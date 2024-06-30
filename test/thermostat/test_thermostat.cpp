@@ -20,6 +20,14 @@ TEST_GROUP(ThermostatTestGroup)
       hvac = new HVAC(NULL, NULL, NULL);
       thermostat = new Thermostat(environmentSensor, temperatureController, hvac);
 
+
+      double temperature = 20;
+      double humidity = 50;
+
+      mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity")
+         .withOutputParameterReturning("temperature", &temperature, sizeof(double))
+         .withOutputParameterReturning("humidity", &humidity, sizeof(double))
+         .andReturnValue(ENVIRONMENT_SENSOR_OK);
       thermostat->initialize();
    }
 
@@ -49,16 +57,68 @@ TEST(ThermostatTestGroup, ThermostatConstructor)
 
 TEST(ThermostatTestGroup, ThermostatInitalize)
 {
-   ENUMS_EQUAL_INT(THERMOSTAT_OK, thermostat->initialize());
-   CHECK_TRUE(thermostat->isInitialized());
+
+   double temperature = 20;
+   double humidity = 50;
+
+   mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity")
+      .ignoreOtherParameters()
+      .withOutputParameterReturning("temperature", &temperature, sizeof(double))
+      .withOutputParameterReturning("humidity", &humidity, sizeof(double))
+      .andReturnValue(THERMOSTAT_ERROR);
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac);
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, testInit->initialize());
+   CHECK_TRUE(testInit->isInitialized());
+   delete testInit;
 }
 
 TEST(ThermostatTestGroup, ThermostatInitalize_NULL){
    Thermostat *testInitalize = new Thermostat(NULL, NULL, NULL);
-   ENUMS_EQUAL_INT(THERMOSTAT_ERROR, testInitalize->initialize());
+   ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
    delete testInitalize;
 }
+
+TEST(ThermostatTestGroup, ThermostatSensorError)
+{	
+
+   double temperature = -1;
+   double humidity = -1;
+
+	mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity")
+      .withOutputParameterReturning("temperature", &temperature, sizeof(double))
+      .withOutputParameterReturning("humidity", &humidity, sizeof(double))
+      .andReturnValue(ENVIRONMENT_SENSOR_READ_ERROR);
+   
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac);
+	ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->initialize());
+   CHECK_FALSE(testInit->isInitialized());
+   ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());
+   delete testInit;
+
+}
+
+TEST(ThermostatTestGroup, ThermostatSensorInvalid)
+{	
+
+   double temperature = -1;
+   double humidity = -1;
+
+	mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity")
+      .withOutputParameterReturning("temperature", &temperature, sizeof(double))
+      .withOutputParameterReturning("humidity", &humidity, sizeof(double))
+      .andReturnValue(ENVIRONMENT_SENSOR_OK);
+   
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac);
+	ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->initialize());
+   CHECK_FALSE(testInit->isInitialized());
+   ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());
+   delete testInit;
+
+}
+
+
+// ============ Update Temperature Units
 
 TEST(ThermostatTestGroup, UpdateTargetTemperatureCelsius) {
    thermostat->setTemperatureUnits(CELSIUS);

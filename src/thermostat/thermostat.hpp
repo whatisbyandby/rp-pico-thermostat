@@ -26,6 +26,7 @@ class Thermostat {
         double getTemperatureInCurrentUnits(double temperatureInStandardUnits);
         ThermostatError update();
         ThermostatError getState(ThermostatState *currentState);
+        ThermostatError getCurrentError();
         ThermostatError printState(std::string *output);
 
     
@@ -40,7 +41,7 @@ class Thermostat {
 
         double currentTemperature;
         double currentHumidity;
-        ThermostatError err;
+        ThermostatError currentError;
 
 
         // Wifi Credentials
