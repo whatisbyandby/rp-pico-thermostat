@@ -16,7 +16,7 @@ Mqtt::~Mqtt()
     mqtt_client_free(client);
 }
 
-ThermostatError Mqtt::initalize()
+ThermostatError Mqtt::initialize()
 {
     return THERMOSTAT_OK;
 }

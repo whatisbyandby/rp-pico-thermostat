@@ -3,6 +3,7 @@
 file(GLOB TEST_SOURCE 
     ${PROJECT_SOURCE_DIR}/test/thermostat/test_thermostat_main.cpp
     ${PROJECT_SOURCE_DIR}/test/thermostat/test_thermostat.cpp
+    ${PROJECT_SOURCE_DIR}/test/thermostat/test_thermostat_init.cpp
 )
 
 file(GLOB SOURCE 

@@ -8,7 +8,7 @@ class Mqtt {
     public:
         Mqtt(Configuration *configuration);
         ~Mqtt();
-        ThermostatError initalize();
+        ThermostatError initialize();
         ThermostatError connect();
         ThermostatError publish(const char *topic, char *message);
         ThermostatError subscribe(const char *topic);

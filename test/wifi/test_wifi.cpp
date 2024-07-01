@@ -25,14 +25,14 @@ TEST(TestGroupWifi, initalize)
     mock().expectOneCall("cyw43_arch_init").andReturnValue(0);
     mock().expectOneCall("cyw43_arch_enable_sta_mode");
 
-    ENUMS_EQUAL_INT(THERMOSTAT_OK, wifi->initalize());
+    ENUMS_EQUAL_INT(THERMOSTAT_OK, wifi->initialize());
 }
 
 TEST(TestGroupWifi, initalize_failed)
 {
     mock().expectOneCall("cyw43_arch_init").andReturnValue(1);
 
-    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, wifi->initalize());
+    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, wifi->initialize());
 }
 
 TEST(TestGroupWifi, connect)

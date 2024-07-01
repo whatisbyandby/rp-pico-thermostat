@@ -7,8 +7,8 @@ class Wifi {
     public:
         Wifi();
         ~Wifi();
-        ThermostatError initalize();
-        ThermostatError initalize(const char *ssid, const char *password);
+        ThermostatError initialize();
+        ThermostatError initialize(const char *ssid, const char *password);
         ThermostatError scan();
         ThermostatError connect(const char *ssid, const char *password);
         ThermostatError connect();

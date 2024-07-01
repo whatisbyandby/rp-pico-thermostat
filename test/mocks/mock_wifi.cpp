@@ -9,9 +9,9 @@ Wifi::~Wifi()
 {
 }
 
-ThermostatError Wifi::initalize()
+ThermostatError Wifi::initialize()
 {
-    return (ThermostatError) mock().actualCall("Wifi::initalize").returnIntValueOrDefault(THERMOSTAT_OK);
+    return (ThermostatError) mock().actualCall("Wifi::initialize").returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
 ThermostatError Wifi::connect(const char *ssid, const char *password)

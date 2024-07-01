@@ -9,9 +9,9 @@ Mqtt::~Mqtt()
 {
 }
 
-ThermostatError Mqtt::initalize()
+ThermostatError Mqtt::initialize()
 {   
-    return (ThermostatError) mock().actualCall("Mqtt::initalize").returnIntValueOrDefault(THERMOSTAT_OK);
+    return (ThermostatError) mock().actualCall("Mqtt::initialize").returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
 ThermostatError Mqtt::connect()

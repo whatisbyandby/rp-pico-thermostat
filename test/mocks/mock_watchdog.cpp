@@ -13,12 +13,12 @@ Watchdog::~Watchdog()
 
 
 
-ThermostatError Watchdog::initalize()
+ThermostatError Watchdog::initialize()
 {
 	return (ThermostatError) mock().actualCall("Watchdog::initialize").returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
-ThermostatError Watchdog::initalize(int timeout)
+ThermostatError Watchdog::initialize(int timeout)
 {
 	return (ThermostatError) mock().actualCall("Watchdog::initialize").returnIntValueOrDefault(THERMOSTAT_OK);
 }

@@ -31,38 +31,48 @@ Thermostat::~Thermostat()
 
 ThermostatError Thermostat::initialize()
 {
-    if (environmentSensor == NULL)
-    {
-        strcpy(errorString, "Environment Sensor is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
-
-    if (temperatureController == NULL)
-    {
-        strcpy(errorString, "Temperature Controller is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
-
-    if (hvac == NULL)
-    {
-        strcpy(errorString, "HVAC is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
-
     initalized = true;
 
-    currentError = updateTemperatureHumidity();
-    
+    currentError = validateArguments();
 
     if (currentError != THERMOSTAT_OK)
     {
         initalized = false;
         return currentError;
     }
-    
+
+    currentError = updateTemperatureHumidity();
+
+    if (currentError != THERMOSTAT_OK)
+    {
+        initalized = false;
+        return currentError;
+    }
+
+    currentError = wifi->initialize();
+
+    if (currentError != THERMOSTAT_OK)
+    {
+        initalized = false;
+        return currentError;
+    }
+
+    mqtt->initialize();
+
+    if (currentError != THERMOSTAT_OK)
+    {
+        initalized = false;
+        return currentError;
+    }
+
+    watchdog->initialize();
+
+    if (currentError != THERMOSTAT_OK)
+    {
+        initalized = false;
+        return currentError;
+    }
+
     return THERMOSTAT_OK;
 }
 
@@ -267,5 +277,35 @@ ThermostatError Thermostat::printState(std::string *output) {
     oss << "Current Temperature Units: " << temperatureUnitsToString(temperatureUnits) << std::endl;
 
     *output = oss.str();
+    return THERMOSTAT_OK;
+}
+
+ThermostatError Thermostat::validateArguments() {
+    if (environmentSensor == NULL)
+    {
+        strcpy(errorString, "Environment Sensor is NULL");
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
+    }
+
+    if (temperatureController == NULL)
+    {
+        strcpy(errorString, "Temperature Controller is NULL");
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
+    }
+
+    if (hvac == NULL)
+    {
+        strcpy(errorString, "HVAC is NULL");
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
+    }
+    if (wifi == NULL)
+    {
+        strcpy(errorString, "Wifi is NULL");
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
+    }
     return THERMOSTAT_OK;
 }

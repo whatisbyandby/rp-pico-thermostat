@@ -54,6 +54,7 @@ class Thermostat {
 
         ThermostatError updateTemperatureHumidity();
         ThermostatError validateReading();
+        ThermostatError validateArguments();
 };
 
 #endif // THERMOSTAT_HPP

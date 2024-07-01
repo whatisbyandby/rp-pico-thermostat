@@ -7,8 +7,8 @@ class Watchdog {
 	public:
 		Watchdog();
 		~Watchdog();
-		ThermostatError initalize();
-		ThermostatError initalize(int timeout);
+		ThermostatError initialize();
+		ThermostatError initialize(int timeout);
 		ThermostatError feed();
 		ThermostatError disable();
 		ThermostatError enable();

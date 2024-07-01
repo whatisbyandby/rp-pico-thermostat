@@ -11,13 +11,13 @@ Watchdog::~Watchdog()
 {
 }
 
-ThermostatError Watchdog::initalize()
+ThermostatError Watchdog::initialize()
 {
 	timeout = 1000;
 	return THERMOSTAT_OK;
 }
 
-ThermostatError Watchdog::initalize(int newTimeout)
+ThermostatError Watchdog::initialize(int newTimeout)
 {	
 	timeout = newTimeout;
 	return THERMOSTAT_OK;

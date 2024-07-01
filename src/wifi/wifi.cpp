@@ -10,7 +10,7 @@ Wifi::~Wifi() {
     
 }
 
-ThermostatError Wifi::initalize() {
+ThermostatError Wifi::initialize() {
     if (initalized) {
         return THERMOSTAT_OK;
     }
@@ -22,7 +22,7 @@ ThermostatError Wifi::initalize() {
     return THERMOSTAT_OK;
 }
 
-ThermostatError Wifi::initalize(const char *ssid, const char *password) {
+ThermostatError Wifi::initialize(const char *ssid, const char *password) {
 
     ssid = ssid;
     password = password;
