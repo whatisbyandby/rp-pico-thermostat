@@ -10,6 +10,10 @@ static Thermostat *thermostat;
 static EnvironmentSensor *environmentSensor;
 static TemperatureController *temperatureController;
 static HVAC *hvac;
+static Wifi *wifi;
+static Mqtt *mqtt;
+static Watchdog *watchdog;
+
 
 TEST_GROUP(ThermostatTestGroup)
 {
@@ -18,7 +22,11 @@ TEST_GROUP(ThermostatTestGroup)
       environmentSensor = new EnvironmentSensor(NULL);
       temperatureController = new TemperatureController();
       hvac = new HVAC(NULL, NULL, NULL);
-      thermostat = new Thermostat(environmentSensor, temperatureController, hvac);
+      wifi = new Wifi();
+      mqtt = new Mqtt(NULL);
+      watchdog = new Watchdog();
+
+      thermostat = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog);
 
 
       double temperature = 20;
@@ -39,13 +47,16 @@ TEST_GROUP(ThermostatTestGroup)
       delete environmentSensor;
       delete temperatureController;
       delete hvac;
+      delete wifi;
+      delete mqtt;
+      delete watchdog;
    }
 };
 
 
 TEST(ThermostatTestGroup, ThermostatConstructor)
 {
-   Thermostat *thermostatConstructor = new Thermostat(NULL, NULL, NULL);
+   Thermostat *thermostatConstructor = new Thermostat(NULL, NULL, NULL, NULL, NULL, NULL);
 
    ENUMS_EQUAL_INT(FAHRENHEIT, thermostat->getTemperatureUnits());
    CHECK_FALSE(thermostatConstructor->isInitialized());
@@ -66,14 +77,46 @@ TEST(ThermostatTestGroup, ThermostatInitalize)
       .withOutputParameterReturning("temperature", &temperature, sizeof(double))
       .withOutputParameterReturning("humidity", &humidity, sizeof(double))
       .andReturnValue(THERMOSTAT_ERROR);
-   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac);
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, NULL, NULL, NULL);
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, testInit->initialize());
+   CHECK_TRUE(testInit->isInitialized());
+   delete testInit;
+}
+
+TEST(ThermostatTestGroup, ThermostatInitalizeSensor) {
+   double temperature = 20;
+   double humidity = 50;
+
+   mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity")
+      .ignoreOtherParameters()
+      .withOutputParameterReturning("temperature", &temperature, sizeof(double))
+      .withOutputParameterReturning("humidity", &humidity, sizeof(double))
+      .andReturnValue(ENVIRONMENT_SENSOR_OK);
+
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, NULL, NULL, NULL);
+   ENUMS_EQUAL_INT(THERMOSTAT_OK, testInit->initialize());
+   CHECK_TRUE(testInit->isInitialized());
+   delete testInit;
+}
+
+TEST(ThermostatTestGroup, ThermostatInitalizeWifi) {
+   double temperature = 20;
+   double humidity = 50;
+
+   mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity")
+      .ignoreOtherParameters()
+      .withOutputParameterReturning("temperature", &temperature, sizeof(double))
+      .withOutputParameterReturning("humidity", &humidity, sizeof(double))
+      .andReturnValue(ENVIRONMENT_SENSOR_OK);
+
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, NULL, NULL, NULL);
    ENUMS_EQUAL_INT(THERMOSTAT_OK, testInit->initialize());
    CHECK_TRUE(testInit->isInitialized());
    delete testInit;
 }
 
 TEST(ThermostatTestGroup, ThermostatInitalize_NULL_EnvironmentSensor){
-   Thermostat *testInitalize = new Thermostat(NULL, NULL, NULL);
+   Thermostat *testInitalize = new Thermostat(NULL, NULL, NULL, NULL, NULL, NULL);
    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
    char messageBuffer[256];
@@ -83,7 +126,7 @@ TEST(ThermostatTestGroup, ThermostatInitalize_NULL_EnvironmentSensor){
 }
 
 TEST(ThermostatTestGroup, ThermostatInitalize_NULL_TemperatureController){
-   Thermostat *testInitalize = new Thermostat(environmentSensor, NULL, NULL);
+   Thermostat *testInitalize = new Thermostat(environmentSensor, NULL, NULL, NULL, NULL, NULL);
    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
    char messageBuffer[256];
@@ -93,7 +136,7 @@ TEST(ThermostatTestGroup, ThermostatInitalize_NULL_TemperatureController){
 }
 
 TEST(ThermostatTestGroup, ThermostatInitalize_NULL_hvac){
-   Thermostat *testInitalize = new Thermostat(environmentSensor, temperatureController, NULL);
+   Thermostat *testInitalize = new Thermostat(environmentSensor, temperatureController, NULL, NULL, NULL, NULL);
    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
    char messageBuffer[256];
@@ -113,7 +156,7 @@ TEST(ThermostatTestGroup, ThermostatSensorError)
       .withOutputParameterReturning("humidity", &humidity, sizeof(double))
       .andReturnValue(ENVIRONMENT_SENSOR_READ_ERROR);
    
-   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac);
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, NULL, NULL, NULL);
 	ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->initialize());
    CHECK_FALSE(testInit->isInitialized());
    ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());
@@ -135,7 +178,7 @@ TEST(ThermostatTestGroup, ThermostatSensorInvalid)
       .withOutputParameterReturning("humidity", &humidity, sizeof(double))
       .andReturnValue(ENVIRONMENT_SENSOR_OK);
    
-   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac);
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, NULL, NULL, NULL);
 	ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->initialize());
    CHECK_FALSE(testInit->isInitialized());
    ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());

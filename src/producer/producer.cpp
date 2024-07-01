@@ -2,9 +2,8 @@
 #include "json.hpp"
 
 
-Producer::Producer(Wifi *wifi, Mqtt *mqtt)
+Producer::Producer(Mqtt *mqtt)
 {
-    this->wifi = wifi;
     this->mqtt = mqtt;
 }
 

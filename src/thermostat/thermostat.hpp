@@ -4,13 +4,16 @@
 #include "environment_sensor.hpp"
 #include "temperature_controller.hpp"
 #include "hvac.hpp"
+#include "wifi.hpp"
+#include "mqtt.hpp"
+#include "watchdog.hpp"
 #include "thermostat_common.hpp"
 #include <iostream>
 
 
 class Thermostat {
     public:
-        Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac);
+        Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac, Wifi *wifi, Mqtt *mqtt, Watchdog *watchdog);
         ~Thermostat();
 
         ThermostatError initialize();
@@ -36,9 +39,13 @@ class Thermostat {
         
         ThermostatMode mode;
         bool initalized;
+
         EnvironmentSensor *environmentSensor;
         TemperatureController *temperatureController;
         HVAC *hvac;
+        Wifi *wifi;
+        Mqtt *mqtt;
+        Watchdog *watchdog;
 
         double currentTemperature;
         double currentHumidity;
@@ -47,8 +54,6 @@ class Thermostat {
 
         ThermostatError updateTemperatureHumidity();
         ThermostatError validateReading();
-
-
 };
 
 #endif // THERMOSTAT_HPP

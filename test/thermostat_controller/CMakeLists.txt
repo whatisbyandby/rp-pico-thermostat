@@ -26,6 +26,10 @@ target_include_directories(test-thermostat-controller PRIVATE
     ${PROJECT_SOURCE_DIR}/src/thermostat
     ${PROJECT_SOURCE_DIR}/src/environment_sensor
     ${PROJECT_SOURCE_DIR}/src/i2c_bus
+    ${PROJECT_SOURCE_DIR}/src/wifi
+    ${PROJECT_SOURCE_DIR}/src/mqtt
+    ${PROJECT_SOURCE_DIR}/src/configuration
+    ${PROJECT_SOURCE_DIR}/src/watchdog
 )
 
 target_link_libraries(test-thermostat-controller

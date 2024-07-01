@@ -15,7 +15,7 @@ TEST_GROUP(TestGroupProducer)
         config = new Configuration();
         wifi = new Wifi();
         mqtt = new Mqtt(config);
-        producer = new Producer(wifi, mqtt);
+        producer = new Producer(mqtt);
     }
 
     void teardown()
@@ -31,7 +31,7 @@ TEST_GROUP(TestGroupProducer)
 
 TEST(TestGroupProducer, ProducerConstructor)
 {
-    Producer testProducer(NULL, NULL);
+    Producer testProducer(NULL);
 }
 
 TEST(TestGroupProducer, ProducerInitalize) {

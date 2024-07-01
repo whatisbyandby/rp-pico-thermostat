@@ -10,7 +10,7 @@ TEST_GROUP(ThermostatControllerTestGroup)
 {
     void setup()
     {
-        thermostat = new Thermostat(NULL, NULL, NULL);
+        thermostat = new Thermostat(NULL, NULL, NULL, NULL, NULL, NULL);
         thermostatController = new ThermostatController(thermostat);
     }
 
@@ -25,7 +25,7 @@ TEST_GROUP(ThermostatControllerTestGroup)
 
 TEST(ThermostatControllerTestGroup, TestThermostatControllerConstructor) {
 
-    Thermostat *testThermostat = new Thermostat(NULL, NULL, NULL);
+    Thermostat *testThermostat = new Thermostat(NULL, NULL, NULL, NULL, NULL, NULL);
     ThermostatController *testController = new ThermostatController(testThermostat);
 
     delete testController;

@@ -6,7 +6,7 @@
 #include <string.h>
 
 
-Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac)
+Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac, Wifi *wifi, Mqtt *mqtt, Watchdog *watchdog)
 {
     temperatureUnits = FAHRENHEIT;
     initalized = false;
@@ -15,6 +15,9 @@ Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureControll
     this->environmentSensor = environmentSensor;
     this->temperatureController = temperatureController;
     this->hvac = hvac;
+    this->wifi = wifi;
+    this->mqtt = mqtt;
+    this->watchdog = watchdog;
     this->currentError = THERMOSTAT_OK;
     this->currentHumidity = -1;
     this->currentTemperature = -1;

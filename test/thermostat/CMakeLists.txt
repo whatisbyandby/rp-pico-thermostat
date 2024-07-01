@@ -14,6 +14,9 @@ file(GLOB MOCK_SOURCE
 
     ${PROJECT_SOURCE_DIR}/test/environment_sensor/mock_environment_sensor.cpp
     ${PROJECT_SOURCE_DIR}/test/hvac/mock_hvac.cpp
+    ${PROJECT_SOURCE_DIR}/test/mocks/mock_wifi.cpp
+    ${PROJECT_SOURCE_DIR}/test/mocks/mock_mqtt.cpp
+    ${PROJECT_SOURCE_DIR}/test/mocks/mock_watchdog.cpp
 )
 
 
@@ -34,6 +37,10 @@ target_include_directories(test-thermostat PRIVATE
     ${PROJECT_SOURCE_DIR}/src/temperature_controller
     ${PROJECT_SOURCE_DIR}/src/thermostat
     ${PROJECT_SOURCE_DIR}/src/thermostat_controller
+    ${PROJECT_SOURCE_DIR}/src/wifi
+    ${PROJECT_SOURCE_DIR}/src/mqtt
+    ${PROJECT_SOURCE_DIR}/src/configuration
+    ${PROJECT_SOURCE_DIR}/src/watchdog
 )
 
 

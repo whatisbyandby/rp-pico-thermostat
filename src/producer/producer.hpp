@@ -7,7 +7,7 @@
 
 class Producer {
 public:
-    Producer(Wifi *wifi, Mqtt *mqtt);
+    Producer(Mqtt *mqtt);
 
     ~Producer();
 
@@ -16,7 +16,6 @@ public:
     ThermostatError update(ThermostatData *data);
 
     private:
-        Wifi *wifi;
         Mqtt *mqtt;
 };
 
