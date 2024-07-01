@@ -14,29 +14,30 @@ static Wifi *wifi;
 static Mqtt *mqtt;
 static Watchdog *watchdog;
 
-TEST_GROUP(ThermostatTestGroupInit) {
-	void setup() {
-		environmentSensor = new EnvironmentSensor(NULL);
-		temperatureController = new TemperatureController();
-		hvac = new HVAC(NULL, NULL, NULL);
-		wifi = new Wifi();
-		mqtt = new Mqtt(NULL);
-		watchdog = new Watchdog();
-	}
+TEST_GROUP(ThermostatTestGroupInit){
+    void setup(){
+        environmentSensor = new EnvironmentSensor(NULL);
+temperatureController = new TemperatureController();
+hvac = new HVAC(NULL, NULL, NULL);
+wifi = new Wifi();
+mqtt = new Mqtt(NULL);
+watchdog = new Watchdog();
+}
 
-	void teardown() {
-		delete environmentSensor;
-		delete temperatureController;
-		delete hvac;
-		delete wifi;
-		delete mqtt;
-		delete watchdog;
+void teardown()
+{
+   delete environmentSensor;
+   delete temperatureController;
+   delete hvac;
+   delete wifi;
+   delete mqtt;
+   delete watchdog;
 
-		mock().checkExpectations();
-		mock().clear();
-	}
-};
-
+   mock().checkExpectations();
+   mock().clear();
+}
+}
+;
 
 TEST(ThermostatTestGroupInit, ThermostatInitalize)
 {
@@ -56,7 +57,7 @@ TEST(ThermostatTestGroupInit, ThermostatInitalize)
 
 TEST(ThermostatTestGroupInit, ThermostatInitalize_NULL_EnvironmentSensor)
 {
-   Thermostat *testInitalize = new Thermostat(NULL, NULL, NULL, NULL, NULL, NULL);
+   Thermostat *testInitalize = new Thermostat(NULL, temperatureController, hvac, wifi, mqtt, watchdog);
    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
    char messageBuffer[256];
@@ -67,7 +68,7 @@ TEST(ThermostatTestGroupInit, ThermostatInitalize_NULL_EnvironmentSensor)
 
 TEST(ThermostatTestGroupInit, ThermostatInitalize_NULL_TemperatureController)
 {
-   Thermostat *testInitalize = new Thermostat(environmentSensor, NULL, NULL, NULL, NULL, NULL);
+   Thermostat *testInitalize = new Thermostat(environmentSensor, NULL, hvac, wifi, mqtt, watchdog);
    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
    char messageBuffer[256];
@@ -78,7 +79,7 @@ TEST(ThermostatTestGroupInit, ThermostatInitalize_NULL_TemperatureController)
 
 TEST(ThermostatTestGroupInit, ThermostatInitalize_NULL_hvac)
 {
-   Thermostat *testInitalize = new Thermostat(environmentSensor, temperatureController, NULL, NULL, NULL, NULL);
+   Thermostat *testInitalize = new Thermostat(environmentSensor, temperatureController, NULL, wifi, mqtt, watchdog);
    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
    char messageBuffer[256];
@@ -89,11 +90,33 @@ TEST(ThermostatTestGroupInit, ThermostatInitalize_NULL_hvac)
 
 TEST(ThermostatTestGroupInit, ThermostatInitalize_NULL_wifi)
 {
-   Thermostat *testInitalize = new Thermostat(environmentSensor, temperatureController, hvac, NULL, NULL, NULL);
+   Thermostat *testInitalize = new Thermostat(environmentSensor, temperatureController, hvac, NULL, mqtt, watchdog);
    ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
    CHECK_FALSE(testInitalize->isInitialized());
    char messageBuffer[256];
    testInitalize->getCurrentErrorMessage(messageBuffer);
    STRCMP_EQUAL("Wifi is NULL", messageBuffer);
+   delete testInitalize;
+}
+
+TEST(ThermostatTestGroupInit, ThermostatInitalize_NULL_mqtt)
+{
+   Thermostat *testInitalize = new Thermostat(environmentSensor, temperatureController, hvac, wifi, NULL, watchdog);
+   ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
+   CHECK_FALSE(testInitalize->isInitialized());
+   char messageBuffer[256];
+   testInitalize->getCurrentErrorMessage(messageBuffer);
+   STRCMP_EQUAL("Mqtt is NULL", messageBuffer);
+   delete testInitalize;
+}
+
+TEST(ThermostatTestGroupInit, ThermostatInitalize_NULL_watchdog)
+{
+   Thermostat *testInitalize = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, NULL);
+   ENUMS_EQUAL_INT(THERMOSTAT_INIT_FAILED, testInitalize->initialize());
+   CHECK_FALSE(testInitalize->isInitialized());
+   char messageBuffer[256];
+   testInitalize->getCurrentErrorMessage(messageBuffer);
+   STRCMP_EQUAL("Watchdog is NULL", messageBuffer);
    delete testInitalize;
 }

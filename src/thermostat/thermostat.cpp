@@ -5,7 +5,6 @@
 #include <sstream>
 #include <string.h>
 
-
 Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac, Wifi *wifi, Mqtt *mqtt, Watchdog *watchdog)
 {
     temperatureUnits = FAHRENHEIT;
@@ -27,7 +26,6 @@ Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureControll
 Thermostat::~Thermostat()
 {
 }
-
 
 ThermostatError Thermostat::initialize()
 {
@@ -79,9 +77,7 @@ ThermostatError Thermostat::initialize()
 bool Thermostat::isInitialized()
 {
     return initalized;
-
 }
-
 
 ThermostatError Thermostat::setTemperatureUnits(TemperatureUnits newUnits)
 {
@@ -122,16 +118,17 @@ ThermostatError Thermostat::setMode(ThermostatMode newMode)
     return THERMOSTAT_OK;
 }
 
-ThermostatError Thermostat::setTargetTemperature(double targetTemperature) {
+ThermostatError Thermostat::setTargetTemperature(double targetTemperature)
+{
     double temperatureInStandardUnits = getTemperatureInStandardUnits(targetTemperature);
     return temperatureController->setTargetTemperature(temperatureInStandardUnits);
 }
 
-double Thermostat::getTargetTemperature() {
+double Thermostat::getTargetTemperature()
+{
     double temperatureInStandardUnits = temperatureController->getTargetTemperature();
     return getTemperatureInCurrentUnits(temperatureInStandardUnits);
 }
-
 
 double Thermostat::getTemperatureInStandardUnits(double temperature)
 {
@@ -204,18 +201,18 @@ ThermostatError Thermostat::updateTemperatureHumidity()
     return validateReading();
 }
 
-
-ThermostatError Thermostat::validateReading() {
+ThermostatError Thermostat::validateReading()
+{
 
     if (currentHumidity < 0 || currentTemperature < 0)
-    {   
+    {
         strcpy(errorString, "Temperature or Humidity values are under a reasonable value");
         currentError = THERMOSTAT_SENSOR_ERROR;
         return currentError;
     }
 
     if (currentHumidity > 100 || currentTemperature > 100)
-    {   
+    {
         strcpy(errorString, "Temperature or Humidity values are over a reasonable value");
         currentError = THERMOSTAT_SENSOR_ERROR;
         return currentError;
@@ -224,15 +221,14 @@ ThermostatError Thermostat::validateReading() {
     return THERMOSTAT_OK;
 }
 
-
-ThermostatError Thermostat::update() {
+ThermostatError Thermostat::update()
+{
 
     if (!isInitialized())
     {
         currentError = THERMOSTAT_NOT_INITALIZED;
         return currentError;
     }
-
 
     updateTemperatureHumidity();
 
@@ -250,7 +246,8 @@ ThermostatError Thermostat::update() {
     return currentError;
 }
 
-ThermostatError Thermostat::getData(ThermostatData *currentState) {
+ThermostatError Thermostat::getData(ThermostatData *currentState)
+{
     currentState->mode = this->getMode();
     currentState->temperatureUnits = this->getTemperatureUnits();
     currentState->currentTemperature = this->getTemperatureInCurrentUnits(currentTemperature);
@@ -265,14 +262,15 @@ ThermostatError Thermostat::getData(ThermostatData *currentState) {
     return THERMOSTAT_OK;
 }
 
-ThermostatError Thermostat::printState(std::string *output) {
+ThermostatError Thermostat::printState(std::string *output)
+{
 
     std::ostringstream oss;
 
     oss << "Current Temperature: " << getTemperatureInCurrentUnits(currentTemperature) << std::endl;
     oss << "Target Temperature " << getTemperatureInCurrentUnits(temperatureController->getTargetTemperature()) << std::endl;
     oss << "Current Humidity: " << currentHumidity << std::endl;
-    oss << "Current HVAC State: " <<  hvacStateToString(hvac->getCurrentState()) << std::endl;
+    oss << "Current HVAC State: " << hvacStateToString(hvac->getCurrentState()) << std::endl;
     oss << "Current Thermostat Mode: " << thermostatModeToString(mode) << std::endl;
     oss << "Current Temperature Units: " << temperatureUnitsToString(temperatureUnits) << std::endl;
 
@@ -280,7 +278,8 @@ ThermostatError Thermostat::printState(std::string *output) {
     return THERMOSTAT_OK;
 }
 
-ThermostatError Thermostat::validateArguments() {
+ThermostatError Thermostat::validateArguments()
+{
     if (environmentSensor == NULL)
     {
         strcpy(errorString, "Environment Sensor is NULL");
@@ -301,11 +300,27 @@ ThermostatError Thermostat::validateArguments() {
         currentError = THERMOSTAT_INIT_FAILED;
         return currentError;
     }
+
     if (wifi == NULL)
     {
         strcpy(errorString, "Wifi is NULL");
         currentError = THERMOSTAT_INIT_FAILED;
         return currentError;
     }
+
+    if (mqtt == NULL)
+    {
+        strcpy(errorString, "Mqtt is NULL");
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
+    }
+
+    if (watchdog == NULL)
+    {
+        strcpy(errorString, "Watchdog is NULL");
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
+    }
+
     return THERMOSTAT_OK;
 }
