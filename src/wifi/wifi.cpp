@@ -10,22 +10,9 @@ Wifi::~Wifi() {
     
 }
 
-ThermostatError Wifi::initialize() {
-    if (initalized) {
-        return THERMOSTAT_OK;
-    }
-    if (cyw43_arch_init()) {
-        return THERMOSTAT_INIT_FAILED;
-    }
-    cyw43_arch_enable_sta_mode();
-    initalized = true;
-    return THERMOSTAT_OK;
-}
+ThermostatError Wifi::initialize(Configuration *config) {
 
-ThermostatError Wifi::initialize(const char *ssid, const char *password) {
-
-    ssid = ssid;
-    password = password;
+    config = config;
 
     if (initalized) {
         return THERMOSTAT_OK;
@@ -38,15 +25,13 @@ ThermostatError Wifi::initialize(const char *ssid, const char *password) {
     return THERMOSTAT_OK;
 }
 
-ThermostatError Wifi::connect(const char *ssid, const char *password) {
-    if (cyw43_arch_wifi_connect_timeout_ms(ssid, password, CYW43_AUTH_WPA2_AES_PSK, 30000)) {
-        return THERMOSTAT_INIT_FAILED;
-    }
-    return THERMOSTAT_OK;
-}
 
 ThermostatError Wifi::connect() {
-    if (cyw43_arch_wifi_connect_timeout_ms(ssid, password, CYW43_AUTH_WPA2_AES_PSK, 30000)) {
+
+    ConfigValues configValues;
+    config->getConfig(&configValues);
+
+    if (cyw43_arch_wifi_connect_timeout_ms(configValues.ssid, configValues.password, CYW43_AUTH_WPA2_AES_PSK, 30000)) {
         return THERMOSTAT_INIT_FAILED;
     }
     return THERMOSTAT_OK;

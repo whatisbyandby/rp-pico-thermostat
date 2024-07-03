@@ -5,7 +5,7 @@
 #include <sstream>
 #include <string.h>
 
-Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac, Wifi *wifi, Mqtt *mqtt, Watchdog *watchdog)
+Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac, Wifi *wifi, Mqtt *mqtt, Watchdog *watchdog, Configuration *config)
 {
     temperatureUnits = FAHRENHEIT;
     initalized = false;
@@ -17,6 +17,7 @@ Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureControll
     this->wifi = wifi;
     this->mqtt = mqtt;
     this->watchdog = watchdog;
+    this->config = config;
     this->currentError = THERMOSTAT_OK;
     this->currentHumidity = -1;
     this->currentTemperature = -1;
@@ -39,6 +40,8 @@ ThermostatError Thermostat::initialize()
         return currentError;
     }
 
+
+
     currentError = updateTemperatureHumidity();
 
     if (currentError != THERMOSTAT_OK)
@@ -47,7 +50,7 @@ ThermostatError Thermostat::initialize()
         return currentError;
     }
 
-    currentError = wifi->initialize();
+    currentError = wifi->initialize(config);
 
     if (currentError != THERMOSTAT_OK)
     {
@@ -77,6 +80,17 @@ ThermostatError Thermostat::initialize()
 bool Thermostat::isInitialized()
 {
     return initalized;
+}
+
+ThermostatError Thermostat::connect() {
+    int num_retries = 0;
+    while (wifi->connect() != THERMOSTAT_OK) {
+        if (num_retries > 3) {
+            return THERMOSTAT_ERROR;
+        }
+        num_retries++;
+    }
+    return THERMOSTAT_OK;
 }
 
 ThermostatError Thermostat::setTemperatureUnits(TemperatureUnits newUnits)
@@ -318,6 +332,13 @@ ThermostatError Thermostat::validateArguments()
     if (watchdog == NULL)
     {
         strcpy(errorString, "Watchdog is NULL");
+        currentError = THERMOSTAT_INIT_FAILED;
+        return currentError;
+    }
+
+     if (config == NULL)
+    {
+        strcpy(errorString, "Configuration is NULL");
         currentError = THERMOSTAT_INIT_FAILED;
         return currentError;
     }

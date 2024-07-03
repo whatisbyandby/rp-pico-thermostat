@@ -13,6 +13,7 @@ static HVAC *hvac;
 static Wifi *wifi;
 static Mqtt *mqtt;
 static Watchdog *watchdog;
+static Configuration *config;
 
 TEST_GROUP(ThermostatTestGroup){
     void setup(){
@@ -22,8 +23,9 @@ hvac = new HVAC(NULL, NULL, NULL);
 wifi = new Wifi();
 mqtt = new Mqtt(NULL);
 watchdog = new Watchdog();
+config = new Configuration();
 
-thermostat = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog);
+thermostat = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog, config);
 
 double temperature = 20;
 double humidity = 50;
@@ -47,13 +49,14 @@ void teardown()
    delete wifi;
    delete mqtt;
    delete watchdog;
+   delete config;
 }
 }
 ;
 
 TEST(ThermostatTestGroup, ThermostatConstructor)
 {
-   Thermostat *thermostatConstructor = new Thermostat(NULL, NULL, NULL, NULL, NULL, NULL);
+   Thermostat *thermostatConstructor = new Thermostat(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
    ENUMS_EQUAL_INT(FAHRENHEIT, thermostat->getTemperatureUnits());
    CHECK_FALSE(thermostatConstructor->isInitialized());
@@ -70,7 +73,7 @@ TEST(ThermostatTestGroup, ThermostatSensorError)
 
    mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity").withOutputParameterReturning("temperature", &temperature, sizeof(double)).withOutputParameterReturning("humidity", &humidity, sizeof(double)).andReturnValue(ENVIRONMENT_SENSOR_READ_ERROR);
 
-   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog);
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog, config);
    ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->initialize());
    CHECK_FALSE(testInit->isInitialized());
    ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());
@@ -88,7 +91,7 @@ TEST(ThermostatTestGroup, ThermostatSensorInvalid)
 
    mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity").withOutputParameterReturning("temperature", &temperature, sizeof(double)).withOutputParameterReturning("humidity", &humidity, sizeof(double)).andReturnValue(ENVIRONMENT_SENSOR_OK);
 
-   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog);
+   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog, config);
    ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->initialize());
    CHECK_FALSE(testInit->isInitialized());
    ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());

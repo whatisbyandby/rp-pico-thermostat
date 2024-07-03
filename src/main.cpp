@@ -30,8 +30,15 @@ int main()
 {   
     stdio_init_all();
     Configuration config;
+
+    config.load();
+
     I2CBus i2cBus;
-    I2CDevice i2cDevice(&i2cBus, 0x76);
+    I2CDevice i2cDevice(&i2cBus, 0x38);
+
+    i2cBus.initialize();
+    i2cDevice.initialize();
+
     EnvironmentSensor environmentSensor(&i2cDevice);
     TemperatureController temperatureController;
 
@@ -44,15 +51,23 @@ int main()
     Mqtt mqtt(&config);
     Watchdog watchdog;
     Producer producer(&mqtt);
-    Thermostat thermostat(&environmentSensor, &temperatureController, &hvac, &wifi, &mqtt, &watchdog);
+    Thermostat thermostat(&environmentSensor, &temperatureController, &hvac, &wifi, &mqtt, &watchdog, &config);
     CommandParser commandParser;
     Repl repl(&commandParser);
 
+    ThermostatError err = thermostat.initialize();
+    err = thermostat.connect();
+    
     repl.init();
 
     while (true) {
         ThermostatCommand command;
         ThermostatError err = repl.read(&command);
+        if (err == THERMOSTAT_OK) {
+            thermostat.executeCommand(&command);
+            repl.print(&command);
+        }
+        thermostat.update();
         
         
     }

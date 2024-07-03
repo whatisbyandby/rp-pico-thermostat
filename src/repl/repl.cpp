@@ -37,14 +37,14 @@ ThermostatError Repl::init()
     std::cout << "Thermostat Version " << THERMOSTAT_VERSION << std::endl;
     std::cout << "Enter a command: ->" << std::endl;
 
+    uart_tx_wait_blocking(UART_ID);
+
     return THERMOSTAT_OK;
 }
 
 
 ThermostatError Repl::read(ThermostatCommand *command)
 {
-    char input[100];
-
     if (uart_is_readable(UART_ID))
     {
         int i = 0;
@@ -59,7 +59,6 @@ ThermostatError Repl::read(ThermostatCommand *command)
             }
             buffer[i] = character;
             i++;
-           
         }
 
         std::string inputString = std::string((char *)buffer);

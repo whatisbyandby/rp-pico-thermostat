@@ -19,6 +19,7 @@ file(GLOB MOCK_SOURCE
     ${PROJECT_SOURCE_DIR}/test/mocks/mock_wifi.cpp
     ${PROJECT_SOURCE_DIR}/test/mocks/mock_mqtt.cpp
     ${PROJECT_SOURCE_DIR}/test/mocks/mock_watchdog.cpp
+    ${PROJECT_SOURCE_DIR}/test/mocks/mock_configuration.cpp
 )
 
 

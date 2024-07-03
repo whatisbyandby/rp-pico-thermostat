@@ -1,24 +1,23 @@
-#include "thermostat_common.hpp"
+
 
 #ifndef WIFI_HPP
 #define WIFI_HPP
+#include "thermostat_common.hpp"
+#include "configuration.hpp"
 
 class Wifi {
     public:
         Wifi();
         ~Wifi();
-        ThermostatError initialize();
-        ThermostatError initialize(const char *ssid, const char *password);
+        ThermostatError initialize(Configuration *config);
         ThermostatError scan();
-        ThermostatError connect(const char *ssid, const char *password);
         ThermostatError connect();
         ThermostatError disconnect();
         ThermostatError deinitalize();
         bool isConnected();
     private:
         bool initalized;
-        char ssid[128];
-        char password[128];
+        Configuration *config;
 
 };
 

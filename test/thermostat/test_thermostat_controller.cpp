@@ -10,7 +10,7 @@ TEST_GROUP(ThermostatControllerTestGroup)
     void setup()
     {   
         tempController = new TemperatureController();
-        thermostat = new Thermostat(NULL, tempController, NULL, NULL, NULL, NULL);
+        thermostat = new Thermostat(NULL, tempController, NULL, NULL, NULL, NULL, NULL);
     }
 
     void teardown()

@@ -17,6 +17,7 @@ file(GLOB SOURCE
 
 file(GLOB MOCK_SOURCE
     ${PROJECT_SOURCE_DIR}/test/mocks/pico_mocks/pico/cyw43_arch.cpp
+    ${PROJECT_SOURCE_DIR}/test/mocks/mock_configuration.cpp
 )
 
 
@@ -32,6 +33,7 @@ target_include_directories(test-wifi PRIVATE
     ${PROJECT_SOURCE_DIR}/src/wifi
     ${PROJECT_SOURCE_DIR}/src/common
     ${PROJECT_SOURCE_DIR}/test/mocks/pico_mocks
+    ${PROJECT_SOURCE_DIR}/src/configuration
 )
 
 

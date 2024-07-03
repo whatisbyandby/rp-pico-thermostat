@@ -10,6 +10,10 @@ uint uart_init(uart_inst_t *uart, int baud_rate)
         .returnUnsignedIntValueOrDefault(0);
 }
 
+void uart_tx_wait_blocking(uart_inst_t *uart) {
+    mock().actualCall("uart_tx_wait_blocking").withPointerParameter("uart", uart);
+}
+
 
 bool uart_is_readable(uart_inst_t *uart)
 {

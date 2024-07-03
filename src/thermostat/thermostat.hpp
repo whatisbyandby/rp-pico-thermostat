@@ -13,11 +13,12 @@
 
 class Thermostat {
     public:
-        Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac, Wifi *wifi, Mqtt *mqtt, Watchdog *watchdog);
+        Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac, Wifi *wifi, Mqtt *mqtt, Watchdog *watchdog, Configuration *config);
         ~Thermostat();
 
         ThermostatError initialize();
         bool isInitialized();
+        ThermostatError connect();
         ThermostatError setTemperatureUnits(TemperatureUnits temperatureUnits);
         TemperatureUnits getTemperatureUnits();
         ThermostatState getDesiredHVACState(TemperatureState temperatureState, ThermostatState currentHVACState);
@@ -47,6 +48,7 @@ class Thermostat {
         Wifi *wifi;
         Mqtt *mqtt;
         Watchdog *watchdog;
+        Configuration *config;
 
         double currentTemperature;
         double currentHumidity;

@@ -29,5 +29,8 @@ ThermostatError Configuration::setConfig(ConfigValues *newConfig)
 
 ThermostatError Configuration::getConfig(ConfigValues *config)
 {
-	return (ThermostatError) mock().actualCall("Configuration::getConfig").withPointerParameter("config", config).returnIntValueOrDefault(THERMOSTAT_OK);
+	return (ThermostatError) mock()
+		.actualCall("Configuration::getConfig")
+		.withOutputParameter("config", config)
+		.returnIntValueOrDefault(THERMOSTAT_OK);
 }
