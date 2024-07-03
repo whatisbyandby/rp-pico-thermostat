@@ -32,6 +32,7 @@ class Thermostat {
         ThermostatError getCurrentError();
         ThermostatError getCurrentErrorMessage(char *errorString);
         ThermostatError printState(std::string *output);
+        ThermostatError executeCommand(ThermostatCommand *command);
 
     
     private:

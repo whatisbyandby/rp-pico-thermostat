@@ -9,7 +9,6 @@
 #include "thermostat.hpp"
 #include "temperature_controller.hpp"
 #include "thermostat_common.hpp"
-#include "thermostat_controller.hpp"
 #include "command_parser.hpp"
 #include "pins.h"
 #include "gpio.hpp"
@@ -29,6 +28,7 @@ void commandLoop()
 
 int main()
 {   
+    stdio_init_all();
     Configuration config;
     I2CBus i2cBus;
     I2CDevice i2cDevice(&i2cBus, 0x76);
@@ -45,4 +45,15 @@ int main()
     Watchdog watchdog;
     Producer producer(&mqtt);
     Thermostat thermostat(&environmentSensor, &temperatureController, &hvac, &wifi, &mqtt, &watchdog);
+    CommandParser commandParser;
+    Repl repl(&commandParser);
+
+    repl.init();
+
+    while (true) {
+        ThermostatCommand command;
+        ThermostatError err = repl.read(&command);
+        
+        
+    }
 }

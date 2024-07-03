@@ -14,7 +14,6 @@ if (ON_TARGET)
         ${PROJECT_SOURCE_DIR}/src/hvac/*.cpp
         ${PROJECT_SOURCE_DIR}/src/temperature_controller/*.cpp
         ${PROJECT_SOURCE_DIR}/src/command_parser/*.cpp
-        ${PROJECT_SOURCE_DIR}/src/thermostat_controller/*.cpp
         ${PROJECT_SOURCE_DIR}/src/repl/*.cpp
         ${PROJECT_SOURCE_DIR}/src/json/*.cpp
         ${PROJECT_SOURCE_DIR}/src/display/*.cpp
@@ -38,7 +37,6 @@ if (ON_TARGET)
         i2c_bus
         hvac
         gpio
-        thermostat_controller
         command_parser
         repl
         json
