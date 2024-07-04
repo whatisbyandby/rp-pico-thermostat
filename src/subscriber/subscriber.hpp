@@ -1,3 +1,6 @@
+#ifndef SUBSCRIBER_HPP
+#define SUBSCRIBER_HPP
+
 #include "wifi.hpp"
 #include "mqtt.hpp"
 
@@ -13,3 +16,5 @@ class Subscriber {
         Wifi *wifi;
         Mqtt *mqtt;
 };
+
+#endif // SUBSCRIBER_HPP

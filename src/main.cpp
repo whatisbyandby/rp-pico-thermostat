@@ -65,14 +65,12 @@ int main()
     context.mqtt = &mqtt;
     context.watchdog = &watchdog;
     context.producer = &producer;
-    context.thermostat = &thermostat;
     context.commandParser = &commandParser;
     context.repl = &repl;
 
 
+    ThermostatError err = context.initialize();
 
-    ThermostatError err = thermostat.initialize(&context);
-    
     err = thermostat.connect();
     
     while (true) {

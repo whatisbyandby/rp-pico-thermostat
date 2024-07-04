@@ -9,7 +9,6 @@ static Hvac *hvac;
 static Switch *heater;
 static Switch *ac;
 static Switch *fan;
-static ThermostatContext *context;
 
 TEST_GROUP(HVACTestGroup)
 {
@@ -19,13 +18,10 @@ TEST_GROUP(HVACTestGroup)
         ac = new Switch(2);
         fan = new Switch(3);
         hvac = new Hvac();
-        context = new ThermostatContext();
 
-        context->heatSwitch = heater;
-        context->coolSwitch = ac;
-        context->fanSwitch = fan;
 
-        hvac->initialize(context);
+
+        hvac->initialize(heater, ac, fan);
 
     }
 
@@ -37,7 +33,6 @@ TEST_GROUP(HVACTestGroup)
         delete heater;
         delete ac;
         delete fan;
-        delete context;
     }
 };
 

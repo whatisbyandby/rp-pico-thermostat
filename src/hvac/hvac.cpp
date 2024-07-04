@@ -4,18 +4,20 @@ Hvac::Hvac()
 {
 }
 
-ThermostatError Hvac::initialize(ThermostatContext *context)
+ThermostatError Hvac::initialize(Switch *heat, Switch *cool, Switch *fan)
 {
-    this->context = context;
-    currentState = IDLE;
+    heatSwitch = heat;
+    coolSwitch = cool;
+    fanSwitch = fan;
     return THERMOSTAT_OK;
 }
 
+
 ThermostatState Hvac::readCurrentState()
 {
-    bool heaterState = context->heatSwitch->isOn();
-    bool acState = context->coolSwitch->isOn();
-    bool fanState = context->fanSwitch->isOn();
+    bool heaterState = heatSwitch->isOn();
+    bool acState = coolSwitch->isOn();
+    bool fanState = fanSwitch->isOn();
 
     if (heaterState)
     {
@@ -40,43 +42,43 @@ ThermostatError Hvac::setDesiredState(ThermostatState state)
 
     if (state == IDLE)
     {
-        context->heatSwitch->turnOff();
-        context->coolSwitch->turnOff();
-        context->fanSwitch->turnOff();
+        heatSwitch->turnOff();
+        coolSwitch->turnOff();
+        fanSwitch->turnOff();
         currentState = readCurrentState();
         return THERMOSTAT_OK;
     }
 
     if (state == HEATING)
     {
-        context->heatSwitch->turnOn();
-        context->coolSwitch->turnOff();
-        context->fanSwitch->turnOff();
+        heatSwitch->turnOn();
+        coolSwitch->turnOff();
+        fanSwitch->turnOff();
         currentState = readCurrentState();
         return THERMOSTAT_OK;
     }
 
     if (state == COOLING)
     {
-        context->heatSwitch->turnOff();
-        context->coolSwitch->turnOn();
-        context->fanSwitch->turnOff();
+        heatSwitch->turnOff();
+        coolSwitch->turnOn();
+        fanSwitch->turnOff();
         currentState = readCurrentState();
         return THERMOSTAT_OK;
     }
 
     if (state == FAN_ON)
     {
-        context->heatSwitch->turnOff();
-        context->coolSwitch->turnOff();
-        context->fanSwitch->turnOn();
+        heatSwitch->turnOff();
+        coolSwitch->turnOff();
+        fanSwitch->turnOn();
         currentState = readCurrentState();
         return THERMOSTAT_OK;
     }
 
-    context->heatSwitch->turnOff();
-    context->coolSwitch->turnOff();
-    context->fanSwitch->turnOff();
+    heatSwitch->turnOff();
+    coolSwitch->turnOff();
+    fanSwitch->turnOff();
     currentState = readCurrentState();
     return THERMOSTAT_ERROR;
 }

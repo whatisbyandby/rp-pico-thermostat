@@ -1,21 +1,20 @@
 #ifndef THERMOSTAT_CONTEXT_HPP
 #define THERMOSTAT_CONTEXT_HPP
 
-class Thermostat;
-class Switch;
-class TemperatureController;
-class Hvac;
-class Watchdog;
-class I2CBus;
-class I2CDevice;
-class CommandParser;
-class EnvironmentSensor;
-class Repl;
-class Producer;
-class Configuration;
-class Wifi;
-class Mqtt;
-
+#include "thermostat_common.hpp"
+#include "thermostat.hpp"
+#include "gpio.hpp"
+#include "temperature_controller.hpp"
+#include "hvac.hpp"
+#include "watchdog.hpp"
+#include "i2c_bus.hpp"
+#include "command_parser.hpp"
+#include "environment_sensor.hpp"
+#include "repl.hpp"
+#include "producer.hpp"
+#include "configuration.hpp"
+#include "wifi.hpp"
+#include "mqtt.hpp"
 
 class ThermostatContext
 {
@@ -39,7 +38,21 @@ public:
     Repl *repl;
 
     Producer *producer;
-    Thermostat *thermostat;
+
+    ThermostatError initialize() {
+        sensor->initialize(i2cDevice);
+        tempController->initialize();
+        hvac->initialize(heatSwitch, coolSwitch, fanSwitch);
+        wifi->initialize(config);
+        mqtt->initialize(config);
+        watchdog->initialize();
+        producer->initalize(mqtt);
+        config->load();
+        i2cBus->initialize();
+        i2cDevice->initialize(i2cBus, 0x38);
+        repl->initialize(commandParser);
+        return THERMOSTAT_OK;
+    }
 };
 
 #endif // THERMOSTAT_CONTEXT_HPP
