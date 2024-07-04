@@ -19,8 +19,6 @@ TEST_GROUP(HVACTestGroup)
         fan = new Switch(3);
         hvac = new Hvac();
 
-
-
         hvac->initialize(heater, ac, fan);
 
     }

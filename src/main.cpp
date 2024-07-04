@@ -70,19 +70,21 @@ int main()
 
 
     ThermostatError err = context.initialize();
+    thermostat.initialize(&context);
 
     err = thermostat.connect();
     
     while (true) {
         ThermostatCommand command;
         ThermostatError err = repl.read(&command);
-        sleep_ms(10);
         if (err == THERMOSTAT_OK) {
             thermostat.executeCommand(&command);
             repl.print(&command);
         }
         thermostat.update();
-        
-        
+        ThermostatData currentData;
+        thermostat.getData(&currentData);
+        producer.update(&currentData);
+        sleep_ms(1000);
     }
 }

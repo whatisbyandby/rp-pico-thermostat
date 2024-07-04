@@ -42,10 +42,13 @@ ThermostatError Thermostat::connect() {
     int num_retries = 0;
     while (context->wifi->connect() != THERMOSTAT_OK) {
         if (num_retries > 3) {
-            return THERMOSTAT_ERROR;
+            return THERMOSTAT_CONNECTION_ERROR;
         }
         num_retries++;
     }
+
+    context->mqtt->connect();
+
     return THERMOSTAT_OK;
 }
 
@@ -227,6 +230,7 @@ ThermostatError Thermostat::getData(ThermostatData *currentState)
     currentState->targetTemperatureStandardUnits = context->tempController->getTargetTemperature();
     currentState->temperatureRange = context->tempController->getTemperatureRange();
     currentState->currentHumidity = this->currentHumidity;
+    currentState->temperatureState = context->tempController->checkTemperature(currentTemperature);
     currentState->hvacState = context->hvac->getCurrentState();
     currentState->error = currentError;
 

@@ -14,7 +14,8 @@ typedef enum ThermostatError {
     THERMOSTAT_NOT_INITALIZED,
     THERMOSTAT_INIT_FAILED,
     THERMOSTAT_SENSOR_ERROR,
-    THERMOSTAT_UNKNOWN_COMMAND
+    THERMOSTAT_UNKNOWN_COMMAND,
+    THERMOSTAT_CONNECTION_ERROR
 } ThermostatError;
 
 inline const char *thermostatErrorToString(ThermostatError error)
