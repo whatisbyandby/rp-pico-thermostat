@@ -10,7 +10,7 @@ TEST_GROUP(MockI2CTestGroup)
     void setup()
     {
         i2cBus = new I2CBus();
-        i2cDevice = new I2CDevice(i2cBus, 0x01);
+        i2cDevice = new I2CDevice();
     }
 
     void teardown()

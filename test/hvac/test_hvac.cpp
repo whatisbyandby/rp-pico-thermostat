@@ -5,10 +5,11 @@
 #include "gpio.hpp"
 
 
-static HVAC *hvac;
+static Hvac *hvac;
 static Switch *heater;
 static Switch *ac;
 static Switch *fan;
+static ThermostatContext *context;
 
 TEST_GROUP(HVACTestGroup)
 {
@@ -17,7 +18,15 @@ TEST_GROUP(HVACTestGroup)
         heater = new Switch(1);
         ac = new Switch(2);
         fan = new Switch(3);
-        hvac = new HVAC(heater, ac, fan);
+        hvac = new Hvac();
+        context = new ThermostatContext();
+
+        context->heatSwitch = heater;
+        context->coolSwitch = ac;
+        context->fanSwitch = fan;
+
+        hvac->initialize(context);
+
     }
 
     void teardown()
@@ -28,12 +37,13 @@ TEST_GROUP(HVACTestGroup)
         delete heater;
         delete ac;
         delete fan;
+        delete context;
     }
 };
 
 TEST(HVACTestGroup, HVACConstructor)
 {
-    HVAC *testHvac = new HVAC(NULL, NULL, NULL);
+    Hvac *testHvac = new Hvac();
 
     delete testHvac;
 }

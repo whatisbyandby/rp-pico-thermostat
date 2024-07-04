@@ -5,10 +5,9 @@
 
 static mqtt_client_t *client;
 
-Mqtt::Mqtt(Configuration *newConfig)
+Mqtt::Mqtt()
 {   
-    configuration = newConfig;
-    client = mqtt_client_new();
+
 }
 
 Mqtt::~Mqtt()
@@ -16,8 +15,10 @@ Mqtt::~Mqtt()
     mqtt_client_free(client);
 }
 
-ThermostatError Mqtt::initialize()
+ThermostatError Mqtt::initialize(Configuration *newConfig)
 {
+    configuration = newConfig;
+    client = mqtt_client_new();
     return THERMOSTAT_OK;
 }
 

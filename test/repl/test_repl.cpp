@@ -11,7 +11,7 @@ static CommandParser *parser;
 TEST_GROUP(TestGroupRepl){
     void setup(){
         parser = new CommandParser();
-repl = new Repl(parser);
+repl = new Repl();
 }
 
 void teardown()

@@ -15,17 +15,19 @@
 #define UART_TX_PIN 0
 #define UART_RX_PIN 1
 
-Repl::Repl(CommandParser *parser)
+Repl::Repl()
 {
-    commandParser = parser;
 }
 
 Repl::~Repl()
 {
 }
 
-ThermostatError Repl::init()
+ThermostatError Repl::initialize(CommandParser *parser)
 {
+
+    commandParser = parser;
+    uart_tx_wait_blocking(UART_ID);
     // Set up our UART with the required speed.
     uart_init(UART_ID, BAUD_RATE);
 
@@ -44,7 +46,8 @@ ThermostatError Repl::init()
 
 
 ThermostatError Repl::read(ThermostatCommand *command)
-{
+{   
+    // TODO find a better way to read input, adding a delay is clunky
     if (uart_is_readable(UART_ID))
     {
         int i = 0;

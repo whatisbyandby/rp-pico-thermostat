@@ -3,9 +3,10 @@
 
 class Subscriber {
     public: 
-        Subscriber(Wifi* wifi, Mqtt* mqtt);
+        Subscriber();
         ~Subscriber();
 
+        ThermostatError initialize(Wifi* wifi, Mqtt* mqtt);
         void subscribe(const char *topic);
 
     private:

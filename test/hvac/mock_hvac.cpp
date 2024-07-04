@@ -2,15 +2,15 @@
 #include <CppUTestExt/MockSupport.h>
 #include "hvac.hpp"
 
-HVAC::HVAC(Switch *heater, Switch *ac, Switch *fan)
+Hvac::Hvac()
 {
     currentState = IDLE;
 }
 
-ThermostatError HVAC::setDesiredState(ThermostatState state) {
+ThermostatError Hvac::setDesiredState(ThermostatState state) {
     return (ThermostatError) mock().actualCall("HVAC::setDesiredState").withParameter("state", state).returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
-ThermostatState HVAC::getCurrentState() {
+ThermostatState Hvac::getCurrentState() {
     return (ThermostatState) mock().actualCall("HVAC::getCurrentState").returnIntValueOrDefault(IDLE);
 }

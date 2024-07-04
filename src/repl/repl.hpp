@@ -7,9 +7,9 @@
 class Repl
 {
 public:
-    Repl(CommandParser *parser);
+    Repl();
     ~Repl();
-    ThermostatError init();
+    ThermostatError initialize(CommandParser *parser);
     ThermostatError read(ThermostatCommand *command);
     ThermostatError print(ThermostatCommand *command);
 private:

@@ -1,16 +1,23 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "thermostat.hpp"
+#include "temperature_controller.hpp"
 
 static Thermostat *thermostat;
 static TemperatureController *tempController;
+static ThermostatContext *context;
 
 TEST_GROUP(ThermostatControllerTestGroup)
 {
     void setup()
     {   
         tempController = new TemperatureController();
-        thermostat = new Thermostat(NULL, tempController, NULL, NULL, NULL, NULL, NULL);
+        thermostat = new Thermostat();
+
+        context = new ThermostatContext();
+        context->tempController = tempController;
+
+        thermostat->initialize(context);
     }
 
     void teardown()
@@ -19,6 +26,7 @@ TEST_GROUP(ThermostatControllerTestGroup)
         mock().clear();
         delete thermostat;
         delete tempController;
+        delete context;
     }
 };
 

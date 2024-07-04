@@ -39,11 +39,14 @@ target_include_directories(test-thermostat PRIVATE
     ${PROJECT_SOURCE_DIR}/src/i2c_bus
     ${PROJECT_SOURCE_DIR}/src/temperature_controller
     ${PROJECT_SOURCE_DIR}/src/thermostat
-    ${PROJECT_SOURCE_DIR}/src/thermostat_controller
     ${PROJECT_SOURCE_DIR}/src/wifi
     ${PROJECT_SOURCE_DIR}/src/mqtt
     ${PROJECT_SOURCE_DIR}/src/configuration
     ${PROJECT_SOURCE_DIR}/src/watchdog
+    ${PROJECT_SOURCE_DIR}/src/thermostat_context
+    ${PROJECT_SOURCE_DIR}/src/command_parser
+    ${PROJECT_SOURCE_DIR}/src/repl
+    ${PROJECT_SOURCE_DIR}/src/producer
 )
 
 

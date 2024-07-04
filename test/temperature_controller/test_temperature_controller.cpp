@@ -8,6 +8,7 @@ TEST_GROUP(TemperatureControllerTestGroup)
     void setup()
     {
         temperatureController = new TemperatureController();
+        temperatureController->initialize();
     }
 
     void teardown()
@@ -19,6 +20,8 @@ TEST_GROUP(TemperatureControllerTestGroup)
 TEST(TemperatureControllerTestGroup, TemperatureControllerConstructor)
 {
     TemperatureController *testController = new TemperatureController();
+
+    testController->initialize();
 
     DOUBLES_EQUAL(20.0, testController->getTargetTemperature(), 0.01);
     DOUBLES_EQUAL(1.0, testController->getTemperatureRange(), 0.01);

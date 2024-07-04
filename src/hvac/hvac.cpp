@@ -1,72 +1,87 @@
 #include "hvac.hpp"
 
-HVAC::HVAC(Switch *heater, Switch *ac, Switch *fan)
+Hvac::Hvac()
 {
-    this->heater = heater;
-    this->ac = ac;
-    this->fan = fan;
-    currentState = IDLE;
 }
 
-ThermostatState HVAC::readCurrentState() {
-    bool heaterState = heater->isOn();
-    bool acState = ac->isOn();
-    bool fanState = fan->isOn();
-    
-    if (heaterState) {
+ThermostatError Hvac::initialize(ThermostatContext *context)
+{
+    this->context = context;
+    currentState = IDLE;
+    return THERMOSTAT_OK;
+}
+
+ThermostatState Hvac::readCurrentState()
+{
+    bool heaterState = context->heatSwitch->isOn();
+    bool acState = context->coolSwitch->isOn();
+    bool fanState = context->fanSwitch->isOn();
+
+    if (heaterState)
+    {
         return HEATING;
-    } else if (acState) {
+    }
+    else if (acState)
+    {
         return COOLING;
-    } else if (fanState) {
+    }
+    else if (fanState)
+    {
         return FAN_ON;
-    } else {
+    }
+    else
+    {
         return IDLE;
     }
 }
 
-ThermostatError HVAC::setDesiredState(ThermostatState state) {
+ThermostatError Hvac::setDesiredState(ThermostatState state)
+{
 
-
-    if (state == IDLE) {
-        heater->turnOff();
-        ac->turnOff();
-        fan->turnOff();
-        currentState = readCurrentState();
-        return THERMOSTAT_OK;
-    } 
-
-    if (state == HEATING) {
-        heater->turnOn();
-        ac->turnOff();
-        fan->turnOff();
+    if (state == IDLE)
+    {
+        context->heatSwitch->turnOff();
+        context->coolSwitch->turnOff();
+        context->fanSwitch->turnOff();
         currentState = readCurrentState();
         return THERMOSTAT_OK;
     }
 
-    if (state == COOLING) {
-        heater->turnOff();
-        ac->turnOn();
-        fan->turnOff();
+    if (state == HEATING)
+    {
+        context->heatSwitch->turnOn();
+        context->coolSwitch->turnOff();
+        context->fanSwitch->turnOff();
         currentState = readCurrentState();
         return THERMOSTAT_OK;
     }
 
-    if (state == FAN_ON) {
-        heater->turnOff();
-        ac->turnOff();
-        fan->turnOn();
+    if (state == COOLING)
+    {
+        context->heatSwitch->turnOff();
+        context->coolSwitch->turnOn();
+        context->fanSwitch->turnOff();
         currentState = readCurrentState();
         return THERMOSTAT_OK;
     }
 
-    heater->turnOff();
-    ac->turnOff();
-    fan->turnOff();
+    if (state == FAN_ON)
+    {
+        context->heatSwitch->turnOff();
+        context->coolSwitch->turnOff();
+        context->fanSwitch->turnOn();
+        currentState = readCurrentState();
+        return THERMOSTAT_OK;
+    }
+
+    context->heatSwitch->turnOff();
+    context->coolSwitch->turnOff();
+    context->fanSwitch->turnOff();
     currentState = readCurrentState();
     return THERMOSTAT_ERROR;
 }
 
-ThermostatState HVAC::getCurrentState() {
+ThermostatState Hvac::getCurrentState()
+{
     return currentState;
 }
-

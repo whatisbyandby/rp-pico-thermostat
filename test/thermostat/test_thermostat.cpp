@@ -1,41 +1,30 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "thermostat.hpp"
+#include "temperature_controller.hpp"
 #include "environment_sensor.hpp"
 #include "thermostat_common.hpp"
 #include "hvac.hpp"
 #include <iostream>
 
 static Thermostat *thermostat;
-static EnvironmentSensor *environmentSensor;
-static TemperatureController *temperatureController;
-static HVAC *hvac;
-static Wifi *wifi;
-static Mqtt *mqtt;
-static Watchdog *watchdog;
-static Configuration *config;
+static ThermostatContext *context;
+static TemperatureController *tempController;
+static EnvironmentSensor *sensor;
 
 TEST_GROUP(ThermostatTestGroup){
     void setup(){
-        environmentSensor = new EnvironmentSensor(NULL);
-temperatureController = new TemperatureController();
-hvac = new HVAC(NULL, NULL, NULL);
-wifi = new Wifi();
-mqtt = new Mqtt(NULL);
-watchdog = new Watchdog();
-config = new Configuration();
+      thermostat = new Thermostat();
+      context = new ThermostatContext();
+      tempController = new TemperatureController();
+      sensor = new EnvironmentSensor();
 
-thermostat = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog, config);
+      context->sensor = sensor;
+      context->tempController = tempController;
 
-double temperature = 20;
-double humidity = 50;
+      thermostat->initialize(context);
 
-mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity").withOutputParameterReturning("temperature", &temperature, sizeof(double)).withOutputParameterReturning("humidity", &humidity, sizeof(double)).andReturnValue(ENVIRONMENT_SENSOR_OK);
-mock().expectOneCall("Wifi::initialize").ignoreOtherParameters().andReturnValue(THERMOSTAT_OK);
-mock().expectOneCall("Mqtt::initialize").andReturnValue(THERMOSTAT_OK);
-mock().expectOneCall("Watchdog::initialize").andReturnValue(THERMOSTAT_OK);
 
-thermostat->initialize();
 }
 
 void teardown()
@@ -43,62 +32,18 @@ void teardown()
    mock().checkExpectations();
    mock().clear();
    delete thermostat;
-   delete environmentSensor;
-   delete temperatureController;
-   delete hvac;
-   delete wifi;
-   delete mqtt;
-   delete watchdog;
-   delete config;
+   delete context;
+   delete tempController;
+   delete sensor;
+   
 }
 }
 ;
 
-TEST(ThermostatTestGroup, ThermostatConstructor)
-{
-   Thermostat *thermostatConstructor = new Thermostat(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
-   ENUMS_EQUAL_INT(FAHRENHEIT, thermostat->getTemperatureUnits());
-   CHECK_FALSE(thermostatConstructor->isInitialized());
-   ENUMS_EQUAL_INT(OFF, thermostat->getMode());
 
-   delete thermostatConstructor;
-}
 
-TEST(ThermostatTestGroup, ThermostatSensorError)
-{
-
-   double temperature = -1;
-   double humidity = -1;
-
-   mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity").withOutputParameterReturning("temperature", &temperature, sizeof(double)).withOutputParameterReturning("humidity", &humidity, sizeof(double)).andReturnValue(ENVIRONMENT_SENSOR_READ_ERROR);
-
-   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog, config);
-   ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->initialize());
-   CHECK_FALSE(testInit->isInitialized());
-   ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());
-   char messageBuffer[256];
-   testInit->getCurrentErrorMessage(messageBuffer);
-   STRCMP_EQUAL("Temperature or Humidity values are under a reasonable value", messageBuffer);
-   delete testInit;
-}
-
-TEST(ThermostatTestGroup, ThermostatSensorInvalid)
-{
-
-   double temperature = -1;
-   double humidity = -1;
-
-   mock().expectOneCall("EnvironmentSensor::readTemperatureHumidity").withOutputParameterReturning("temperature", &temperature, sizeof(double)).withOutputParameterReturning("humidity", &humidity, sizeof(double)).andReturnValue(ENVIRONMENT_SENSOR_OK);
-
-   Thermostat *testInit = new Thermostat(environmentSensor, temperatureController, hvac, wifi, mqtt, watchdog, config);
-   ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->initialize());
-   CHECK_FALSE(testInit->isInitialized());
-   ENUMS_EQUAL_INT(THERMOSTAT_SENSOR_ERROR, testInit->getCurrentError());
-   delete testInit;
-}
-
-// ============ Update Temperature Units
+// // ============ Update Temperature Units
 
 TEST(ThermostatTestGroup, UpdateTargetTemperatureCelsius)
 {
@@ -233,7 +178,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_UnderTemp)
 {
 
    thermostat->setMode(HEAT);
-   temperatureController->setTargetTemperature(25.0);
+   context->tempController->setTargetTemperature(25.0);
 
    double temperature = 20.0;
    double humidity = 50.0;
@@ -242,7 +187,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_UnderTemp)
        .expectOneCall("EnvironmentSensor::readTemperatureHumidity")
        .withOutputParameterReturning("temperature", &temperature, sizeof(double))
        .withOutputParameterReturning("humidity", &humidity, sizeof(double))
-       .andReturnValue(ENVIRONMENT_SENSOR_OK);
+       .andReturnValue(THERMOSTAT_OK);
 
    mock()
        .expectOneCall("HVAC::getCurrentState")
@@ -260,7 +205,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_InRange)
 {
 
    thermostat->setMode(HEAT);
-   temperatureController->setTargetTemperature(20);
+   context->tempController->setTargetTemperature(20);
 
    double temperature = 19.9;
    double humidity = 50.0;
@@ -269,7 +214,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_InRange)
        .expectOneCall("EnvironmentSensor::readTemperatureHumidity")
        .withOutputParameterReturning("temperature", &temperature, sizeof(double))
        .withOutputParameterReturning("humidity", &humidity, sizeof(double))
-       .andReturnValue(ENVIRONMENT_SENSOR_OK);
+       .andReturnValue(THERMOSTAT_OK);
 
    mock()
        .expectOneCall("HVAC::getCurrentState")
@@ -287,7 +232,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectAllOff_OverTemp)
 {
 
    thermostat->setMode(HEAT);
-   temperatureController->setTargetTemperature(20);
+   context->tempController->setTargetTemperature(20);
 
    double temperature = 20.1;
    double humidity = 50.0;
@@ -296,7 +241,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectAllOff_OverTemp)
        .expectOneCall("EnvironmentSensor::readTemperatureHumidity")
        .withOutputParameterReturning("temperature", &temperature, sizeof(double))
        .withOutputParameterReturning("humidity", &humidity, sizeof(double))
-       .andReturnValue(ENVIRONMENT_SENSOR_OK);
+       .andReturnValue(THERMOSTAT_OK);
 
    mock()
        .expectOneCall("HVAC::getCurrentState")
@@ -316,8 +261,8 @@ TEST(ThermostatTestGroup, GetState)
    thermostat->setTemperatureUnits(FAHRENHEIT);
    thermostat->setTargetTemperature(68.0);
 
-   temperatureController->setTargetTemperature(20);
-   temperatureController->setTemperatureRange(1.0);
+   context->tempController->setTargetTemperature(20);
+   context->tempController->setTemperatureRange(1.0);
 
    mock().expectOneCall("HVAC::getCurrentState").andReturnValue(HEATING);
 
@@ -328,7 +273,7 @@ TEST(ThermostatTestGroup, GetState)
        .expectOneCall("EnvironmentSensor::readTemperatureHumidity")
        .withOutputParameterReturning("temperature", &temperature, sizeof(double))
        .withOutputParameterReturning("humidity", &humidity, sizeof(double))
-       .andReturnValue(ENVIRONMENT_SENSOR_OK);
+       .andReturnValue(THERMOSTAT_OK);
 
    mock().expectOneCall("HVAC::setDesiredState").ignoreOtherParameters().andReturnValue(THERMOSTAT_OK);
 

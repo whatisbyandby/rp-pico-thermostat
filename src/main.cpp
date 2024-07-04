@@ -31,38 +31,54 @@ int main()
     stdio_init_all();
     Configuration config;
 
-    config.load();
-
     I2CBus i2cBus;
-    I2CDevice i2cDevice(&i2cBus, 0x38);
-
-    i2cBus.initialize();
-    i2cDevice.initialize();
-
-    EnvironmentSensor environmentSensor(&i2cDevice);
+    I2CDevice i2cDevice;
+    EnvironmentSensor environmentSensor;
     TemperatureController temperatureController;
 
     Switch heatSwitch(HEATER_PIN);
     Switch coolSwitch(COOLER_PIN);
     Switch fanSwitch(FAN_PIN);
 
-    HVAC hvac(&heatSwitch, &coolSwitch, &fanSwitch);
+    Hvac hvac;
     Wifi wifi;
-    Mqtt mqtt(&config);
+    Mqtt mqtt;
     Watchdog watchdog;
-    Producer producer(&mqtt);
-    Thermostat thermostat(&environmentSensor, &temperatureController, &hvac, &wifi, &mqtt, &watchdog, &config);
+    Producer producer;
+    Thermostat thermostat;
     CommandParser commandParser;
-    Repl repl(&commandParser);
+    Repl repl;
 
-    ThermostatError err = thermostat.initialize();
+
+    // Set up the application context
+    ThermostatContext context;
+    context.config = &config;
+    context.i2cBus = &i2cBus;
+    context.i2cDevice = &i2cDevice;
+    context.sensor = &environmentSensor;
+    context.tempController = &temperatureController;
+    context.heatSwitch = &heatSwitch;
+    context.coolSwitch = &coolSwitch;
+    context.fanSwitch = &fanSwitch;
+    context.hvac = &hvac;
+    context.wifi = &wifi;
+    context.mqtt = &mqtt;
+    context.watchdog = &watchdog;
+    context.producer = &producer;
+    context.thermostat = &thermostat;
+    context.commandParser = &commandParser;
+    context.repl = &repl;
+
+
+
+    ThermostatError err = thermostat.initialize(&context);
+    
     err = thermostat.connect();
     
-    repl.init();
-
     while (true) {
         ThermostatCommand command;
         ThermostatError err = repl.read(&command);
+        sleep_ms(10);
         if (err == THERMOSTAT_OK) {
             thermostat.executeCommand(&command);
             repl.print(&command);

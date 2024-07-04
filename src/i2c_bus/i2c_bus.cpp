@@ -32,9 +32,8 @@ I2CError I2CBus::initialize() {
     return I2C_OK;
 }
 
-I2CDevice::I2CDevice(I2CBus *bus, uint8_t address) {
-    this->bus = bus;
-    this->address = address;
+I2CDevice::I2CDevice() {
+    
 }
 
 
@@ -47,7 +46,11 @@ bool I2CDevice::isInitialized() {
     return initialized;
 }
 
-I2CError I2CDevice::initialize() {
+I2CError I2CDevice::initialize(I2CBus *bus, uint8_t address) {
+
+    this->bus = bus;
+    this->address = address;
+
     initialized = true;
     return I2C_OK;
 }

@@ -10,9 +10,9 @@ Wifi::~Wifi() {
     
 }
 
-ThermostatError Wifi::initialize(Configuration *config) {
+ThermostatError Wifi::initialize(Configuration *newConfig) {
 
-    config = config;
+    config = newConfig;
 
     if (initalized) {
         return THERMOSTAT_OK;

@@ -7,11 +7,9 @@
 
 class Producer {
 public:
-    Producer(Mqtt *mqtt);
-
+    Producer();
     ~Producer();
-
-    ThermostatError initalize();
+    ThermostatError initalize(Mqtt *mqtt);
 
     ThermostatError update(ThermostatData *data);
 

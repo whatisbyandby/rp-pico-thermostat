@@ -18,6 +18,8 @@ target_include_directories(test-hvac PRIVATE
     ${PROJECT_SOURCE_DIR}/src/i2c_bus
     ${PROJECT_SOURCE_DIR}/src/common
     ${PROJECT_SOURCE_DIR}/src/gpio
+    ${PROJECT_SOURCE_DIR}/src/thermostat_context
+    ${PROJECT_SOURCE_DIR}/src/thermostat
 )
 
 target_link_libraries(test-hvac

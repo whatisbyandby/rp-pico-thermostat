@@ -2,9 +2,9 @@
 #include "json.hpp"
 
 
-Producer::Producer(Mqtt *mqtt)
+Producer::Producer()
 {
-    this->mqtt = mqtt;
+    
 }
 
 Producer::~Producer()
@@ -12,9 +12,9 @@ Producer::~Producer()
 }
 
 
-ThermostatError Producer::initalize()
+ThermostatError Producer::initalize(Mqtt *mqtt)
 {
-
+    this->mqtt = mqtt;
     return THERMOSTAT_OK;
 }
 

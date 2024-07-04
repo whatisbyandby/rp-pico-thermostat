@@ -25,10 +25,10 @@ class I2CBus {
 
 class I2CDevice {
     public:
-        I2CDevice(I2CBus *bus, uint8_t address);
+        I2CDevice();
         ~I2CDevice();
 
-        I2CError initialize();
+        I2CError initialize(I2CBus *bus, uint8_t address);
         bool isInitialized();
 
         I2CError read(uint8_t *data, uint8_t length);

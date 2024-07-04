@@ -1,7 +1,7 @@
 #include "mqtt.hpp"
 #include <CppUTestExt/MockSupport.h>
 
-Mqtt::Mqtt(Configuration *config)
+Mqtt::Mqtt()
 {
 }
 
@@ -9,9 +9,9 @@ Mqtt::~Mqtt()
 {
 }
 
-ThermostatError Mqtt::initialize()
+ThermostatError Mqtt::initialize(Configuration *config)
 {   
-    return (ThermostatError) mock().actualCall("Mqtt::initialize").returnIntValueOrDefault(THERMOSTAT_OK);
+    return (ThermostatError) mock().actualCall("Mqtt::initialize").withPointerParameter("config", config).returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
 ThermostatError Mqtt::connect()

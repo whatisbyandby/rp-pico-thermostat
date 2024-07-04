@@ -1,90 +1,46 @@
 #include "thermostat.hpp"
+#include "temperature_controller.hpp"
 #include "thermostat_common.hpp"
 #include <cstddef>
 #include <iostream>
 #include <sstream>
 #include <string.h>
 
-Thermostat::Thermostat(EnvironmentSensor *environmentSensor, TemperatureController *temperatureController, HVAC *hvac, Wifi *wifi, Mqtt *mqtt, Watchdog *watchdog, Configuration *config)
+Thermostat::Thermostat()
 {
-    temperatureUnits = FAHRENHEIT;
-    initalized = false;
-    mode = OFF;
 
-    this->environmentSensor = environmentSensor;
-    this->temperatureController = temperatureController;
-    this->hvac = hvac;
-    this->wifi = wifi;
-    this->mqtt = mqtt;
-    this->watchdog = watchdog;
-    this->config = config;
-    this->currentError = THERMOSTAT_OK;
-    this->currentHumidity = -1;
-    this->currentTemperature = -1;
-    memset(this->errorString, 0, sizeof(this->errorString));
 }
 
 Thermostat::~Thermostat()
 {
 }
 
-ThermostatError Thermostat::initialize()
+ThermostatError Thermostat::initialize(ThermostatContext *context)
 {
-    initalized = true;
 
-    currentError = validateArguments();
+    this->context = context;
 
-    if (currentError != THERMOSTAT_OK)
-    {
-        initalized = false;
-        return currentError;
-    }
+    temperatureUnits = FAHRENHEIT;
+    initialized = false;
+    mode = OFF;
 
+    this->currentError = THERMOSTAT_OK;
+    this->currentHumidity = -1;
+    this->currentTemperature = -1;
+    memset(this->errorString, 0, sizeof(this->errorString));
 
-
-    currentError = updateTemperatureHumidity();
-
-    if (currentError != THERMOSTAT_OK)
-    {
-        initalized = false;
-        return currentError;
-    }
-
-    currentError = wifi->initialize(config);
-
-    if (currentError != THERMOSTAT_OK)
-    {
-        initalized = false;
-        return currentError;
-    }
-
-    mqtt->initialize();
-
-    if (currentError != THERMOSTAT_OK)
-    {
-        initalized = false;
-        return currentError;
-    }
-
-    watchdog->initialize();
-
-    if (currentError != THERMOSTAT_OK)
-    {
-        initalized = false;
-        return currentError;
-    }
-
+    initialized = true;
     return THERMOSTAT_OK;
 }
 
 bool Thermostat::isInitialized()
 {
-    return initalized;
+    return initialized;
 }
 
 ThermostatError Thermostat::connect() {
     int num_retries = 0;
-    while (wifi->connect() != THERMOSTAT_OK) {
+    while (context->wifi->connect() != THERMOSTAT_OK) {
         if (num_retries > 3) {
             return THERMOSTAT_ERROR;
         }
@@ -95,6 +51,7 @@ ThermostatError Thermostat::connect() {
 
 ThermostatError Thermostat::setTemperatureUnits(TemperatureUnits newUnits)
 {
+    //TODO need to add validation to ensure it's not possible to set invalid units
     temperatureUnits = newUnits;
     return THERMOSTAT_OK;
 }
@@ -135,12 +92,12 @@ ThermostatError Thermostat::setMode(ThermostatMode newMode)
 ThermostatError Thermostat::setTargetTemperature(double targetTemperature)
 {
     double temperatureInStandardUnits = getTemperatureInStandardUnits(targetTemperature);
-    return temperatureController->setTargetTemperature(temperatureInStandardUnits);
+    return context->tempController->setTargetTemperature(temperatureInStandardUnits);
 }
 
 double Thermostat::getTargetTemperature()
 {
-    double temperatureInStandardUnits = temperatureController->getTargetTemperature();
+    double temperatureInStandardUnits = context->tempController->getTargetTemperature();
     return getTemperatureInCurrentUnits(temperatureInStandardUnits);
 }
 
@@ -210,7 +167,7 @@ ThermostatError Thermostat::updateTemperatureHumidity()
         return currentError;
     }
 
-    environmentSensor->readTemperatureHumidity(&currentTemperature, &currentHumidity);
+    context->sensor->readTemperatureHumidity(&currentTemperature, &currentHumidity);
 
     return validateReading();
 }
@@ -251,11 +208,11 @@ ThermostatError Thermostat::update()
         return currentError;
     }
 
-    TemperatureState temperatureState = temperatureController->checkTemperature(currentTemperature);
+    TemperatureState temperatureState = context->tempController->checkTemperature(currentTemperature);
 
-    ThermostatState desiredState = getDesiredHVACState(temperatureState, hvac->getCurrentState());
+    ThermostatState desiredState = getDesiredHVACState(temperatureState, context->hvac->getCurrentState());
 
-    currentError = hvac->setDesiredState(desiredState);
+    currentError = context->hvac->setDesiredState(desiredState);
 
     return currentError;
 }
@@ -267,10 +224,10 @@ ThermostatError Thermostat::getData(ThermostatData *currentState)
     currentState->currentTemperature = this->getTemperatureInCurrentUnits(currentTemperature);
     currentState->currentTemperatureStandardUnits = this->currentTemperature;
     currentState->targetTemperature = this->getTargetTemperature();
-    currentState->targetTemperatureStandardUnits = temperatureController->getTargetTemperature();
-    currentState->temperatureRange = temperatureController->getTemperatureRange();
+    currentState->targetTemperatureStandardUnits = context->tempController->getTargetTemperature();
+    currentState->temperatureRange = context->tempController->getTemperatureRange();
     currentState->currentHumidity = this->currentHumidity;
-    currentState->hvacState = hvac->getCurrentState();
+    currentState->hvacState = context->hvac->getCurrentState();
     currentState->error = currentError;
 
     return THERMOSTAT_OK;
@@ -282,9 +239,9 @@ ThermostatError Thermostat::printState(std::string *output)
     std::ostringstream oss;
 
     oss << "Current Temperature: " << getTemperatureInCurrentUnits(currentTemperature) << std::endl;
-    oss << "Target Temperature " << getTemperatureInCurrentUnits(temperatureController->getTargetTemperature()) << std::endl;
+    oss << "Target Temperature " << getTemperatureInCurrentUnits(context->tempController->getTargetTemperature()) << std::endl;
     oss << "Current Humidity: " << currentHumidity << std::endl;
-    oss << "Current HVAC State: " << hvacStateToString(hvac->getCurrentState()) << std::endl;
+    oss << "Current HVAC State: " << hvacStateToString(context->hvac->getCurrentState()) << std::endl;
     oss << "Current Thermostat Mode: " << thermostatModeToString(mode) << std::endl;
     oss << "Current Temperature Units: " << temperatureUnitsToString(temperatureUnits) << std::endl;
 
@@ -292,59 +249,59 @@ ThermostatError Thermostat::printState(std::string *output)
     return THERMOSTAT_OK;
 }
 
-ThermostatError Thermostat::validateArguments()
-{
-    if (environmentSensor == NULL)
-    {
-        strcpy(errorString, "Environment Sensor is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
+// ThermostatError Thermostat::validateArguments()
+// {
+//     if (environmentSensor == NULL)
+//     {
+//         strcpy(errorString, "Environment Sensor is NULL");
+//         currentError = THERMOSTAT_INIT_FAILED;
+//         return currentError;
+//     }
 
-    if (temperatureController == NULL)
-    {
-        strcpy(errorString, "Temperature Controller is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
+//     if (temperatureController == NULL)
+//     {
+//         strcpy(errorString, "Temperature Controller is NULL");
+//         currentError = THERMOSTAT_INIT_FAILED;
+//         return currentError;
+//     }
 
-    if (hvac == NULL)
-    {
-        strcpy(errorString, "HVAC is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
+//     if (hvac == NULL)
+//     {
+//         strcpy(errorString, "HVAC is NULL");
+//         currentError = THERMOSTAT_INIT_FAILED;
+//         return currentError;
+//     }
 
-    if (wifi == NULL)
-    {
-        strcpy(errorString, "Wifi is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
+//     if (wifi == NULL)
+//     {
+//         strcpy(errorString, "Wifi is NULL");
+//         currentError = THERMOSTAT_INIT_FAILED;
+//         return currentError;
+//     }
 
-    if (mqtt == NULL)
-    {
-        strcpy(errorString, "Mqtt is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
+//     if (mqtt == NULL)
+//     {
+//         strcpy(errorString, "Mqtt is NULL");
+//         currentError = THERMOSTAT_INIT_FAILED;
+//         return currentError;
+//     }
 
-    if (watchdog == NULL)
-    {
-        strcpy(errorString, "Watchdog is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
+//     if (watchdog == NULL)
+//     {
+//         strcpy(errorString, "Watchdog is NULL");
+//         currentError = THERMOSTAT_INIT_FAILED;
+//         return currentError;
+//     }
 
-     if (config == NULL)
-    {
-        strcpy(errorString, "Configuration is NULL");
-        currentError = THERMOSTAT_INIT_FAILED;
-        return currentError;
-    }
+//      if (config == NULL)
+//     {
+//         strcpy(errorString, "Configuration is NULL");
+//         currentError = THERMOSTAT_INIT_FAILED;
+//         return currentError;
+//     }
 
-    return THERMOSTAT_OK;
-}
+//     return THERMOSTAT_OK;
+// }
 
 ThermostatError Thermostat::executeCommand(ThermostatCommand *command)
 {   
@@ -358,9 +315,9 @@ ThermostatError Thermostat::executeCommand(ThermostatCommand *command)
         case HELP:
             oss << "[OK] ";
             oss << "Printing help: " << std::endl;
-            oss << "set_temperature <temperature> - Set the target temperature in the current units" << std::endl;
-            oss << "set_mode <mode> - Set the mode of operation" << std::endl;
-            oss << "set_units <units> - Set the units of the thermostat" << std::endl;
+            oss << "temperature <temperature> - Set the target temperature in the current units" << std::endl;
+            oss << "mode <mode> - Set the mode of operation" << std::endl;
+            oss << "units <units> - Set the units of the thermostat" << std::endl;
             oss << "state - Print the current state of the thermostat" << std::endl;
 
             command->resultString = oss.str();

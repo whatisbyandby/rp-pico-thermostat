@@ -2,19 +2,19 @@
 #include "environment_sensor.hpp"
 
 
-EnvironmentSensor::EnvironmentSensor(I2CDevice *i2cDevice) {
-    this->i2cDevice = i2cDevice;
+EnvironmentSensor::EnvironmentSensor() {
 }
 
 EnvironmentSensor::~EnvironmentSensor() {
 }
 
-EnvironmentSensorError EnvironmentSensor::readTemperatureHumidity(double *temperature, double *humidity) {
-    return (EnvironmentSensorError) mock()
+
+ThermostatError EnvironmentSensor::readTemperatureHumidity(double *temperature, double *humidity) {
+    return (ThermostatError) mock()
         .actualCall("EnvironmentSensor::readTemperatureHumidity")
         .withOutputParameter("temperature", temperature)
         .withOutputParameter("humidity", humidity)
-        .returnIntValueOrDefault(ENVIRONMENT_SENSOR_OK);
+        .returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
 

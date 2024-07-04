@@ -4,7 +4,7 @@
 Thermostat::Thermostat(
     EnvironmentSensor *environmentSensor,
     TemperatureController *temperatureController,
-    HVAC *hvac,
+    Hvac *hvac,
     Wifi *wifi,
     Mqtt *mqtt,
     Watchdog *watchdog)

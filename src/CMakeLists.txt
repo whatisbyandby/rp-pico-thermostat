@@ -33,6 +33,7 @@ if (ON_TARGET)
         common
         thermostat
         temperature_controller
+        thermostat_context
         environment_sensor
         i2c_bus
         hvac

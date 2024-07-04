@@ -19,14 +19,14 @@ TEST_GROUP(TestGroupSubscriber)
 
 TEST(TestGroupSubscriber, SubscriberConstructor)
 {
-    Subscriber testSubscriber(nullptr, nullptr);
+    Subscriber testSubscriber;
 }
 
 TEST(TestGroupSubscriber, SubscriberSubscribe)
 {   
     Configuration config;
-    Mqtt mqtt(&config);
-    Subscriber testSubscriber(nullptr, &mqtt);
+    Mqtt mqtt;
+    Subscriber testSubscriber;
 
     mock().expectOneCall("Mqtt::subscribe")
         .withStringParameter("topic", "test/topic")

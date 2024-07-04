@@ -8,6 +8,8 @@ class TemperatureController {
         TemperatureController();
         ~TemperatureController();
 
+        ThermostatError initialize();
+
         ThermostatError setTargetTemperature(double targetTemperature);
         double getTargetTemperature();
 

@@ -19,16 +19,15 @@ bool I2CBus::isInitialized() {
 }
 
 
-I2CDevice::I2CDevice(I2CBus *bus, uint8_t address) {
-    this->bus = bus;
-    this->address = address;
+I2CDevice::I2CDevice() {
+
 }
 
 I2CDevice::~I2CDevice() {
 }
 
 
-I2CError I2CDevice::initialize() {
+I2CError I2CDevice::initialize(I2CBus *bus, uint8_t address) {
     return (I2CError) mock().actualCall("I2CDevice::initialize").returnIntValueOrDefault(I2C_OK);
 }
 

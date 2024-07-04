@@ -2,12 +2,17 @@
 
 TemperatureController::TemperatureController()
 {
-    targetTemperature = 20.0;
-    temperatureRange = 1.0;
 }
 
 TemperatureController::~TemperatureController()
 {
+}
+
+ThermostatError TemperatureController::initialize()
+{
+    targetTemperature = 20.0;
+    temperatureRange = 1.0;
+    return THERMOSTAT_OK;
 }
 
 ThermostatError TemperatureController::validateTemperatureRange(double temperatureRange)
@@ -19,9 +24,8 @@ ThermostatError TemperatureController::validateTemperatureRange(double temperatu
     return THERMOSTAT_OK;
 }
 
-
 ThermostatError TemperatureController::setTargetTemperature(double newTargetTemperature)
-{   
+{
     ThermostatError error = validateTargetTemperature(newTargetTemperature);
     if (error != THERMOSTAT_OK)
     {
@@ -68,14 +72,16 @@ TemperatureState TemperatureController::checkTemperature(double currentTemperatu
     {
         return UNDER_TEMPERATURE;
     }
-    if (currentTemperature < targetTemperature) {
+    if (currentTemperature < targetTemperature)
+    {
         return UNDER_TEMPERATURE_IN_RANGE;
     }
     if (currentTemperature > targetTemperature + temperatureRange)
     {
         return OVER_TEMPERATURE;
     }
-    if (currentTemperature > targetTemperature) {
+    if (currentTemperature > targetTemperature)
+    {
         return OVER_TEMPERATURE_IN_RANGE;
     }
     return IN_RANGE;

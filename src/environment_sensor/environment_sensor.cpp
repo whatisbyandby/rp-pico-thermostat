@@ -1,15 +1,21 @@
 #include "environment_sensor.hpp"
+#include "thermostat_common.hpp"
 
-EnvironmentSensor::EnvironmentSensor(I2CDevice *i2cDevice)
+EnvironmentSensor::EnvironmentSensor()
 {
-    this->i2cDevice = i2cDevice;
+    
 }
 
 EnvironmentSensor::~EnvironmentSensor()
 {
 }
 
-EnvironmentSensorError EnvironmentSensor::readTemperatureHumidity(double *temperature, double *humidity)
+ThermostatError EnvironmentSensor::initialize(I2CDevice *i2cDevice) {
+    this->i2cDevice = i2cDevice;
+    return THERMOSTAT_OK;
+}
+
+ThermostatError EnvironmentSensor::readTemperatureHumidity(double *temperature, double *humidity)
 {
     uint8_t write_data[3] = {0xAC, 0x33, 0x00};
     i2cDevice->write(write_data, 3);
@@ -26,5 +32,5 @@ EnvironmentSensorError EnvironmentSensor::readTemperatureHumidity(double *temper
     *humidity = humidity_calculated;
     *temperature = temperature_calculated;
 
-    return ENVIRONMENT_SENSOR_OK;
+    return THERMOSTAT_OK;
 }

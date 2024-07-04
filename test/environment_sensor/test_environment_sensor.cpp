@@ -13,8 +13,8 @@ TEST_GROUP(EnvironmentSensorTestGroup)
     void setup()
     {
         i2cBus = new I2CBus();
-        i2cDevice = new I2CDevice(i2cBus, 0x31);
-        environmentSensor = new EnvironmentSensor(i2cDevice);
+        i2cDevice = new I2CDevice();
+        environmentSensor = new EnvironmentSensor();
     }
 
     void teardown()
@@ -31,7 +31,7 @@ TEST(EnvironmentSensorTestGroup, EnvironmentSensorConstructor) {
 
 
 
-    EnvironmentSensor *environment_sensor = new EnvironmentSensor(i2cDevice);
+    EnvironmentSensor *environment_sensor = new EnvironmentSensor();
 
 
     delete environment_sensor;
