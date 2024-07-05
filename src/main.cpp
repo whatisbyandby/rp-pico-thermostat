@@ -19,11 +19,21 @@
 #include "wifi.hpp"
 #include "mqtt.hpp"
 #include "watchdog.hpp"
+#include "thermostat_context.hpp"
 
+bool thermostat_timer_callback(struct repeating_timer *t) {
+    ThermostatContext *ctx = (ThermostatContext *) t->user_data;
+    ctx->thermostat->update();
+    ThermostatData data;
+    ctx->thermostat->getData(&data);
+    ctx->producer->update(&data);
+    return true;
+}
 
-void commandLoop()
-{
-    
+void command_callback(ThermostatCommand *command, void *arg) {
+    ThermostatContext *ctx = (ThermostatContext *) arg;
+    ctx->commandParser->parseString(command);
+    ctx->thermostat->executeCommand(command);
 }
 
 int main()
@@ -45,9 +55,9 @@ int main()
     Mqtt mqtt;
     Watchdog watchdog;
     Producer producer;
-    Thermostat thermostat;
     CommandParser commandParser;
     Repl repl;
+    Thermostat thermostat;
 
 
     // Set up the application context
@@ -67,24 +77,28 @@ int main()
     context.producer = &producer;
     context.commandParser = &commandParser;
     context.repl = &repl;
+    context.thermostat = &thermostat;
 
 
     ThermostatError err = context.initialize();
-    thermostat.initialize(&context);
+    
 
-    err = thermostat.connect();
+    err = wifi.connect();
+    err = mqtt.connect();
+
+    err = mqtt.subscribe("home/thermostat/command", command_callback, &context);
+
+    struct repeating_timer timer;
+    add_repeating_timer_ms(-5000, thermostat_timer_callback, &context, &timer);
     
     while (true) {
         ThermostatCommand command;
         ThermostatError err = repl.read(&command);
+        sleep_ms(10);
         if (err == THERMOSTAT_OK) {
             thermostat.executeCommand(&command);
             repl.print(&command);
         }
-        thermostat.update();
-        ThermostatData currentData;
-        thermostat.getData(&currentData);
-        producer.update(&currentData);
-        sleep_ms(1000);
+        
     }
 }

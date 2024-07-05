@@ -66,8 +66,8 @@ ThermostatError Repl::read(ThermostatCommand *command)
 
         std::string inputString = std::string((char *)buffer);
         command->command_string = inputString;
-
         commandParser->parseString(command);
+
         return THERMOSTAT_OK;
     }
     return THERMOSTAT_NO_DATA;

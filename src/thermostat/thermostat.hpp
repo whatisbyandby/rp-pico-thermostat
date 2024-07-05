@@ -1,23 +1,21 @@
 #ifndef THERMOSTAT_HPP
 #define THERMOSTAT_HPP
 
+#include <iostream>
+
 #include "environment_sensor.hpp"
 #include "hvac.hpp"
-#include "wifi.hpp"
-#include "mqtt.hpp"
-#include "watchdog.hpp"
+#include "temperature_controller.hpp"
 #include "thermostat_common.hpp"
-#include "thermostat_context.hpp"
-#include <iostream>
+
 
 class Thermostat {
 public:
     Thermostat();
     ~Thermostat();
 
-    ThermostatError initialize(ThermostatContext *context);
+    ThermostatError initialize(EnvironmentSensor *environmentSensor, TemperatureController *tempController, Hvac *hvac);
     bool isInitialized();
-    ThermostatError connect();
     ThermostatError setTemperatureUnits(TemperatureUnits temperatureUnits);
     TemperatureUnits getTemperatureUnits();
     ThermostatState getDesiredHVACState(TemperatureState temperatureState, ThermostatState currentHVACState);
@@ -39,7 +37,9 @@ private:
     ThermostatMode mode;
     bool initialized;
 
-    ThermostatContext *context;
+    EnvironmentSensor *environmentSensor;
+    TemperatureController *tempController;
+    Hvac *hvac;
 
     double currentTemperature;
     double currentHumidity;

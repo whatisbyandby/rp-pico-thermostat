@@ -5,8 +5,8 @@
 
 #define THERMOSTAT_VERSION "1.0.0"
 
-
-typedef enum ThermostatError {
+typedef enum ThermostatError
+{
     THERMOSTAT_OK = 0,
     THERMOSTAT_NO_DATA,
     THERMOSTAT_ERROR,
@@ -35,7 +35,8 @@ inline const char *thermostatErrorToString(ThermostatError error)
     }
 }
 
-enum ThermostatCommandType {
+enum ThermostatCommandType
+{
     SET_TEMPERATURE,
     SET_MODE,
     SET_UNITS,
@@ -48,21 +49,25 @@ enum ThermostatCommandType {
     INVALID_COMMAND
 };
 
-struct ThermostatCommand {
+class ThermostatCommand
+{
+public:
     ThermostatCommandType command_type;
     double parameter;
     std::string command_string;
     std::string resultString;
 };
 
-typedef enum TemperatureState {
+typedef void (*CommandCallback)(ThermostatCommand *command, void *arg);
+
+typedef enum TemperatureState
+{
     OVER_TEMPERATURE,
     UNDER_TEMPERATURE,
     UNDER_TEMPERATURE_IN_RANGE,
     OVER_TEMPERATURE_IN_RANGE,
     IN_RANGE
 } TemperatureState;
-
 
 inline const char *temperatureStateToString(TemperatureState state)
 {
@@ -83,7 +88,8 @@ inline const char *temperatureStateToString(TemperatureState state)
     }
 }
 
-typedef enum ThermostatState {
+typedef enum ThermostatState
+{
     HEATING,
     COOLING,
     FAN_ON,
@@ -108,7 +114,8 @@ inline const char *hvacStateToString(ThermostatState state)
     }
 }
 
-typedef enum ThermostatMode {
+typedef enum ThermostatMode
+{
     HEAT,
     COOL,
     FAN_ONLY,
@@ -146,7 +153,8 @@ inline const char *thermostatModeToString(ThermostatMode mode)
     }
 }
 
-typedef enum TemperatureUnits {
+typedef enum TemperatureUnits
+{
     FAHRENHEIT,
     CELSIUS
 } TemperatureUnits;
@@ -164,7 +172,6 @@ inline const char *temperatureUnitsToString(TemperatureUnits units)
     }
 }
 
-
 double convertFahrenheitToCelsius(double fahrenheit);
 double convertCelsiusToFahrenheit(double celsius);
 
@@ -178,7 +185,8 @@ inline double convertCelsiusToFahrenheit(double celsius)
     return celsius * 9.0 / 5.0 + 32;
 }
 
-struct ThermostatData {
+struct ThermostatData
+{
     double currentTemperature;
     double targetTemperature;
     double temperatureRange;

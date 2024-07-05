@@ -15,10 +15,12 @@ Thermostat::~Thermostat()
 {
 }
 
-ThermostatError Thermostat::initialize(ThermostatContext *context)
+ThermostatError Thermostat::initialize(EnvironmentSensor *environmentSensor, TemperatureController *tempController, Hvac *hvac)
 {
 
-    this->context = context;
+    this->environmentSensor = environmentSensor;
+    this->tempController = tempController;
+    this->hvac = hvac;
 
     temperatureUnits = FAHRENHEIT;
     initialized = false;
@@ -38,19 +40,6 @@ bool Thermostat::isInitialized()
     return initialized;
 }
 
-ThermostatError Thermostat::connect() {
-    int num_retries = 0;
-    while (context->wifi->connect() != THERMOSTAT_OK) {
-        if (num_retries > 3) {
-            return THERMOSTAT_CONNECTION_ERROR;
-        }
-        num_retries++;
-    }
-
-    context->mqtt->connect();
-
-    return THERMOSTAT_OK;
-}
 
 ThermostatError Thermostat::setTemperatureUnits(TemperatureUnits newUnits)
 {
@@ -95,12 +84,12 @@ ThermostatError Thermostat::setMode(ThermostatMode newMode)
 ThermostatError Thermostat::setTargetTemperature(double targetTemperature)
 {
     double temperatureInStandardUnits = getTemperatureInStandardUnits(targetTemperature);
-    return context->tempController->setTargetTemperature(temperatureInStandardUnits);
+    return tempController->setTargetTemperature(temperatureInStandardUnits);
 }
 
 double Thermostat::getTargetTemperature()
 {
-    double temperatureInStandardUnits = context->tempController->getTargetTemperature();
+    double temperatureInStandardUnits = tempController->getTargetTemperature();
     return getTemperatureInCurrentUnits(temperatureInStandardUnits);
 }
 
@@ -170,7 +159,7 @@ ThermostatError Thermostat::updateTemperatureHumidity()
         return currentError;
     }
 
-    context->sensor->readTemperatureHumidity(&currentTemperature, &currentHumidity);
+    environmentSensor->readTemperatureHumidity(&currentTemperature, &currentHumidity);
 
     return validateReading();
 }
@@ -211,11 +200,11 @@ ThermostatError Thermostat::update()
         return currentError;
     }
 
-    TemperatureState temperatureState = context->tempController->checkTemperature(currentTemperature);
+    TemperatureState temperatureState = tempController->checkTemperature(currentTemperature);
 
-    ThermostatState desiredState = getDesiredHVACState(temperatureState, context->hvac->getCurrentState());
+    ThermostatState desiredState = getDesiredHVACState(temperatureState, hvac->getCurrentState());
 
-    currentError = context->hvac->setDesiredState(desiredState);
+    currentError = hvac->setDesiredState(desiredState);
 
     return currentError;
 }
@@ -227,11 +216,11 @@ ThermostatError Thermostat::getData(ThermostatData *currentState)
     currentState->currentTemperature = this->getTemperatureInCurrentUnits(currentTemperature);
     currentState->currentTemperatureStandardUnits = this->currentTemperature;
     currentState->targetTemperature = this->getTargetTemperature();
-    currentState->targetTemperatureStandardUnits = context->tempController->getTargetTemperature();
-    currentState->temperatureRange = context->tempController->getTemperatureRange();
+    currentState->targetTemperatureStandardUnits = tempController->getTargetTemperature();
+    currentState->temperatureRange = tempController->getTemperatureRange();
     currentState->currentHumidity = this->currentHumidity;
-    currentState->temperatureState = context->tempController->checkTemperature(currentTemperature);
-    currentState->hvacState = context->hvac->getCurrentState();
+    currentState->temperatureState = tempController->checkTemperature(currentTemperature);
+    currentState->hvacState = hvac->getCurrentState();
     currentState->error = currentError;
 
     return THERMOSTAT_OK;
@@ -243,9 +232,9 @@ ThermostatError Thermostat::printState(std::string *output)
     std::ostringstream oss;
 
     oss << "Current Temperature: " << getTemperatureInCurrentUnits(currentTemperature) << std::endl;
-    oss << "Target Temperature " << getTemperatureInCurrentUnits(context->tempController->getTargetTemperature()) << std::endl;
+    oss << "Target Temperature " << getTemperatureInCurrentUnits(tempController->getTargetTemperature()) << std::endl;
     oss << "Current Humidity: " << currentHumidity << std::endl;
-    oss << "Current HVAC State: " << hvacStateToString(context->hvac->getCurrentState()) << std::endl;
+    oss << "Current HVAC State: " << hvacStateToString(hvac->getCurrentState()) << std::endl;
     oss << "Current Thermostat Mode: " << thermostatModeToString(mode) << std::endl;
     oss << "Current Temperature Units: " << temperatureUnitsToString(temperatureUnits) << std::endl;
 
@@ -309,11 +298,14 @@ ThermostatError Thermostat::printState(std::string *output)
 
 ThermostatError Thermostat::executeCommand(ThermostatCommand *command)
 {   
+    ThermostatError error = THERMOSTAT_OK;
+
+
     if (command->command_type == INVALID_COMMAND) {
         command->resultString = "[ERROR] Invalid command";
         return THERMOSTAT_OK;
     }
-    ThermostatError error = THERMOSTAT_OK;
+    
     std::ostringstream oss;
     switch (command->command_type) {
         case HELP:

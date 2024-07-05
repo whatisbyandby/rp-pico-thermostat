@@ -38,9 +38,9 @@ public:
     Repl *repl;
 
     Producer *producer;
+    Thermostat *thermostat;
 
     ThermostatError initialize() {
-        sensor->initialize(i2cDevice);
         tempController->initialize();
         hvac->initialize(heatSwitch, coolSwitch, fanSwitch);
         wifi->initialize(config);
@@ -51,6 +51,8 @@ public:
         i2cBus->initialize();
         i2cDevice->initialize(i2cBus, 0x38);
         repl->initialize(commandParser);
+        sensor->initialize(i2cDevice);
+        thermostat->initialize(sensor, tempController, hvac);
         return THERMOSTAT_OK;
     }
 };
