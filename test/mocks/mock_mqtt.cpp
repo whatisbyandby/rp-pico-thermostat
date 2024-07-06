@@ -28,10 +28,12 @@ ThermostatError Mqtt::publish(const char *topic, char *message)
         .returnIntValueOrDefault(THERMOSTAT_OK);
 }
 
-ThermostatError Mqtt::subscribe(const char *topic)
+ThermostatError Mqtt::subscribe(const char *topic, CommandCallback callback, void *arg)
 {
     return (ThermostatError) mock()
         .actualCall("Mqtt::subscribe")
         .withStringParameter("topic", topic)
+        .withPointerParameter("callback", (void *)(ThermostatCommand*(*)(ThermostatCommand*, void *))callback)
+        .withPointerParameter("arg", arg)
         .returnIntValueOrDefault(THERMOSTAT_OK);
 }

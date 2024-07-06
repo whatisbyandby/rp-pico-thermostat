@@ -8,21 +8,19 @@
 #include <iostream>
 
 static Thermostat *thermostat;
-static ThermostatContext *context;
 static TemperatureController *tempController;
 static EnvironmentSensor *sensor;
+static Hvac *hvac;
 
 TEST_GROUP(ThermostatTestGroup){
     void setup(){
       thermostat = new Thermostat();
-      context = new ThermostatContext();
       tempController = new TemperatureController();
       sensor = new EnvironmentSensor();
+      hvac = new Hvac();
 
-      context->sensor = sensor;
-      context->tempController = tempController;
 
-      thermostat->initialize(context);
+      thermostat->initialize(sensor, tempController, hvac);
 
 
 }
@@ -32,9 +30,9 @@ void teardown()
    mock().checkExpectations();
    mock().clear();
    delete thermostat;
-   delete context;
    delete tempController;
    delete sensor;
+   delete hvac;
    
 }
 }
@@ -178,7 +176,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_UnderTemp)
 {
 
    thermostat->setMode(HEAT);
-   context->tempController->setTargetTemperature(25.0);
+   tempController->setTargetTemperature(25.0);
 
    double temperature = 20.0;
    double humidity = 50.0;
@@ -205,7 +203,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectHeaterOn_InRange)
 {
 
    thermostat->setMode(HEAT);
-   context->tempController->setTargetTemperature(20);
+   tempController->setTargetTemperature(20);
 
    double temperature = 19.9;
    double humidity = 50.0;
@@ -232,7 +230,7 @@ TEST(ThermostatTestGroup, UpdateThermostat_ExpectAllOff_OverTemp)
 {
 
    thermostat->setMode(HEAT);
-   context->tempController->setTargetTemperature(20);
+   tempController->setTargetTemperature(20);
 
    double temperature = 20.1;
    double humidity = 50.0;
@@ -261,8 +259,8 @@ TEST(ThermostatTestGroup, GetState)
    thermostat->setTemperatureUnits(FAHRENHEIT);
    thermostat->setTargetTemperature(68.0);
 
-   context->tempController->setTargetTemperature(20);
-   context->tempController->setTemperatureRange(1.0);
+   tempController->setTargetTemperature(20);
+   tempController->setTemperatureRange(1.0);
 
    mock().expectOneCall("HVAC::getCurrentState").andReturnValue(HEATING);
 

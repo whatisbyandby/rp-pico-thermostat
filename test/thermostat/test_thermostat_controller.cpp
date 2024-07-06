@@ -5,7 +5,6 @@
 
 static Thermostat *thermostat;
 static TemperatureController *tempController;
-static ThermostatContext *context;
 
 TEST_GROUP(ThermostatControllerTestGroup)
 {
@@ -14,10 +13,8 @@ TEST_GROUP(ThermostatControllerTestGroup)
         tempController = new TemperatureController();
         thermostat = new Thermostat();
 
-        context = new ThermostatContext();
-        context->tempController = tempController;
 
-        thermostat->initialize(context);
+        thermostat->initialize(NULL, tempController, NULL);
     }
 
     void teardown()
@@ -26,7 +23,6 @@ TEST_GROUP(ThermostatControllerTestGroup)
         mock().clear();
         delete thermostat;
         delete tempController;
-        delete context;
     }
 };
 

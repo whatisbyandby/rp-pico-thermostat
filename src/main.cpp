@@ -79,7 +79,6 @@ int main()
     context.repl = &repl;
     context.thermostat = &thermostat;
 
-
     ThermostatError err = context.initialize();
     
 
